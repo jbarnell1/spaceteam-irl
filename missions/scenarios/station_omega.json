@@ -150,7 +150,7 @@
   "crises": [
     {
       "id": "crisis_hull_breach",
-      "type": "MUSHROOM_ALL",
+      "type": "CRISIS_ALL",
       "label": "HULL BREACH!",
       "narrator_line": "HULL BREACH! ALL HANDS — BRACE FOR DECOMPRESSION!",
       "required_count": "all",
@@ -159,7 +159,7 @@
     },
     {
       "id": "crisis_solar_flare",
-      "type": "MUSHROOM_THRESHOLD",
+      "type": "CRISIS_THRESHOLD",
       "label": "SOLAR FLARE INCOMING!",
       "narrator_line": "SOLAR FLARE! Get behind your shields — at least four of you!",
       "required_count": 4,
@@ -174,7 +174,7 @@
       "actions": [
         { "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "value": {"x":0,"y":100}, "tolerance": {"x":25,"y":20} },
         { "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "value": 0,               "tolerance": 10 },
-        { "rest": "MUSHROOM" }
+        { "rest": "CRISIS_BTN" }
       ],
       "timeout_ms": 7000,
       "penalty": "health_major"
@@ -187,7 +187,7 @@
       "actions": [
         { "target_arch": "ENGINEER", "action": "SET_SLIDER",   "slot": 1, "value": 0,    "tolerance": 10 },
         { "target_arch": "ANALYST",  "action": "MATCH_WAVE",   "slot": 2, "value": 100,  "tolerance": 15 },
-        { "rest": "MUSHROOM" }
+        { "rest": "CRISIS_BTN" }
       ],
       "timeout_ms": 7000,
       "penalty": "health_minor"

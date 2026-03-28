@@ -149,7 +149,7 @@
   "crises": [
     {
       "id": "crisis_rogue_wave",
-      "type": "MUSHROOM_ALL",
+      "type": "CRISIS_ALL",
       "label": "ROGUE WAVE!",
       "narrator_line": "ROGUE WAVE! BRACE! Everyone — GRAB SOMETHING AND HOLD!",
       "required_count": "all",
@@ -158,7 +158,7 @@
     },
     {
       "id": "crisis_window_breach",
-      "type": "MUSHROOM_THRESHOLD",
+      "type": "CRISIS_THRESHOLD",
       "label": "WINDOW BREACH!",
       "narrator_line": "WINDOW BREACH! Water pouring in — everyone on the pumps!",
       "required_count": 2,
@@ -173,7 +173,7 @@
       "actions": [
         { "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 3, "value": false },
         { "target_arch": "OPERATOR",  "action": "PRESS_BUTTON", "slot": 4, "value": null },
-        { "rest": "MUSHROOM" }
+        { "rest": "CRISIS_BTN" }
       ],
       "timeout_ms": 7000,
       "penalty": "health_major"
@@ -186,7 +186,7 @@
       "actions": [
         { "target_arch": "NAVIGATOR", "action": "PRESS_BUTTON", "slot": 5, "value": null },
         { "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "value": 100, "tolerance": 10 },
-        { "rest": "MUSHROOM" }
+        { "rest": "CRISIS_BTN" }
       ],
       "timeout_ms": 7000,
       "penalty": "health_minor"

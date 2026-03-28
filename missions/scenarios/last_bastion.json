@@ -149,7 +149,7 @@
   "crises": [
     {
       "id": "crisis_battering_ram",
-      "type": "MUSHROOM_ALL",
+      "type": "CRISIS_ALL",
       "label": "BATTERING RAM!",
       "narrator_line": "BATTERING RAM AT THE GATE! ALL HANDS — BRACE!",
       "required_count": "all",
@@ -158,7 +158,7 @@
     },
     {
       "id": "crisis_fire_arrows",
-      "type": "MUSHROOM_THRESHOLD",
+      "type": "CRISIS_THRESHOLD",
       "label": "FIRE ARROWS INCOMING!",
       "narrator_line": "FIRE ARROWS! Take cover — at least four of you! SHIELDS UP!",
       "required_count": 4,
@@ -173,7 +173,7 @@
       "actions": [
         { "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "value": 100,  "tolerance": 10 },
         { "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "value": 120,  "tolerance": 15 },
-        { "rest": "MUSHROOM" }
+        { "rest": "CRISIS_BTN" }
       ],
       "timeout_ms": 7000,
       "penalty": "health_major"
@@ -186,7 +186,7 @@
       "actions": [
         { "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 3, "value": true },
         { "target_arch": "ANALYST",   "action": "MATCH_WAVE",   "slot": 2, "value": 100,  "tolerance": 15 },
-        { "rest": "MUSHROOM" }
+        { "rest": "CRISIS_BTN" }
       ],
       "timeout_ms": 7000,
       "penalty": "health_minor"

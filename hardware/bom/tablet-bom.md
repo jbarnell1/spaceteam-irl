@@ -286,7 +286,7 @@ Each archetype adds its unique 5-slot control loadout to the base tablet. See [t
 | TFT Command Screen | LCSC or Alibaba | ILI9341 or ST7789 modules |
 | Passive components | LCSC | Standard 0402/0603 from JLCPCB Basic Parts |
 | Toggle switches | LCSC or Alibaba | MTS-102 or equivalent |
-| Mushroom button | Alibaba | 16mm red latching, panel-mount |
+| Guarded illuminated pushbutton | Alibaba or LCSC | Aircraft-style safety cover + LED momentary switch, panel-mount |
 | NeoPixel (WS2812B) | LCSC | Individual LEDs for SMD placement |
 | NeoPixel ring (8-LED) | Alibaba | Scout only — pre-assembled ring module |
 | RC522 NFC module | LCSC or Alibaba | Sentinel only |
