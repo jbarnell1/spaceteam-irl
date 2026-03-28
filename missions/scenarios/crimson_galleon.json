@@ -1,0 +1,520 @@
+{
+  "schema_version": "1.0",
+  "meta": {
+    "id": "CRIMSON_GALLEON_01",
+    "title": "The Crimson Galleon",
+    "pack": "HIGH_SEAS_COLLECTION",
+    "theme": "naval",
+    "subject": "teamwork",
+    "age_rating": "8+",
+    "difficulty": "medium",
+    "player_count": { "min": 3, "max": 8 },
+    "duration_sec": { "min": 840, "max": 900 },
+    "adaptive_pacing": true,
+    "version": "1.0.0",
+    "author": "mission_architect"
+  },
+
+  "roles": {
+    "NAVIGATOR":  "Sailing Master",
+    "ENGINEER":   "Ship's Carpenter",
+    "OPERATOR":   "Signalman",
+    "SENTINEL":   "Master-at-Arms",
+    "MEDIC":      "Ship's Surgeon",
+    "ANALYST":    "Cartographer",
+    "SCOUT":      "Lookout",
+    "COMMANDER":  "Bosun"
+  },
+
+  "oled_labels": {
+    "NAVIGATOR": ["Ship's Wheel",   "Sail Trim",      "Port Guns",      "Stbd Guns",      "Drop Anchor"],
+    "ENGINEER":  ["Bilge Pump",     "Patch Hull",      "Mast Brace",     "Keel Bolts",     "Cut Rigging"],
+    "OPERATOR":  ["Signal Lamp",    "Run Up Colours",  "Fog Horn",       "Hail Ship",      "Fire Flare"],
+    "SENTINEL":  ["Arms Locker",    "Watch Roster",    "Brig Lock",      "Gun Port",       "Beat to Qrts"],
+    "MEDIC":     ["Remedy Mix",     "Laudanum Dose",   "Rum Ration",     "Check Wounds",   "Smelling Salt"],
+    "ANALYST":   ["Chart Course",   "Glass Bearing",   "Tide Table",     "Star Fix",       "Log Entry"],
+    "SCOUT":     ["Spyglass Brng",  "Flag Hoist",      "Port Watch",     "Stbd Watch",     "Crow's Nest"],
+    "COMMANDER": ["Ship's Orders",  "Confirm Order",   "Master Key",     "All Hands",      "Ship's Log"]
+  },
+
+  "command_pools": {
+    "direct": [
+
+      { "id": "nav_hard_port",     "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Hard to port! Reef ahead!",            "narrator_line": "Sailing Master! Hard to port — reef dead ahead!",          "value": {"x":-80,"y":0},  "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
+      { "id": "nav_hard_stbd",     "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Hard starboard! Shoal water!",          "narrator_line": "Hard starboard — shoal water on the port bow!",            "value": {"x":80,"y":0},   "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
+      { "id": "nav_run_before",    "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Come about! Run before the wind!",      "narrator_line": "Come about! Run before the wind — full ahead!",            "value": {"x":0,"y":80},   "tolerance": {"x":20,"y":15}, "timeout_ms": 8000 },
+      { "id": "nav_close_haul",    "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Close-haul! Into the wind!",            "narrator_line": "Close-haul! Take her into the wind!",                      "value": {"x":0,"y":-70},  "tolerance": {"x":20,"y":15}, "timeout_ms": 8000 },
+      { "id": "nav_full_sail",     "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": 2, "tier": "T2", "label": "Full sail — all canvas!",               "narrator_line": "Full sail! Every scrap of canvas — move!",                 "value": 100,  "tolerance": 10,                         "timeout_ms": 5000 },
+      { "id": "nav_half_sail",     "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": 2, "tier": "T2", "label": "Reduce to half sail!",                  "narrator_line": "Reduce sail to half — we're heeling too far!",             "value": 50,   "tolerance": 10,                         "timeout_ms": 5000 },
+      { "id": "nav_bare_poles",    "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": 2, "tier": "T2", "label": "Strike sail — bare poles!",             "narrator_line": "Strike all sail — bare poles! Storm coming!",              "value": 0,    "tolerance": 10,                         "timeout_ms": 5000 },
+      { "id": "nav_port_guns",     "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Port guns — RUN OUT!",                  "narrator_line": "Run out the port guns!",                                   "value": true,                                            "timeout_ms": 3000 },
+      { "id": "nav_port_secure",   "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Port guns — SECURE!",                   "narrator_line": "Secure the port guns — lash them down!",                   "value": false,                                           "timeout_ms": 3000 },
+      { "id": "nav_stbd_guns",     "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Starboard guns — READY!",               "narrator_line": "Starboard battery — run them out!",                        "value": true,                                            "timeout_ms": 3000 },
+      { "id": "nav_stbd_secure",   "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Starboard guns — SECURE!",              "narrator_line": "Secure starboard guns!",                                   "value": false,                                           "timeout_ms": 3000 },
+      { "id": "nav_anchor",        "target_arch": "NAVIGATOR", "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Drop anchor NOW!",                      "narrator_line": "Drop anchor! All stop!",                                   "value": null,                                            "timeout_ms": 3000 },
+
+      { "id": "eng_pump_max",      "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Bilge pump to MAXIMUM!",                "narrator_line": "Carpenter! Bilge pumps to maximum — we're taking water!",  "value": 100, "tolerance": 10,                      "timeout_ms": 5000 },
+      { "id": "eng_pump_half",     "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Bilge pump to half!",                   "narrator_line": "Ease the bilge pump to half — steady now!",                "value": 50,  "tolerance": 10,                      "timeout_ms": 5000 },
+      { "id": "eng_pump_min",      "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Bilge pump to minimum!",                "narrator_line": "Cut the bilge pump to minimum — save the arms!",           "value": 20,  "tolerance": 10,                      "timeout_ms": 5000 },
+      { "id": "eng_pump_off",      "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Shut the bilge pump!",                  "narrator_line": "Carpenter! Shut down the bilge pump!",                     "value": 0,   "tolerance": 10,                      "timeout_ms": 5000 },
+      { "id": "eng_patch",         "target_arch": "ENGINEER",  "action": "PRESS_BUTTON", "slot": 2, "tier": "T1", "label": "Patch the hull — NOW!",                 "narrator_line": "Carpenter! Patch that hole before we sink!",               "value": null,                                      "timeout_ms": 3000 },
+      { "id": "eng_mast_on",       "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Brace the mainmast!",                   "narrator_line": "Brace the mainmast — it's cracking!",                      "value": true,                                      "timeout_ms": 3000 },
+      { "id": "eng_mast_off",      "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Release mast braces!",                  "narrator_line": "Release the mast braces — we need to tack!",               "value": false,                                     "timeout_ms": 3000 },
+      { "id": "eng_keel_on",       "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Tighten keel bolts!",                   "narrator_line": "Tighten the keel bolts — she's working loose!",            "value": true,                                      "timeout_ms": 3000 },
+      { "id": "eng_rigging",       "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 5, "tier": "T1", "label": "Cut the fouled rigging!",               "narrator_line": "Carpenter! Cut that fouled rigging away!",                 "value": true,                                      "timeout_ms": 3000 },
+
+      { "id": "op_lamp_88",        "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Signal lamp to code 88!",               "narrator_line": "Signalman! Flash code eighty-eight — pursuit signal!",     "value": 88,                                        "timeout_ms": 6000 },
+      { "id": "op_lamp_42",        "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Signal lamp: code 42!",                 "narrator_line": "Signalman! Code forty-two — request assistance!",          "value": 42,                                        "timeout_ms": 6000 },
+      { "id": "op_lamp_150",       "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Signal: all-clear code 150!",            "narrator_line": "Signal all-clear — code one-fifty!",                       "value": 150,                                       "timeout_ms": 6000 },
+      { "id": "op_lamp_200",       "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Emergency signal 200!",                 "narrator_line": "Signalman! Emergency — code two hundred!",                 "value": 200,                                       "timeout_ms": 6000 },
+      { "id": "op_colours_on",     "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Run up the colours!",                   "narrator_line": "Run up the King's colours! Show them who we are!",         "value": true,                                      "timeout_ms": 3000 },
+      { "id": "op_colours_off",    "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Strike the colours!",                   "narrator_line": "Strike the colours — run silent!",                         "value": false,                                     "timeout_ms": 3000 },
+      { "id": "op_horn_on",        "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Sound the fog horn!",                   "narrator_line": "Sound the fog horn — warn them off!",                      "value": true,                                      "timeout_ms": 3000 },
+      { "id": "op_horn_off",       "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Silence the fog horn!",                 "narrator_line": "Silence that horn — we need stealth!",                     "value": false,                                     "timeout_ms": 3000 },
+      { "id": "op_hail",           "target_arch": "OPERATOR",  "action": "PRESS_BUTTON", "slot": 4, "tier": "T1", "label": "Hail the enemy vessel!",                "narrator_line": "Hail that vessel — demand they strike!",                   "value": null,                                      "timeout_ms": 3000 },
+      { "id": "op_flare",          "target_arch": "OPERATOR",  "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Fire a signal flare!",                  "narrator_line": "Fire a flare! Mark our position!",                         "value": null,                                      "timeout_ms": 3000 },
+
+      { "id": "sent_arms_alpha",   "target_arch": "SENTINEL",  "action": "SCAN_NFC",     "slot": 1, "tier": "T3", "label": "Unlock the ARMS LOCKER!",               "narrator_line": "Master-at-Arms! Unlock the main arms locker — now!",       "value": "ARMS_KEY",                                "timeout_ms": 10000 },
+      { "id": "sent_arms_powder",  "target_arch": "SENTINEL",  "action": "SCAN_NFC",     "slot": 1, "tier": "T3", "label": "Open the POWDER ROOM!",                 "narrator_line": "Open the powder magazine! We need shot!",                  "value": "POWDER_KEY",                              "timeout_ms": 10000 },
+      { "id": "sent_watch_day",    "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": 2, "tier": "T2", "label": "Watch roster — DAY!",                   "narrator_line": "Master-at-Arms! Set watch to day roster!",                 "value": 1,                                         "timeout_ms": 5000 },
+      { "id": "sent_watch_battle", "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": 2, "tier": "T2", "label": "Watch roster — BATTLE!",                "narrator_line": "Battle stations! Set the watch to battle!",                "value": 2,                                         "timeout_ms": 5000 },
+      { "id": "sent_watch_night",  "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": 2, "tier": "T2", "label": "Watch roster — NIGHT!",                 "narrator_line": "Night watch! Set the roster — position three!",            "value": 3,                                         "timeout_ms": 5000 },
+      { "id": "sent_brig_on",      "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Lock the brig!",                        "narrator_line": "Lock the brig — prisoners below!",                         "value": true,                                      "timeout_ms": 3000 },
+      { "id": "sent_brig_off",     "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Unlock the brig!",                      "narrator_line": "Unlock the brig — all hands needed on deck!",              "value": false,                                     "timeout_ms": 3000 },
+      { "id": "sent_gunport_on",   "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Open gun ports!",                       "narrator_line": "Open the gun ports!",                                      "value": true,                                      "timeout_ms": 3000 },
+      { "id": "sent_gunport_off",  "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Close gun ports!",                      "narrator_line": "Close the gun ports — we're taking spray!",                "value": false,                                     "timeout_ms": 3000 },
+      { "id": "sent_quarters",     "target_arch": "SENTINEL",  "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Beat to quarters!",                     "narrator_line": "Beat to quarters! All hands to battle stations!",          "value": null,                                      "timeout_ms": 3000 },
+
+      { "id": "med_blue",          "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": 1, "tier": "T3", "label": "Mix BLUE remedy!",                      "narrator_line": "Surgeon! Mix the blue fever remedy — men are dropping!",    "value": [0,80,200],   "tolerance": 30,              "timeout_ms": 8000 },
+      { "id": "med_red",           "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": 1, "tier": "T3", "label": "Mix RED poultice!",                     "narrator_line": "Surgeon! Red poultice for the wounded — hurry!",           "value": [200,30,30],  "tolerance": 30,              "timeout_ms": 8000 },
+      { "id": "med_green",         "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": 1, "tier": "T3", "label": "Mix GREEN antidote!",                   "narrator_line": "Mix the green antidote — possible poisoning!",             "value": [30,200,50],  "tolerance": 30,              "timeout_ms": 8000 },
+      { "id": "med_dose_150",      "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": 2, "tier": "T2", "label": "Laudanum dose to 150!",                 "narrator_line": "Surgeon! Laudanum to one-fifty — the Captain needs it!",   "value": 150,                                       "timeout_ms": 6000 },
+      { "id": "med_dose_80",       "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": 2, "tier": "T2", "label": "Reduce dose to 80!",                    "narrator_line": "Ease the dose to eighty — too much and he'll sleep!",      "value": 80,                                        "timeout_ms": 6000 },
+      { "id": "med_dose_250",      "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": 2, "tier": "T2", "label": "Emergency dose — 250!",                 "narrator_line": "Emergency dose! Crank it to two-fifty — stat!",            "value": 250,                                       "timeout_ms": 6000 },
+      { "id": "med_rum_on",        "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Issue the rum ration!",                 "narrator_line": "Issue the rum ration — steady the men's nerves!",          "value": true,                                      "timeout_ms": 3000 },
+      { "id": "med_rum_off",       "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Cut the rum ration!",                   "narrator_line": "Cut the rum — I need clear heads!",                        "value": false,                                     "timeout_ms": 3000 },
+      { "id": "med_wounds",        "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": 4, "tier": "T1", "label": "Check the wounded!",                    "narrator_line": "Surgeon! Check on the wounded below!",                     "value": null,                                      "timeout_ms": 3000 },
+      { "id": "med_salts",         "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Smelling salts — revive him!",          "narrator_line": "Smelling salts! Revive that man!",                         "value": null,                                      "timeout_ms": 3000 },
+
+      { "id": "ana_code_721",      "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": 1, "tier": "T3", "label": "Chart bearing: 7-2-1!",                "narrator_line": "Cartographer! Plot bearing seven-two-one!",                "value": "721",                                     "timeout_ms": 7000 },
+      { "id": "ana_code_4519",     "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": 1, "tier": "T3", "label": "Chart code: 4-5-1-9!",                 "narrator_line": "Navigation code four-five-one-nine — plot it!",            "value": "4519",                                    "timeout_ms": 8000 },
+      { "id": "ana_code_308",      "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": 1, "tier": "T3", "label": "Enter bearing 3-0-8!",                 "narrator_line": "Cartographer! Bearing three-zero-eight!",                  "value": "308",                                     "timeout_ms": 7000 },
+      { "id": "ana_wave_140",      "target_arch": "ANALYST",   "action": "MATCH_WAVE",   "slot": 2, "tier": "T2", "label": "Glass bearing to 140!",                "narrator_line": "Cartographer! Spyglass bearing to one-forty!",             "value": 140, "tolerance": 15,                      "timeout_ms": 6000 },
+      { "id": "ana_wave_80",       "target_arch": "ANALYST",   "action": "MATCH_WAVE",   "slot": 2, "tier": "T2", "label": "Glass bearing to 80!",                 "narrator_line": "Bearing eighty — track that sail!",                        "value": 80,  "tolerance": 15,                      "timeout_ms": 6000 },
+      { "id": "ana_wave_210",      "target_arch": "ANALYST",   "action": "MATCH_WAVE",   "slot": 2, "tier": "T2", "label": "Set bearing to 210!",                  "narrator_line": "Bearing two-ten — that's the Galleon!",                    "value": 210, "tolerance": 15,                      "timeout_ms": 6000 },
+      { "id": "ana_tide_on",       "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Check the tide table!",                "narrator_line": "Check the tide table — is the channel passable?",          "value": true,                                      "timeout_ms": 3000 },
+      { "id": "ana_tide_off",      "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Close the tide table!",                "narrator_line": "Stow the tide table — we've got what we need!",            "value": false,                                     "timeout_ms": 3000 },
+      { "id": "ana_star_fix",      "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Take a star fix!",                     "narrator_line": "Star fix! Confirm our position!",                          "value": true,                                      "timeout_ms": 3000 },
+      { "id": "ana_log",           "target_arch": "ANALYST",   "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Log our position!",                    "narrator_line": "Log that position in the ship's record!",                  "value": null,                                      "timeout_ms": 3000 },
+
+      { "id": "sco_glass_120",     "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "tier": "T2", "label": "Spyglass bearing 120!",                "narrator_line": "Lookout! Spyglass to bearing one-twenty!",                 "value": 120, "tolerance": 15,                      "timeout_ms": 6000 },
+      { "id": "sco_glass_200",     "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "tier": "T2", "label": "Spyglass to 200!",                     "narrator_line": "Lookout! Bearing two hundred — what do you see?",          "value": 200, "tolerance": 15,                      "timeout_ms": 6000 },
+      { "id": "sco_glass_60",      "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "tier": "T2", "label": "Sweep to bearing 60!",                 "narrator_line": "Sweep to sixty — something on the horizon!",               "value": 60,  "tolerance": 15,                      "timeout_ms": 6000 },
+      { "id": "sco_flag_on",       "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Hoist signal flags!",                  "narrator_line": "Hoist the signal flags — spread the word!",                "value": true,                                      "timeout_ms": 3000 },
+      { "id": "sco_flag_off",      "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Strike the flags!",                    "narrator_line": "Strike the flags — go dark!",                              "value": false,                                     "timeout_ms": 3000 },
+      { "id": "sco_port_watch",    "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Eyes to port — NOW!",                  "narrator_line": "Lookout! Eyes to port — report what you see!",             "value": true,                                      "timeout_ms": 3000 },
+      { "id": "sco_stbd_watch",    "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Eyes to starboard!",                   "narrator_line": "Starboard watch — scan the horizon!",                      "value": true,                                      "timeout_ms": 3000 },
+      { "id": "sco_crows_nest",    "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 5, "tier": "T1", "label": "Man the crow's nest!",                 "narrator_line": "Up the crow's nest — I need a full view!",                 "value": true,                                      "timeout_ms": 3000 },
+
+      { "id": "cmd_pursuit",       "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Orders: PURSUIT!",                     "narrator_line": "Bosun! Set orders to pursuit — position one!",             "value": 1,                                         "timeout_ms": 5000 },
+      { "id": "cmd_broadside",     "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Orders: BROADSIDE!",                   "narrator_line": "Bosun! Broadside formation — position two!",               "value": 2,                                         "timeout_ms": 5000 },
+      { "id": "cmd_hold",          "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Orders: HOLD STATION!",                "narrator_line": "Hold station — position three! Steady as she goes!",       "value": 3,                                         "timeout_ms": 5000 },
+      { "id": "cmd_retreat",       "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Orders: RETREAT!",                     "narrator_line": "Retreat! Set to position four — fall back!",               "value": 4,                                         "timeout_ms": 5000 },
+      { "id": "cmd_confirm",       "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": 2, "tier": "T1", "label": "Confirm the order!",                   "narrator_line": "Bosun! Confirm that order — pipe it through!",             "value": null,                                      "timeout_ms": 3000 },
+      { "id": "cmd_key",           "target_arch": "COMMANDER", "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Master key — TURN IT!",                "narrator_line": "Turn the master key — unlock the magazine!",               "value": true,                                      "timeout_ms": 3000 },
+      { "id": "cmd_allhands",      "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": 4, "tier": "T1", "label": "ALL HANDS ON DECK!",                   "narrator_line": "All hands on deck! Every man to his station!",             "value": null,                                      "timeout_ms": 3000 },
+      { "id": "cmd_log",           "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Update the ship's log!",               "narrator_line": "Log it! Ship's log — note the engagement!",               "value": null,                                      "timeout_ms": 3000 }
+    ],
+
+    "cooperative": [
+      { "id": "coop_cmd_tell_nav_port",    "display_on": "COMMANDER", "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Tell Helm: hard to port!",             "narrator_line": "Bosun! Tell the Sailing Master — hard to port!",          "value": {"x":-80,"y":0}, "tolerance": {"x":15,"y":20}, "timeout_ms": 12000 },
+      { "id": "coop_eng_tell_nav_run",     "display_on": "ENGINEER",  "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Tell Helm: run before the wind!",      "narrator_line": "Carpenter! Shout to the Helm — run before the wind!",    "value": {"x":0,"y":80},  "tolerance": {"x":20,"y":15}, "timeout_ms": 12000 },
+      { "id": "coop_ana_tell_eng_max",     "display_on": "ANALYST",   "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Tell Carpenter: pump to max!",         "narrator_line": "Cartographer! Tell the Carpenter — pumps to maximum!",   "value": 100, "tolerance": 10,                           "timeout_ms": 10000 },
+      { "id": "coop_cmd_tell_eng_half",    "display_on": "COMMANDER", "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Tell Carpenter: pump to half!",        "narrator_line": "Bosun! Tell the Carpenter — half pump!",                 "value": 50,  "tolerance": 10,                           "timeout_ms": 10000 },
+      { "id": "coop_nav_tell_op_88",       "display_on": "NAVIGATOR", "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Tell Signals: code 88!",               "narrator_line": "Helm! Tell the Signalman — code eighty-eight!",          "value": 88,                                             "timeout_ms": 10000 },
+      { "id": "coop_sco_tell_op_42",       "display_on": "SCOUT",     "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Tell Signals: code 42!",               "narrator_line": "Lookout! Shout to Signals — code forty-two!",            "value": 42,                                             "timeout_ms": 10000 },
+      { "id": "coop_med_tell_sent_brig",   "display_on": "MEDIC",     "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Tell Arms: lock the brig!",            "narrator_line": "Surgeon! Shout to the Master-at-Arms — lock the brig!",  "value": true,                                           "timeout_ms": 6000 },
+      { "id": "coop_op_tell_sent_quarters","display_on": "OPERATOR",  "target_arch": "SENTINEL",  "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Tell Arms: beat to quarters!",         "narrator_line": "Signalman! Tell the Master-at-Arms — beat to quarters!", "value": null,                                           "timeout_ms": 6000 },
+      { "id": "coop_eng_tell_med_rum",     "display_on": "ENGINEER",  "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Tell Surgeon: issue rum!",             "narrator_line": "Carpenter! Tell the Surgeon — issue the rum ration!",    "value": true,                                           "timeout_ms": 6000 },
+      { "id": "coop_sent_tell_med_salts",  "display_on": "SENTINEL",  "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Tell Surgeon: smelling salts!",        "narrator_line": "Master-at-Arms! Tell the Surgeon — salts, NOW!",         "value": null,                                           "timeout_ms": 6000 },
+      { "id": "coop_nav_tell_ana_308",     "display_on": "NAVIGATOR", "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": 1, "tier": "T3", "label": "Tell Charts: bearing 3-0-8!",          "narrator_line": "Helm! Tell the Cartographer — bearing three-zero-eight!","value": "308",                                          "timeout_ms": 12000 },
+      { "id": "coop_cmd_tell_ana_wave",    "display_on": "COMMANDER", "target_arch": "ANALYST",   "action": "MATCH_WAVE",   "slot": 2, "tier": "T2", "label": "Tell Charts: glass to 160!",           "narrator_line": "Bosun! Tell the Cartographer — bearing one-sixty!",      "value": 160, "tolerance": 15,                           "timeout_ms": 10000 },
+      { "id": "coop_ana_tell_sco_120",     "display_on": "ANALYST",   "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "tier": "T2", "label": "Tell Lookout: glass to 120!",          "narrator_line": "Cartographer! Tell the Lookout — bearing one-twenty!",   "value": 120, "tolerance": 15,                           "timeout_ms": 10000 },
+      { "id": "coop_op_tell_sco_flags",    "display_on": "OPERATOR",  "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Tell Lookout: hoist flags!",           "narrator_line": "Signalman! Tell the Lookout — hoist the signal flags!",  "value": true,                                           "timeout_ms": 6000 },
+      { "id": "coop_sco_tell_cmd_pursuit", "display_on": "SCOUT",     "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Tell Bosun: set pursuit!",             "narrator_line": "Lookout! Tell the Bosun — switch to pursuit!",           "value": 1,                                              "timeout_ms": 8000 },
+      { "id": "coop_med_tell_cmd_key",     "display_on": "MEDIC",     "target_arch": "COMMANDER", "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Tell Bosun: turn the key!",            "narrator_line": "Surgeon! Shout to the Bosun — turn the master key!",     "value": true,                                           "timeout_ms": 6000 }
+    ]
+  },
+
+  "crises": [
+    {
+      "id": "crisis_broadside",
+      "type": "MUSHROOM_ALL",
+      "label": "BROADSIDE INCOMING!",
+      "narrator_line": "BROADSIDE! ALL HANDS — BRACE FOR IMPACT!",
+      "required_count": "all",
+      "timeout_ms": 5000,
+      "penalty": "health_major"
+    },
+    {
+      "id": "crisis_storm_surge",
+      "type": "MUSHROOM_THRESHOLD",
+      "label": "ROGUE WAVE!",
+      "narrator_line": "ROGUE WAVE! Grab hold — at least four of you! BRACE!",
+      "required_count": 4,
+      "timeout_ms": 6000,
+      "penalty": "health_minor"
+    },
+    {
+      "id": "crisis_fire_below",
+      "type": "MULTI_ACTION",
+      "label": "FIRE IN THE HOLD!",
+      "narrator_line": "FIRE IN THE HOLD! Carpenter — pump the bilge! Surgeon — treat the burned! Everyone — buckets!",
+      "actions": [
+        { "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "value": 100,  "tolerance": 10 },
+        { "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": 3, "value": true },
+        { "rest": "MUSHROOM" }
+      ],
+      "timeout_ms": 7000,
+      "penalty": "health_major"
+    },
+    {
+      "id": "crisis_rigging_snap",
+      "type": "MULTI_ACTION",
+      "label": "RIGGING SNAPPED!",
+      "narrator_line": "THE RIGGING'S SNAPPED! Carpenter — brace the mast! Lookout — check the bearing! HOLD FAST!",
+      "actions": [
+        { "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 3, "value": true },
+        { "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "value": 120, "tolerance": 15 },
+        { "rest": "MUSHROOM" }
+      ],
+      "timeout_ms": 7000,
+      "penalty": "health_minor"
+    }
+  ],
+
+  "phases": [
+    {
+      "id": "intro",
+      "type": "NARRATION",
+      "duration_sec": 60,
+      "narrator_lines": [
+        "Attention all hands. This is your Captain speaking.",
+        "The Spanish pirate galleon Sangre Carmesí has been sighted off the southern cape.",
+        "She has been preying on merchant convoys for six months. The Admiralty wants her taken.",
+        "All hands to stations. We sail to intercept. God save the King."
+      ]
+    },
+
+    {
+      "id": "frantic_1",
+      "type": "FRANTIC",
+      "duration_sec": 240,
+      "difficulty": {
+        "commands_per_min": { "start": 3, "end": 5 },
+        "coop_ratio": 0.15,
+        "crisis_chance_per_30s": 0.10,
+        "timeout_multiplier": 1.3
+      },
+      "pools": ["direct", "cooperative"],
+      "crises": ["crisis_storm_surge", "crisis_rigging_snap"],
+      "narrator_lines_ambient": [
+        "Steady lads. The wind is with us.",
+        "Keep those sails trimmed — we need every knot of speed.",
+        "The Galleon's been spotted two leagues south-south-east.",
+        "Hands to your stations. No slacking."
+      ]
+    },
+
+    {
+      "id": "branch_1",
+      "type": "BRANCH",
+      "evaluate": "frantic_1",
+      "threshold": 0.55,
+      "win": {
+        "narrator_lines": [
+          "Excellent seamanship! We've closed the distance. The Galleon is in sight!",
+          "Prepare for engagement. Run out the guns and ready the crew."
+        ],
+        "next_phase": "frantic_2_W"
+      },
+      "lose": {
+        "narrator_lines": [
+          "Too slow! The Galleon is pulling ahead. She knows we're coming.",
+          "We need to sail harder, or we'll lose her in the island chain!"
+        ],
+        "next_phase": "frantic_2_L"
+      }
+    },
+
+    {
+      "id": "frantic_2_W",
+      "type": "FRANTIC",
+      "duration_sec": 270,
+      "difficulty": {
+        "commands_per_min": { "start": 5, "end": 8 },
+        "coop_ratio": 0.30,
+        "crisis_chance_per_30s": 0.20,
+        "timeout_multiplier": 1.1
+      },
+      "pools": ["direct", "cooperative"],
+      "crises": ["crisis_broadside", "crisis_storm_surge", "crisis_fire_below"],
+      "narrator_lines_ambient": [
+        "The Galleon is turning to fight! Battle with the Spaniards!",
+        "Cannons ready! Wait for the order!",
+        "She's flying the red flag — no quarter! Stand firm!",
+        "Close the distance — I want to see the whites of their eyes!"
+      ]
+    },
+
+    {
+      "id": "frantic_2_L",
+      "type": "FRANTIC",
+      "duration_sec": 250,
+      "difficulty": {
+        "commands_per_min": { "start": 5, "end": 7 },
+        "coop_ratio": 0.35,
+        "crisis_chance_per_30s": 0.25,
+        "timeout_multiplier": 1.0
+      },
+      "pools": ["direct", "cooperative"],
+      "crises": ["crisis_broadside", "crisis_storm_surge", "crisis_fire_below", "crisis_rigging_snap"],
+      "narrator_lines_ambient": [
+        "She's getting away! More sail! MORE SAIL!",
+        "A squall is building to the west — this complicates things.",
+        "The crew is tiring — keep their spirits up!",
+        "We cannot let her reach the open sea! Push through!"
+      ]
+    },
+
+    {
+      "id": "branch_2",
+      "type": "BRANCH",
+      "evaluate": "current",
+      "threshold": 0.55,
+      "condition_per_path": {
+        "W": {
+          "win": {
+            "narrator_lines": [
+              "The broadside struck true! The Galleon's mainmast is falling!",
+              "She's crippled! Close in for the final engagement — board her!"
+            ],
+            "next_phase": "frantic_3_WW"
+          },
+          "lose": {
+            "narrator_lines": [
+              "The pirates returned fire with a vengeance. Our rigging is shredded!",
+              "We're limping, but they're wounded too. One last chance — press the attack!"
+            ],
+            "next_phase": "frantic_3_WL"
+          }
+        },
+        "L": {
+          "win": {
+            "narrator_lines": [
+              "She tried to flee through the strait, but we cut her off!",
+              "The Galleon is trapped! All guns — prepare to fire!"
+            ],
+            "next_phase": "frantic_3_LW"
+          },
+          "lose": {
+            "narrator_lines": [
+              "She's almost at the open sea. We have one shot at this.",
+              "Everything you have! Ram her if you must! England expects!"
+            ],
+            "next_phase": "frantic_3_LL"
+          }
+        }
+      }
+    },
+
+    {
+      "id": "frantic_3_WW",
+      "type": "FRANTIC",
+      "duration_sec": 270,
+      "difficulty": {
+        "commands_per_min": { "start": 8, "end": 12 },
+        "coop_ratio": 0.40,
+        "crisis_chance_per_30s": 0.30,
+        "timeout_multiplier": 0.95
+      },
+      "pools": ["direct", "cooperative"],
+      "crises": ["crisis_broadside", "crisis_storm_surge", "crisis_fire_below", "crisis_rigging_snap"],
+      "narrator_lines_ambient": [
+        "Grappling hooks away! Boarding parties forward!",
+        "The pirates are fighting like cornered rats!",
+        "Hold the deck! Push them back!",
+        "Their captain is on the quarterdeck — take him alive!"
+      ]
+    },
+
+    {
+      "id": "frantic_3_WL",
+      "type": "FRANTIC",
+      "duration_sec": 250,
+      "difficulty": {
+        "commands_per_min": { "start": 7, "end": 11 },
+        "coop_ratio": 0.45,
+        "crisis_chance_per_30s": 0.35,
+        "timeout_multiplier": 0.90
+      },
+      "pools": ["direct", "cooperative"],
+      "crises": ["crisis_broadside", "crisis_storm_surge", "crisis_fire_below", "crisis_rigging_snap"],
+      "narrator_lines_ambient": [
+        "Both ships are battered — this is anyone's fight!",
+        "Keep firing! Don't let them regroup!",
+        "The wind is shifting — use it!",
+        "One more broadside and she'll strike her colours!"
+      ]
+    },
+
+    {
+      "id": "frantic_3_LW",
+      "type": "FRANTIC",
+      "duration_sec": 250,
+      "difficulty": {
+        "commands_per_min": { "start": 7, "end": 11 },
+        "coop_ratio": 0.45,
+        "crisis_chance_per_30s": 0.30,
+        "timeout_multiplier": 0.95
+      },
+      "pools": ["direct", "cooperative"],
+      "crises": ["crisis_broadside", "crisis_storm_surge", "crisis_fire_below", "crisis_rigging_snap"],
+      "narrator_lines_ambient": [
+        "We've got her cornered! Don't let up now!",
+        "She's trying to slip past — block the channel!",
+        "Fire at will! Aim for the waterline!",
+        "The pirates are panicking — keep the pressure on!"
+      ]
+    },
+
+    {
+      "id": "frantic_3_LL",
+      "type": "FRANTIC",
+      "duration_sec": 240,
+      "difficulty": {
+        "commands_per_min": { "start": 6, "end": 10 },
+        "coop_ratio": 0.50,
+        "crisis_chance_per_30s": 0.40,
+        "timeout_multiplier": 0.85
+      },
+      "pools": ["direct", "cooperative"],
+      "crises": ["crisis_broadside", "crisis_storm_surge", "crisis_fire_below", "crisis_rigging_snap"],
+      "narrator_lines_ambient": [
+        "This is our last chance! She must not escape!",
+        "The ship is falling apart around us — hold together!",
+        "Everything we have — FIRE!",
+        "For King and Country! Do not let her go!"
+      ]
+    },
+
+    {
+      "id": "branch_3",
+      "type": "BRANCH",
+      "evaluate": "current",
+      "threshold": 0.55
+    }
+  ],
+
+  "outcomes": {
+    "metrics_weights": {
+      "direct_rate":  0.30,
+      "coop_rate":    0.30,
+      "timeout_rate": 0.20,
+      "crisis_rate":  0.20
+    },
+    "disaster": {
+      "tier": "DISASTER",
+      "narrator_lines": [
+        "The powder magazine has been struck. A deafening explosion tears through the ship.",
+        "His Majesty's vessel breaks apart. The sea claims her and all aboard.",
+        "The Sangre Carmesí sails on. England mourns."
+      ]
+    },
+    "endings": {
+      "WWW": {
+        "tier": "TRIUMPH",
+        "narrator_lines": [
+          "The Crimson Galleon strikes her colours! The pirate captain surrenders his sword.",
+          "A King's fortune in stolen gold is recovered from her hold.",
+          "Textbook naval engagement. The Admiralty will name this one for the history books.",
+          "God save the King. Well fought, every man of you."
+        ]
+      },
+      "WWL": {
+        "tier": "SUCCESS",
+        "narrator_lines": [
+          "After a brutal final exchange, the Galleon is captured — but at heavy cost.",
+          "She nearly slipped away in that last engagement. But the prize is ours.",
+          "The crew will need shore leave after this one. Well done, lads."
+        ]
+      },
+      "WLW": {
+        "tier": "SUCCESS",
+        "narrator_lines": [
+          "A rough middle passage, but you found your sea legs when it mattered.",
+          "The Galleon is taken. Her crew is in irons below decks.",
+          "Lost some good timber in the process, but the mission is accomplished. Good recovery."
+        ]
+      },
+      "WLL": {
+        "tier": "SURVIVE",
+        "sub_analysis": true,
+        "narrator_lines": [
+          "The Galleon escapes into open water, but we've wounded her badly.",
+          "She won't be raiding convoys for months. A partial victory at best.",
+          "That started so promising. What went wrong, gentlemen?"
+        ]
+      },
+      "LWW": {
+        "tier": "SUCCESS",
+        "narrator_lines": [
+          "What a pursuit! A terrible start — but the crew rallied magnificently.",
+          "The pirates are captured and their vessel seized as a prize.",
+          "From the jaws of failure, you snatched victory. The Admiralty is impressed."
+        ]
+      },
+      "LWL": {
+        "tier": "SURVIVE",
+        "sub_analysis": true,
+        "narrator_lines": [
+          "Both ships limp into port. The Galleon is too damaged to flee, but we're no better.",
+          "The pirates are captured, but barely. A pyrrhic victory.",
+          "Inconsistency nearly cost us everything today."
+        ]
+      },
+      "LLW": {
+        "tier": "SURVIVE",
+        "narrator_lines": [
+          "A miracle at the last. One desperate broadside brought down her colours.",
+          "The ship is barely afloat. Half the crew is wounded. But the Galleon is ours.",
+          "Do not count on Divine Providence twice, gentlemen."
+        ]
+      },
+      "LLL": {
+        "tier": "FAILURE",
+        "sub_analysis": true,
+        "narrator_lines": [
+          "The Sangre Carmesí disappears beyond the horizon. Gone.",
+          "His Majesty's ship limps home in disgrace. The Admiralty will not be pleased.",
+          "Six months of piracy will continue. The convoys will burn. You have failed."
+        ]
+      }
+    }
+  },
+
+  "narrator": {
+    "voice": "royal_navy_captain",
+    "tts_engine": "local",
+    "between_commands_lines": [
+      "Look lively, lads!",
+      "Time and tide wait for no man!",
+      "Hands to your stations!",
+      "The Galleon draws closer!",
+      "Move! Move! Move!",
+      "That's an order from the Captain!",
+      "Smartly now — no dawdling!",
+      "England expects every man to do his duty!"
+    ]
+  }
+}

@@ -1,0 +1,520 @@
+{
+  "schema_version": "1.0",
+  "meta": {
+    "id": "VAULT_JOB_01",
+    "title": "The Vault Job",
+    "pack": "DUOS_COLLECTION",
+    "theme": "heist",
+    "subject": "teamwork",
+    "age_rating": "8+",
+    "difficulty": "medium",
+    "player_count": { "min": 1, "max": 2 },
+    "duration_sec": { "min": 570, "max": 630 },
+    "adaptive_pacing": true,
+    "version": "1.0.0",
+    "author": "mission_architect",
+    "design_note": "Designed for 1-2 player sessions. Hub draws only from connected archetypes at runtime. Full 8-archetype pools included for any-tablet compatibility."
+  },
+
+  "roles": {
+    "NAVIGATOR":  "Wheelman",
+    "ENGINEER":   "Safecracker",
+    "OPERATOR":   "Comms",
+    "SENTINEL":   "Muscle",
+    "MEDIC":      "Disguise",
+    "ANALYST":    "Hacker",
+    "SCOUT":      "Recon",
+    "COMMANDER":  "Mastermind"
+  },
+
+  "oled_labels": {
+    "NAVIGATOR": ["Getaway Car",    "Throttle",        "Left Turn",       "Right Turn",      "Hit the Gas"],
+    "ENGINEER":  ["Drill Press",    "Pop the Lock",    "Cut Red Wire",    "Cut Blue Wire",   "Torch Bars"],
+    "OPERATOR":  ["Police Band",    "Jammer On",       "Spoof Signal",    "Squelch Radio",   "Burst Xmit"],
+    "SENTINEL":  ["Keycard Copy",   "Guard Shift",     "Fire Escape",     "Stairwell",       "Flash Bang"],
+    "MEDIC":     ["Face Paint",     "Voice Changer",   "Fake Badge",      "Check Mirror",    "Quick Change"],
+    "ANALYST":   ["Hack Cipher",    "Firewall Brk",    "Loop Camera",     "Spoof Badge",     "Wipe Logs"],
+    "SCOUT":     ["Laser Grid",     "Vent Hatch",      "East Wing",       "West Wing",       "Roof Access"],
+    "COMMANDER": ["Master Plan",    "Confirm Go",      "Abort Code",      "All Clear",       "Evac Signal"]
+  },
+
+  "command_pools": {
+    "direct": [
+      { "id": "nav_left_alley",    "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Left into the alley!",                   "narrator_line": "Wheelman! Left into the alley — cops on the main road!",    "value": {"x":-80,"y":0},  "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
+      { "id": "nav_right_bridge",  "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Right — over the bridge!",                "narrator_line": "Right! Over the bridge — lose them in the district!",       "value": {"x":80,"y":0},   "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
+      { "id": "nav_floor_it",      "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Floor it — straight ahead!",              "narrator_line": "Floor it! Straight ahead — punch through!",                 "value": {"x":0,"y":80},   "tolerance": {"x":20,"y":15}, "timeout_ms": 8000 },
+      { "id": "nav_reverse",       "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "REVERSE! Spin and go!",                   "narrator_line": "Reverse! J-turn — spin it and GO!",                         "value": {"x":0,"y":-80},  "tolerance": {"x":20,"y":15}, "timeout_ms": 8000 },
+      { "id": "nav_throttle_max",  "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": 2, "tier": "T2", "label": "Full throttle!",                          "narrator_line": "Wheelman! Full throttle — we need speed!",                  "value": 100,  "tolerance": 10,                         "timeout_ms": 5000 },
+      { "id": "nav_throttle_half", "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": 2, "tier": "T2", "label": "Ease off — half speed!",                  "narrator_line": "Half speed — blend in with traffic!",                       "value": 50,   "tolerance": 10,                         "timeout_ms": 5000 },
+      { "id": "nav_throttle_idle", "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": 2, "tier": "T2", "label": "Cut speed — coast!",                      "narrator_line": "Coast! Engine down — we're drawing attention!",              "value": 0,    "tolerance": 10,                         "timeout_ms": 5000 },
+      { "id": "nav_left_on",       "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Signal left — change lanes!",             "narrator_line": "Signal left! Change lanes now!",                            "value": true,                                            "timeout_ms": 3000 },
+      { "id": "nav_left_off",      "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Cancel left turn!",                       "narrator_line": "Cancel that! Straight — straight!",                         "value": false,                                           "timeout_ms": 3000 },
+      { "id": "nav_right_on",      "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Signal right — NOW!",                     "narrator_line": "Right turn signal! Take the ramp!",                         "value": true,                                            "timeout_ms": 3000 },
+      { "id": "nav_right_off",     "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Cancel right!",                           "narrator_line": "Abort the turn! Stay on the highway!",                      "value": false,                                           "timeout_ms": 3000 },
+      { "id": "nav_gas",           "target_arch": "NAVIGATOR", "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "HIT THE GAS!",                            "narrator_line": "Hit the gas! GO GO GO!",                                    "value": null,                                            "timeout_ms": 3000 },
+
+      { "id": "eng_drill_max",     "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Drill to maximum RPM!",                   "narrator_line": "Safecracker! Max drill — bore through that plate!",         "value": 100, "tolerance": 10,                      "timeout_ms": 5000 },
+      { "id": "eng_drill_half",    "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Drill to half — easy!",                   "narrator_line": "Half RPM — easy now, you'll snap the bit!",                 "value": 50,  "tolerance": 10,                      "timeout_ms": 5000 },
+      { "id": "eng_drill_low",     "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Low RPM — precision!",                    "narrator_line": "Low drill — precision work on the tumbler!",                "value": 20,  "tolerance": 10,                      "timeout_ms": 5000 },
+      { "id": "eng_drill_off",     "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Kill the drill!",                         "narrator_line": "Kill the drill — guard's coming past!",                     "value": 0,   "tolerance": 10,                      "timeout_ms": 5000 },
+      { "id": "eng_pick",          "target_arch": "ENGINEER",  "action": "PRESS_BUTTON", "slot": 2, "tier": "T1", "label": "Pop the lock!",                           "narrator_line": "Safecracker! Pop that lock — we need in!",                  "value": null,                                      "timeout_ms": 3000 },
+      { "id": "eng_red_wire",      "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "CUT the red wire!",                       "narrator_line": "Cut the red wire! Disarm the alarm!",                       "value": true,                                      "timeout_ms": 3000 },
+      { "id": "eng_blue_wire",     "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "CUT the blue wire!",                      "narrator_line": "Blue wire! Cut the blue one — NOT the red!",                "value": true,                                      "timeout_ms": 3000 },
+      { "id": "eng_torch",         "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 5, "tier": "T1", "label": "Torch through the bars!",                 "narrator_line": "Torch the bars! Burn through — we need access!",            "value": true,                                      "timeout_ms": 3000 },
+
+      { "id": "op_freq_142",       "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Police band: frequency 142!",             "narrator_line": "Comms! Tune to one-four-two — police dispatch!",            "value": 142,                                       "timeout_ms": 6000 },
+      { "id": "op_freq_88",        "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Our channel: frequency 88!",              "narrator_line": "Back to our channel — eighty-eight! Check in!",             "value": 88,                                        "timeout_ms": 6000 },
+      { "id": "op_freq_200",       "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Security band: freq 200!",                "narrator_line": "Frequency two hundred — that's the vault's security!",      "value": 200,                                       "timeout_ms": 6000 },
+      { "id": "op_freq_50",        "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Backup channel: freq 50!",                "narrator_line": "Switch to backup — frequency fifty! Primary's compromised!","value": 50,                                        "timeout_ms": 6000 },
+      { "id": "op_jammer_on",      "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Jammer ON — kill comms!",                 "narrator_line": "Jammer on! Kill their communications!",                     "value": true,                                      "timeout_ms": 3000 },
+      { "id": "op_jammer_off",     "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Jammer OFF — we need ears!",              "narrator_line": "Jammer off! We need to hear what they're saying!",          "value": false,                                     "timeout_ms": 3000 },
+      { "id": "op_spoof_on",       "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Spoof the GPS signal!",                   "narrator_line": "Spoof their GPS — send them the wrong way!",                "value": true,                                      "timeout_ms": 3000 },
+      { "id": "op_spoof_off",      "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Kill the GPS spoof!",                     "narrator_line": "Kill the spoof — they're triangulating us!",                "value": false,                                     "timeout_ms": 3000 },
+      { "id": "op_squelch",        "target_arch": "OPERATOR",  "action": "PRESS_BUTTON", "slot": 4, "tier": "T1", "label": "Squelch the feedback!",                   "narrator_line": "Squelch that noise — I can't hear the scanner!",            "value": null,                                      "timeout_ms": 3000 },
+      { "id": "op_burst",          "target_arch": "OPERATOR",  "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Burst transmit — NOW!",                   "narrator_line": "Burst transmit! Compressed — send it NOW!",                 "value": null,                                      "timeout_ms": 3000 },
+
+      { "id": "sent_keycard",      "target_arch": "SENTINEL",  "action": "SCAN_NFC",     "slot": 1, "tier": "T3", "label": "Swipe the KEYCARD!",                      "narrator_line": "Muscle! Swipe the cloned keycard — open the door!",         "value": "KEYCARD_ALPHA",                            "timeout_ms": 10000 },
+      { "id": "sent_badge",        "target_arch": "SENTINEL",  "action": "SCAN_NFC",     "slot": 1, "tier": "T3", "label": "Scan the GUARD BADGE!",                   "narrator_line": "The guard's badge! Scan it — override the elevator!",       "value": "GUARD_BADGE",                              "timeout_ms": 10000 },
+      { "id": "sent_shift_day",    "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": 2, "tier": "T2", "label": "Guard shift: DAY!",                       "narrator_line": "Set the guard rotation to day shift — confuse them!",       "value": 1,                                         "timeout_ms": 5000 },
+      { "id": "sent_shift_night",  "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": 2, "tier": "T2", "label": "Guard shift: NIGHT!",                     "narrator_line": "Night shift — position two! Fewer guards on patrol!",       "value": 2,                                         "timeout_ms": 5000 },
+      { "id": "sent_shift_lockdn", "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": 2, "tier": "T2", "label": "Shift: LOCKDOWN mode!",                   "narrator_line": "Lockdown mode — position three! Buy us time!",              "value": 3,                                         "timeout_ms": 5000 },
+      { "id": "sent_fire_esc_on",  "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Open fire escape!",                       "narrator_line": "Fire escape — pop the door! Secondary exit!",               "value": true,                                      "timeout_ms": 3000 },
+      { "id": "sent_fire_esc_off", "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Seal fire escape!",                       "narrator_line": "Seal the fire escape — block their route!",                 "value": false,                                     "timeout_ms": 3000 },
+      { "id": "sent_stairs_on",    "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Open the stairwell!",                     "narrator_line": "Stairwell door — open it! We're going up!",                 "value": true,                                      "timeout_ms": 3000 },
+      { "id": "sent_stairs_off",   "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Lock the stairwell!",                     "narrator_line": "Lock the stairwell! Trap them below!",                      "value": false,                                     "timeout_ms": 3000 },
+      { "id": "sent_flash",        "target_arch": "SENTINEL",  "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "FLASHBANG!",                              "narrator_line": "Flashbang! Eyes closed — POP!",                             "value": null,                                      "timeout_ms": 3000 },
+
+      { "id": "med_guard_face",    "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": 1, "tier": "T3", "label": "Match GUARD uniform tan!",                "narrator_line": "Disguise! Match the guard uniform — tan!",                  "value": [200,170,80], "tolerance": 30,              "timeout_ms": 8000 },
+      { "id": "med_janitor_blue",  "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": 1, "tier": "T3", "label": "Match JANITOR blue!",                     "narrator_line": "Janitor uniform — blue! Quick, someone's coming!",          "value": [0,80,200],   "tolerance": 30,              "timeout_ms": 8000 },
+      { "id": "med_exec_black",    "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": 1, "tier": "T3", "label": "Executive suit — BLACK!",                 "narrator_line": "Executive disguise — black suit! Walk like you own it!",    "value": [30,30,30],   "tolerance": 30,              "timeout_ms": 8000 },
+      { "id": "med_voice_deep",    "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": 2, "tier": "T2", "label": "Voice changer to 150!",                   "narrator_line": "Voice modulator to one-fifty — sound like the manager!",    "value": 150,                                       "timeout_ms": 6000 },
+      { "id": "med_voice_mid",     "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": 2, "tier": "T2", "label": "Voice to 80 — natural!",                  "narrator_line": "Eighty — keep it natural. Don't oversell it!",              "value": 80,                                        "timeout_ms": 6000 },
+      { "id": "med_voice_high",    "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": 2, "tier": "T2", "label": "Voice to 250 — dispatch!",                "narrator_line": "Two-fifty! Sound like dispatch — authoritative!",           "value": 250,                                       "timeout_ms": 6000 },
+      { "id": "med_badge_on",      "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Flash the fake badge!",                   "narrator_line": "Flash the badge! Don't let them look too close!",           "value": true,                                      "timeout_ms": 3000 },
+      { "id": "med_badge_off",     "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Hide the badge!",                         "narrator_line": "Stash the badge — wrong department for this floor!",        "value": false,                                     "timeout_ms": 3000 },
+      { "id": "med_mirror",        "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": 4, "tier": "T1", "label": "Check the mirror!",                       "narrator_line": "Mirror check! Make sure the disguise holds!",               "value": null,                                      "timeout_ms": 3000 },
+      { "id": "med_quickchange",   "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Quick change — NOW!",                     "narrator_line": "Quick change! New look — thirty seconds!",                  "value": null,                                      "timeout_ms": 3000 },
+
+      { "id": "ana_code_4927",     "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": 1, "tier": "T3", "label": "Hack code: 4-9-2-7!",                     "narrator_line": "Hacker! Code four-nine-two-seven — bypass the firewall!",   "value": "4927",                                    "timeout_ms": 8000 },
+      { "id": "ana_code_813",      "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": 1, "tier": "T3", "label": "Override code: 8-1-3!",                   "narrator_line": "Override eight-one-three — kill the motion sensors!",       "value": "813",                                     "timeout_ms": 7000 },
+      { "id": "ana_code_360",      "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": 1, "tier": "T3", "label": "Access code: 3-6-0!",                     "narrator_line": "Three-six-zero — the vault access code! Punch it in!",      "value": "360",                                     "timeout_ms": 7000 },
+      { "id": "ana_firewall_120",  "target_arch": "ANALYST",   "action": "MATCH_WAVE",   "slot": 2, "tier": "T2", "label": "Firewall bypass to 120!",                 "narrator_line": "Firewall frequency one-twenty — match it to slip through!", "value": 120, "tolerance": 15,                      "timeout_ms": 6000 },
+      { "id": "ana_firewall_200",  "target_arch": "ANALYST",   "action": "MATCH_WAVE",   "slot": 2, "tier": "T2", "label": "Firewall at 200 — push!",                 "narrator_line": "Two hundred — the second firewall! Match and breach!",      "value": 200, "tolerance": 15,                      "timeout_ms": 6000 },
+      { "id": "ana_firewall_60",   "target_arch": "ANALYST",   "action": "MATCH_WAVE",   "slot": 2, "tier": "T2", "label": "Firewall 60 — sneak in!",                 "narrator_line": "Sixty — low-band entry point! Sneak through!",              "value": 60,  "tolerance": 15,                      "timeout_ms": 6000 },
+      { "id": "ana_camera_on",     "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Loop the camera feed!",                   "narrator_line": "Loop the cameras — show them yesterday's footage!",         "value": true,                                      "timeout_ms": 3000 },
+      { "id": "ana_camera_off",    "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Restore cameras!",                        "narrator_line": "Restore the feed — they're checking for glitches!",         "value": false,                                     "timeout_ms": 3000 },
+      { "id": "ana_badge_on",      "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Spoof the badge system!",                 "narrator_line": "Spoof the badge readers — all badges valid!",               "value": true,                                      "timeout_ms": 3000 },
+      { "id": "ana_wipe",          "target_arch": "ANALYST",   "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Wipe the access logs!",                   "narrator_line": "Wipe the logs! We were never here!",                        "value": null,                                      "timeout_ms": 3000 },
+
+      { "id": "sco_laser_140",     "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "tier": "T2", "label": "Laser grid gap at 140!",                  "narrator_line": "Recon! Laser grid gap at one-forty — thread through!",      "value": 140, "tolerance": 15,                      "timeout_ms": 6000 },
+      { "id": "sco_laser_220",     "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "tier": "T2", "label": "Laser gap at 220!",                       "narrator_line": "Two-twenty — second gap opening! Go NOW!",                  "value": 220, "tolerance": 15,                      "timeout_ms": 6000 },
+      { "id": "sco_laser_60",      "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "tier": "T2", "label": "Gap at 60 — low crawl!",                  "narrator_line": "Sixty — low gap! Crawl through — belly on the floor!",     "value": 60,  "tolerance": 15,                      "timeout_ms": 6000 },
+      { "id": "sco_vent_on",       "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Open the vent hatch!",                    "narrator_line": "Recon! Pop the vent hatch — go through the ceiling!",       "value": true,                                      "timeout_ms": 3000 },
+      { "id": "sco_vent_off",      "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Close the vent!",                         "narrator_line": "Close the vent — hide the trail!",                          "value": false,                                     "timeout_ms": 3000 },
+      { "id": "sco_east",          "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Eyes on east wing!",                      "narrator_line": "East wing — guard patrol coming! Report!",                  "value": true,                                      "timeout_ms": 3000 },
+      { "id": "sco_west",          "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Check west wing!",                        "narrator_line": "West wing clear? Check it — we need that corridor!",        "value": true,                                      "timeout_ms": 3000 },
+      { "id": "sco_roof",          "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 5, "tier": "T1", "label": "Roof access — check it!",                 "narrator_line": "Roof access — is the helicopter pad clear?",                "value": true,                                      "timeout_ms": 3000 },
+
+      { "id": "cmd_infiltrate",    "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Plan: INFILTRATE!",                       "narrator_line": "Mastermind! Set plan to infiltrate — position one!",        "value": 1,                                         "timeout_ms": 5000 },
+      { "id": "cmd_extract",       "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Plan: EXTRACT!",                          "narrator_line": "Switch to extraction — position two! We have the goods!",  "value": 2,                                         "timeout_ms": 5000 },
+      { "id": "cmd_diversion",     "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Plan: DIVERSION!",                        "narrator_line": "Diversion protocol! Position three — create chaos!",        "value": 3,                                         "timeout_ms": 5000 },
+      { "id": "cmd_abort",         "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Plan: ABORT!",                            "narrator_line": "ABORT! Position four — everyone out NOW!",                 "value": 4,                                         "timeout_ms": 5000 },
+      { "id": "cmd_go",            "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": 2, "tier": "T1", "label": "Confirm — GO!",                           "narrator_line": "That's a GO! Execute the plan!",                           "value": null,                                      "timeout_ms": 3000 },
+      { "id": "cmd_abort_code",    "target_arch": "COMMANDER", "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Send the abort code!",                    "narrator_line": "Abort code! Transmit it — pull everyone out!",              "value": true,                                      "timeout_ms": 3000 },
+      { "id": "cmd_allclear",      "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": 4, "tier": "T1", "label": "All clear signal!",                       "narrator_line": "All clear! Send the signal — green light!",                 "value": null,                                      "timeout_ms": 3000 },
+      { "id": "cmd_evac",          "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "EVACUATE!",                               "narrator_line": "Evac signal! Get to the getaway — NOW!",                   "value": null,                                      "timeout_ms": 3000 }
+    ],
+
+    "cooperative": [
+      { "id": "coop_cmd_tell_nav_floor",   "display_on": "COMMANDER", "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Tell Wheels: floor it!",               "narrator_line": "Mastermind! Tell the Wheelman — floor it!",                 "value": {"x":0,"y":80}, "tolerance": {"x":20,"y":15},  "timeout_ms": 12000 },
+      { "id": "coop_eng_tell_nav_max",     "display_on": "ENGINEER",  "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": 2, "tier": "T2", "label": "Tell Wheels: full throttle!",          "narrator_line": "Safecracker! Shout to Wheels — full throttle!",             "value": 100, "tolerance": 10,                           "timeout_ms": 10000 },
+      { "id": "coop_ana_tell_eng_max",     "display_on": "ANALYST",   "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Tell Safe: drill to max!",             "narrator_line": "Hacker! Tell the Safecracker — max RPM on the drill!",     "value": 100, "tolerance": 10,                           "timeout_ms": 10000 },
+      { "id": "coop_cmd_tell_eng_half",    "display_on": "COMMANDER", "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Tell Safe: half drill!",              "narrator_line": "Mastermind! Tell the Safecracker — ease the drill!",        "value": 50,  "tolerance": 10,                           "timeout_ms": 10000 },
+      { "id": "coop_nav_tell_op_142",      "display_on": "NAVIGATOR", "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Tell Comms: freq 142!",               "narrator_line": "Wheelman! Tell Comms — one-four-two!",                      "value": 142,                                            "timeout_ms": 10000 },
+      { "id": "coop_sco_tell_op_88",       "display_on": "SCOUT",     "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Tell Comms: our channel 88!",          "narrator_line": "Recon! Tell Comms — back to eighty-eight!",                 "value": 88,                                             "timeout_ms": 10000 },
+      { "id": "coop_op_tell_sent_flash",   "display_on": "OPERATOR",  "target_arch": "SENTINEL",  "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Tell Muscle: flashbang!",              "narrator_line": "Comms! Tell the Muscle — flashbang NOW!",                   "value": null,                                           "timeout_ms": 6000 },
+      { "id": "coop_med_tell_sent_night",  "display_on": "MEDIC",     "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": 2, "tier": "T2", "label": "Tell Muscle: night shift!",            "narrator_line": "Disguise! Tell the Muscle — switch to night shift!",        "value": 2,                                              "timeout_ms": 8000 },
+      { "id": "coop_eng_tell_med_badge",   "display_on": "ENGINEER",  "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Tell Disguise: flash badge!",          "narrator_line": "Safecracker! Tell Disguise — flash the badge!",             "value": true,                                           "timeout_ms": 6000 },
+      { "id": "coop_sent_tell_med_change", "display_on": "SENTINEL",  "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Tell Disguise: quick change!",         "narrator_line": "Muscle! Tell Disguise — quick change, NOW!",                "value": null,                                           "timeout_ms": 6000 },
+      { "id": "coop_nav_tell_ana_4927",    "display_on": "NAVIGATOR", "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": 1, "tier": "T3", "label": "Tell Hacker: code 4-9-2-7!",           "narrator_line": "Wheelman! Tell the Hacker — four-nine-two-seven!",          "value": "4927",                                         "timeout_ms": 12000 },
+      { "id": "coop_sent_tell_ana_fw",     "display_on": "SENTINEL",  "target_arch": "ANALYST",   "action": "MATCH_WAVE",   "slot": 2, "tier": "T2", "label": "Tell Hacker: firewall 160!",           "narrator_line": "Muscle! Shout to the Hacker — firewall at one-sixty!",      "value": 160, "tolerance": 15,                           "timeout_ms": 10000 },
+      { "id": "coop_ana_tell_sco_140",     "display_on": "ANALYST",   "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "tier": "T2", "label": "Tell Recon: laser gap 140!",           "narrator_line": "Hacker! Tell Recon — laser gap at one-forty!",              "value": 140, "tolerance": 15,                           "timeout_ms": 10000 },
+      { "id": "coop_op_tell_sco_vent",     "display_on": "OPERATOR",  "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Tell Recon: open the vent!",           "narrator_line": "Comms! Tell Recon — pop the vent hatch!",                   "value": true,                                           "timeout_ms": 6000 },
+      { "id": "coop_sco_tell_cmd_extract", "display_on": "SCOUT",     "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Tell Boss: switch to extract!",        "narrator_line": "Recon! Tell the Mastermind — extraction protocol!",         "value": 2,                                              "timeout_ms": 8000 },
+      { "id": "coop_med_tell_cmd_go",      "display_on": "MEDIC",     "target_arch": "COMMANDER", "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Tell Boss: send abort code!",          "narrator_line": "Disguise! Shout to the Mastermind — abort code!",           "value": true,                                           "timeout_ms": 6000 }
+    ]
+  },
+
+  "crises": [
+    {
+      "id": "crisis_alarm_tripped",
+      "type": "MUSHROOM_ALL",
+      "label": "ALARM TRIPPED!",
+      "narrator_line": "THE ALARM! Everyone — hit your override! SHUT IT DOWN!",
+      "required_count": "all",
+      "timeout_ms": 5000,
+      "penalty": "health_major"
+    },
+    {
+      "id": "crisis_guard_patrol",
+      "type": "MUSHROOM_THRESHOLD",
+      "label": "GUARD PATROL!",
+      "narrator_line": "GUARDS COMING! Everyone freeze — hit your panic button!",
+      "required_count": 2,
+      "timeout_ms": 6000,
+      "penalty": "health_minor"
+    },
+    {
+      "id": "crisis_power_surge",
+      "type": "MULTI_ACTION",
+      "label": "POWER SURGE!",
+      "narrator_line": "POWER SURGE! Hacker — loop cameras! Recon — check the grid!",
+      "actions": [
+        { "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": 3, "value": true },
+        { "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "value": 140, "tolerance": 15 },
+        { "rest": "MUSHROOM" }
+      ],
+      "timeout_ms": 7000,
+      "penalty": "health_major"
+    },
+    {
+      "id": "crisis_vault_lockout",
+      "type": "MULTI_ACTION",
+      "label": "VAULT LOCKOUT!",
+      "narrator_line": "VAULT LOCKOUT! Safecracker — drill! Comms — jam the signal!",
+      "actions": [
+        { "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "value": 100, "tolerance": 10 },
+        { "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 2, "value": true },
+        { "rest": "MUSHROOM" }
+      ],
+      "timeout_ms": 7000,
+      "penalty": "health_minor"
+    }
+  ],
+
+  "phases": [
+    {
+      "id": "intro",
+      "type": "NARRATION",
+      "duration_sec": 40,
+      "narrator_lines": [
+        "Eleven thirty PM. The Grand Continental Vault.",
+        "Thirty-seven floors of security. One chance.",
+        "The guards change shift in ten minutes. After that, every sensor goes active.",
+        "You know the plan. Get in. Get to the vault. Get the package. Get out.",
+        "Clock's ticking. Let's go."
+      ]
+    },
+
+    {
+      "id": "frantic_1",
+      "type": "FRANTIC",
+      "duration_sec": 160,
+      "difficulty": {
+        "commands_per_min": { "start": 2, "end": 4 },
+        "coop_ratio": 0.10,
+        "crisis_chance_per_30s": 0.10,
+        "timeout_multiplier": 1.3
+      },
+      "pools": ["direct", "cooperative"],
+      "crises": ["crisis_guard_patrol", "crisis_power_surge"],
+      "narrator_lines_ambient": [
+        "Through the lobby. Act natural.",
+        "Cameras on the left — don't look up.",
+        "Service elevator, end of the hall. Move.",
+        "Easy. Smooth. Just like we rehearsed."
+      ]
+    },
+
+    {
+      "id": "branch_1",
+      "type": "BRANCH",
+      "evaluate": "frantic_1",
+      "threshold": 0.55,
+      "win": {
+        "narrator_lines": [
+          "Clean entry. Nobody suspects a thing.",
+          "We're on the vault floor. Security hub is two doors down."
+        ],
+        "next_phase": "frantic_2_W"
+      },
+      "lose": {
+        "narrator_lines": [
+          "Sloppy. A guard spotted something. They're reviewing footage.",
+          "We still have a window, but it's shrinking. Service tunnels!"
+        ],
+        "next_phase": "frantic_2_L"
+      }
+    },
+
+    {
+      "id": "frantic_2_W",
+      "type": "FRANTIC",
+      "duration_sec": 180,
+      "difficulty": {
+        "commands_per_min": { "start": 3, "end": 6 },
+        "coop_ratio": 0.25,
+        "crisis_chance_per_30s": 0.15,
+        "timeout_multiplier": 1.1
+      },
+      "pools": ["direct", "cooperative"],
+      "crises": ["crisis_alarm_tripped", "crisis_guard_patrol", "crisis_vault_lockout"],
+      "narrator_lines_ambient": [
+        "The vault door. Sixteen-inch steel. Two combination locks.",
+        "Work the drill. Match the tumblers.",
+        "Guard on the floor above — stay quiet.",
+        "Almost through the first lock. Keep going."
+      ]
+    },
+
+    {
+      "id": "frantic_2_L",
+      "type": "FRANTIC",
+      "duration_sec": 170,
+      "difficulty": {
+        "commands_per_min": { "start": 3, "end": 5 },
+        "coop_ratio": 0.30,
+        "crisis_chance_per_30s": 0.20,
+        "timeout_multiplier": 1.0
+      },
+      "pools": ["direct", "cooperative"],
+      "crises": ["crisis_alarm_tripped", "crisis_guard_patrol", "crisis_vault_lockout", "crisis_power_surge"],
+      "narrator_lines_ambient": [
+        "Service tunnels. Dark. Tight. Watch for motion sensors.",
+        "Extra patrols — someone tipped security.",
+        "We have to move faster. The window is closing.",
+        "There — the vault access panel. Crack it open!"
+      ]
+    },
+
+    {
+      "id": "branch_2",
+      "type": "BRANCH",
+      "evaluate": "current",
+      "threshold": 0.55,
+      "condition_per_path": {
+        "W": {
+          "win": {
+            "narrator_lines": [
+              "The vault is open! Beautiful work.",
+              "Grab the package. Now the hard part — getting out alive."
+            ],
+            "next_phase": "frantic_3_WW"
+          },
+          "lose": {
+            "narrator_lines": [
+              "Partial breach — silent alarm triggered. They know we're here.",
+              "Package in hand but the building is locking down. Move! NOW!"
+            ],
+            "next_phase": "frantic_3_WL"
+          }
+        },
+        "L": {
+          "win": {
+            "narrator_lines": [
+              "Side entrance to the vault — the tunnels paid off!",
+              "Package secured. They're searching floor by floor. Time to vanish."
+            ],
+            "next_phase": "frantic_3_LW"
+          },
+          "lose": {
+            "narrator_lines": [
+              "Vault panel is scrambled — brute force it!",
+              "We're blown. Alarms in ninety seconds. Grab what you can!"
+            ],
+            "next_phase": "frantic_3_LL"
+          }
+        }
+      }
+    },
+
+    {
+      "id": "frantic_3_WW",
+      "type": "FRANTIC",
+      "duration_sec": 190,
+      "difficulty": {
+        "commands_per_min": { "start": 5, "end": 8 },
+        "coop_ratio": 0.35,
+        "crisis_chance_per_30s": 0.25,
+        "timeout_multiplier": 0.95
+      },
+      "pools": ["direct", "cooperative"],
+      "crises": ["crisis_alarm_tripped", "crisis_guard_patrol", "crisis_power_surge", "crisis_vault_lockout"],
+      "narrator_lines_ambient": [
+        "Extraction! Roof or ground floor — pick a route!",
+        "Stairwell clear — go go go!",
+        "Wheelman, start the engine. We're coming out hot.",
+        "Almost there — don't get cocky now!"
+      ]
+    },
+
+    {
+      "id": "frantic_3_WL",
+      "type": "FRANTIC",
+      "duration_sec": 180,
+      "difficulty": {
+        "commands_per_min": { "start": 4, "end": 7 },
+        "coop_ratio": 0.40,
+        "crisis_chance_per_30s": 0.30,
+        "timeout_multiplier": 0.90
+      },
+      "pools": ["direct", "cooperative"],
+      "crises": ["crisis_alarm_tripped", "crisis_guard_patrol", "crisis_power_surge", "crisis_vault_lockout"],
+      "narrator_lines_ambient": [
+        "Lockdown! Elevators frozen! Stairs only!",
+        "Guards on the east wing — cut through the offices!",
+        "Wheelman! Be ready — we're coming in hot!",
+        "Keep moving. Stop and you're caught."
+      ]
+    },
+
+    {
+      "id": "frantic_3_LW",
+      "type": "FRANTIC",
+      "duration_sec": 180,
+      "difficulty": {
+        "commands_per_min": { "start": 4, "end": 7 },
+        "coop_ratio": 0.40,
+        "crisis_chance_per_30s": 0.25,
+        "timeout_multiplier": 0.95
+      },
+      "pools": ["direct", "cooperative"],
+      "crises": ["crisis_alarm_tripped", "crisis_guard_patrol", "crisis_power_surge", "crisis_vault_lockout"],
+      "narrator_lines_ambient": [
+        "Back through the service tunnels — our best bet!",
+        "They're sweeping the corridors. Stay underground.",
+        "Loading dock exit — two hundred metres!",
+        "Almost out. Almost out. Don't stop."
+      ]
+    },
+
+    {
+      "id": "frantic_3_LL",
+      "type": "FRANTIC",
+      "duration_sec": 170,
+      "difficulty": {
+        "commands_per_min": { "start": 4, "end": 6 },
+        "coop_ratio": 0.45,
+        "crisis_chance_per_30s": 0.35,
+        "timeout_multiplier": 0.85
+      },
+      "pools": ["direct", "cooperative"],
+      "crises": ["crisis_alarm_tripped", "crisis_guard_patrol", "crisis_power_surge", "crisis_vault_lockout"],
+      "narrator_lines_ambient": [
+        "ALARMS EVERYWHERE! Full sprint!",
+        "Forget stealth — just RUN!",
+        "Wheelman! Engine NOW! We're coming through the lobby!",
+        "Sirens. Sixty seconds before the cops arrive."
+      ]
+    },
+
+    {
+      "id": "branch_3",
+      "type": "BRANCH",
+      "evaluate": "current",
+      "threshold": 0.55
+    }
+  ],
+
+  "outcomes": {
+    "metrics_weights": {
+      "direct_rate":  0.30,
+      "coop_rate":    0.30,
+      "timeout_rate": 0.20,
+      "crisis_rate":  0.20
+    },
+    "disaster": {
+      "tier": "DISASTER",
+      "narrator_lines": [
+        "The vault's failsafe triggers. Steel shutters seal every exit.",
+        "When the police arrive, they find no one. The Grand Continental's security holds.",
+        "The job was supposed to be foolproof. It wasn't."
+      ]
+    },
+    "endings": {
+      "WWW": {
+        "tier": "TRIUMPH",
+        "narrator_lines": [
+          "Clean getaway. The package is in the car.",
+          "You're on the highway before the first siren wails.",
+          "By morning, you're three states away. Not a camera caught your face.",
+          "The perfect job. Like it never happened."
+        ]
+      },
+      "WWL": {
+        "tier": "SUCCESS",
+        "narrator_lines": [
+          "Messy exit, but you made it. Package secure.",
+          "The car smells like smoke and adrenaline.",
+          "You're free, goods in hand, nobody's in cuffs. That's a win."
+        ]
+      },
+      "WLW": {
+        "tier": "SUCCESS",
+        "narrator_lines": [
+          "A rough middle act — but the exit was textbook.",
+          "The tunnels saved you. Package intact. Team intact.",
+          "Not the cleanest job. But it's done."
+        ]
+      },
+      "WLL": {
+        "tier": "SURVIVE",
+        "sub_analysis": true,
+        "narrator_lines": [
+          "You barely made it out. Package in hand but the city's looking.",
+          "Switch vehicles. Ditch the comms. Lay low for six months.",
+          "Sloppy work. But you're free."
+        ]
+      },
+      "LWW": {
+        "tier": "SUCCESS",
+        "narrator_lines": [
+          "Terrible start. Perfect recovery. The tunnels were the play.",
+          "Package secured. Team out clean on the second attempt.",
+          "The Mastermind is buying drinks tonight."
+        ]
+      },
+      "LWL": {
+        "tier": "SURVIVE",
+        "sub_analysis": true,
+        "narrator_lines": [
+          "Package secured. Also your face — on every camera in the building.",
+          "New identities. New city. Was it worth the heat?",
+          "Never again. Probably."
+        ]
+      },
+      "LLW": {
+        "tier": "SURVIVE",
+        "narrator_lines": [
+          "A miracle finish. By all rights you should be in cuffs.",
+          "Package secured by pure luck and a broken fire escape.",
+          "If you ever speak of this job, leave out the middle part."
+        ]
+      },
+      "LLL": {
+        "tier": "FAILURE",
+        "sub_analysis": true,
+        "narrator_lines": [
+          "Red and blue lights everywhere. Package dropped. Car blocked.",
+          "You scatter on foot. Some make it. The job doesn't.",
+          "The Grand Continental Vault remains unbreached."
+        ]
+      }
+    }
+  },
+
+  "narrator": {
+    "voice": "noir_heist_narrator",
+    "tts_engine": "local",
+    "between_commands_lines": [
+      "Focus. Clock's ticking.",
+      "Stay sharp.",
+      "Don't get sloppy now.",
+      "Move it.",
+      "Smooth and quick.",
+      "Eyes on the prize.",
+      "Keep your head down.",
+      "We're not done yet."
+    ]
+  }
+}

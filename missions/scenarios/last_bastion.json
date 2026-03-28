@@ -1,0 +1,520 @@
+{
+  "schema_version": "1.0",
+  "meta": {
+    "id": "LAST_BASTION_01",
+    "title": "The Last Bastion",
+    "pack": "MEDIEVAL_COLLECTION",
+    "theme": "medieval",
+    "subject": "teamwork",
+    "age_rating": "8+",
+    "difficulty": "medium",
+    "player_count": { "min": 3, "max": 8 },
+    "duration_sec": { "min": 840, "max": 900 },
+    "adaptive_pacing": true,
+    "version": "1.0.0",
+    "author": "mission_architect"
+  },
+
+  "roles": {
+    "NAVIGATOR":  "Gatekeeper",
+    "ENGINEER":   "Mason",
+    "OPERATOR":   "Herald",
+    "SENTINEL":   "Captain of Guard",
+    "MEDIC":      "Apothecary",
+    "ANALYST":    "Scribe",
+    "SCOUT":      "Watchman",
+    "COMMANDER":  "Castellan"
+  },
+
+  "oled_labels": {
+    "NAVIGATOR": ["Ballista Aim",  "Draw Chain",     "Outer Gate",     "Inner Gate",     "Fire Ballista"],
+    "ENGINEER":  ["Wall Brace",    "Pour Mortar",    "Scaffolding",    "Buttress",       "Stone Hoist"],
+    "OPERATOR":  ["Signal Horn",   "Battle Standard","War Drums",      "Sound Retreat",  "Rally Cry"],
+    "SENTINEL":  ["Armoury Key",   "Guard Post",     "Dungeon Lock",   "Sally Port",     "Raise Alarm"],
+    "MEDIC":     ["Herbal Remedy", "Tonic Dose",     "Water Ration",   "Bind Wounds",    "Smelling Salt"],
+    "ANALYST":   ["Cipher Wheel",  "Map Bearing",    "War Ledger",     "Spy Report",     "Seal Message"],
+    "SCOUT":     ["Tower Sweep",   "Fire Beacon",    "East Watch",     "West Watch",     "Arrow Slit"],
+    "COMMANDER": ["Castle Orders", "Confirm Order",  "Lord's Seal",    "Toll Bell",      "War Council"]
+  },
+
+  "command_pools": {
+    "direct": [
+
+      { "id": "nav_aim_left",      "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Ballista LEFT — west wall!",             "narrator_line": "Gatekeeper! Aim the ballista left — they're massing on the west wall!",     "value": {"x":-80,"y":0},  "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
+      { "id": "nav_aim_right",     "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Ballista RIGHT — east approach!",        "narrator_line": "Swing the ballista right — siege tower on the east approach!",               "value": {"x":80,"y":0},   "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
+      { "id": "nav_aim_high",      "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Elevation HIGH — the ridge!",            "narrator_line": "Gatekeeper! Elevation high — hit the archers on the ridge!",                 "value": {"x":0,"y":80},   "tolerance": {"x":20,"y":15}, "timeout_ms": 8000 },
+      { "id": "nav_aim_low",       "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Aim LOW — the battering ram!",           "narrator_line": "Aim low! Target the battering ram below the gatehouse!",                     "value": {"x":0,"y":-70},  "tolerance": {"x":20,"y":15}, "timeout_ms": 8000 },
+      { "id": "nav_chain_up",      "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": 2, "tier": "T2", "label": "Raise the drawbridge!",                  "narrator_line": "Raise the drawbridge — all the way up! Seal us in!",                        "value": 100,  "tolerance": 10,                         "timeout_ms": 5000 },
+      { "id": "nav_chain_half",    "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": 2, "tier": "T2", "label": "Drawbridge to half!",                    "narrator_line": "Drawbridge to half — let the scouts back in!",                              "value": 50,   "tolerance": 10,                         "timeout_ms": 5000 },
+      { "id": "nav_chain_down",    "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": 2, "tier": "T2", "label": "Lower the drawbridge!",                  "narrator_line": "Lower the drawbridge — sortie party, GO!",                                  "value": 0,    "tolerance": 10,                         "timeout_ms": 5000 },
+      { "id": "nav_outer_close",   "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Bar the outer gate!",                    "narrator_line": "Bar the outer gate! Drop the crossbeam!",                                   "value": true,                                            "timeout_ms": 3000 },
+      { "id": "nav_outer_open",    "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Open the outer gate!",                   "narrator_line": "Lift the crossbeam — open the outer gate!",                                 "value": false,                                           "timeout_ms": 3000 },
+      { "id": "nav_inner_close",   "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Bar the inner gate!",                    "narrator_line": "Inner gate — bar it NOW! They're in the courtyard!",                        "value": true,                                            "timeout_ms": 3000 },
+      { "id": "nav_inner_open",    "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Open the inner gate!",                   "narrator_line": "Open the inner gate — reinforcements are moving up!",                       "value": false,                                           "timeout_ms": 3000 },
+      { "id": "nav_fire",          "target_arch": "NAVIGATOR", "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "FIRE the ballista!",                     "narrator_line": "Fire the ballista! LOOSE!",                                                 "value": null,                                            "timeout_ms": 3000 },
+
+      { "id": "eng_brace_max",     "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Wall brace to MAXIMUM!",                 "narrator_line": "Mason! Brace that wall to maximum — it's buckling!",                        "value": 100, "tolerance": 10,                      "timeout_ms": 5000 },
+      { "id": "eng_brace_half",    "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Ease the brace to half!",                "narrator_line": "Ease the wall brace to half — we need the timber elsewhere!",               "value": 50,  "tolerance": 10,                      "timeout_ms": 5000 },
+      { "id": "eng_brace_min",     "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Wall brace to minimum!",                 "narrator_line": "Mason! Minimum brace — pull the supports for the gatehouse!",               "value": 20,  "tolerance": 10,                      "timeout_ms": 5000 },
+      { "id": "eng_brace_off",     "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Release the wall brace!",                "narrator_line": "Release the brace entirely — redirect everything!",                         "value": 0,   "tolerance": 10,                      "timeout_ms": 5000 },
+      { "id": "eng_mortar",        "target_arch": "ENGINEER",  "action": "PRESS_BUTTON", "slot": 2, "tier": "T1", "label": "Pour mortar — fill the gap!",            "narrator_line": "Mason! Pour the mortar — fill that breach!",                                "value": null,                                      "timeout_ms": 3000 },
+      { "id": "eng_scaffold_up",   "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Raise the scaffolding!",                 "narrator_line": "Raise the scaffolding — we need men on the parapet!",                       "value": true,                                      "timeout_ms": 3000 },
+      { "id": "eng_scaffold_down", "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Drop the scaffolding!",                  "narrator_line": "Drop the scaffolding — they're climbing it!",                               "value": false,                                     "timeout_ms": 3000 },
+      { "id": "eng_buttress",      "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Shore up the buttress!",                 "narrator_line": "Shore up that buttress — the tower is leaning!",                            "value": true,                                      "timeout_ms": 3000 },
+      { "id": "eng_hoist",         "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 5, "tier": "T1", "label": "Hoist stones to the wall!",              "narrator_line": "Mason! Hoist more stones — the men need ammunition!",                       "value": true,                                      "timeout_ms": 3000 },
+
+      { "id": "op_horn_88",        "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Signal horn: code 88!",                  "narrator_line": "Herald! Sound code eighty-eight — rally the reserves!",                     "value": 88,                                        "timeout_ms": 6000 },
+      { "id": "op_horn_42",        "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Signal horn: code 42!",                  "narrator_line": "Herald! Code forty-two — call for reinforcements!",                         "value": 42,                                        "timeout_ms": 6000 },
+      { "id": "op_horn_150",       "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Signal horn: code 150!",                 "narrator_line": "Sound code one-fifty — all-clear for the sally port!",                      "value": 150,                                       "timeout_ms": 6000 },
+      { "id": "op_horn_200",       "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Emergency signal: code 200!",            "narrator_line": "Herald! Emergency — code two hundred! Final retreat!",                      "value": 200,                                       "timeout_ms": 6000 },
+      { "id": "op_standard_up",    "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Raise the battle standard!",             "narrator_line": "Raise the standard! Let them see we still stand!",                          "value": true,                                      "timeout_ms": 3000 },
+      { "id": "op_standard_down",  "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Lower the standard!",                    "narrator_line": "Lower the standard — draw no attention!",                                   "value": false,                                     "timeout_ms": 3000 },
+      { "id": "op_drums_on",       "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Beat the war drums!",                    "narrator_line": "Beat the war drums! Steady the men's courage!",                             "value": true,                                      "timeout_ms": 3000 },
+      { "id": "op_drums_off",      "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Silence the drums!",                     "narrator_line": "Silence the drums — listen for their movements!",                           "value": false,                                     "timeout_ms": 3000 },
+      { "id": "op_retreat",        "target_arch": "OPERATOR",  "action": "PRESS_BUTTON", "slot": 4, "tier": "T1", "label": "Sound the retreat!",                     "narrator_line": "Sound the retreat — fall back to the inner walls!",                         "value": null,                                      "timeout_ms": 3000 },
+      { "id": "op_rally",          "target_arch": "OPERATOR",  "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Sound the rally cry!",                   "narrator_line": "Rally! Sound the cry — every man to the breach!",                           "value": null,                                      "timeout_ms": 3000 },
+
+      { "id": "sent_arms_main",    "target_arch": "SENTINEL",  "action": "SCAN_NFC",     "slot": 1, "tier": "T3", "label": "Unlock the ARMOURY!",                    "narrator_line": "Captain! Unlock the main armoury — the men need weapons!",                  "value": "ARMOURY_KEY",                             "timeout_ms": 10000 },
+      { "id": "sent_arms_powder",  "target_arch": "SENTINEL",  "action": "SCAN_NFC",     "slot": 1, "tier": "T3", "label": "Open the POWDER STORE!",                 "narrator_line": "Open the powder store! We need shot for the cannons!",                      "value": "POWDER_KEY",                              "timeout_ms": 10000 },
+      { "id": "sent_post_day",     "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": 2, "tier": "T2", "label": "Guard post — DAY watch!",                "narrator_line": "Captain of the Guard! Set the day watch — position one!",                   "value": 1,                                         "timeout_ms": 5000 },
+      { "id": "sent_post_battle",  "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": 2, "tier": "T2", "label": "Guard post — BATTLE!",                   "narrator_line": "Battle stations! Guard post to position two!",                              "value": 2,                                         "timeout_ms": 5000 },
+      { "id": "sent_post_night",   "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": 2, "tier": "T2", "label": "Guard post — NIGHT watch!",              "narrator_line": "Night watch! Set the guard — position three!",                              "value": 3,                                         "timeout_ms": 5000 },
+      { "id": "sent_dungeon_lock", "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Lock the dungeon!",                      "narrator_line": "Lock the dungeon gate — prisoners below!",                                  "value": true,                                      "timeout_ms": 3000 },
+      { "id": "sent_dungeon_open", "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Unlock the dungeon!",                    "narrator_line": "Unlock the dungeon — press the prisoners into service!",                    "value": false,                                     "timeout_ms": 3000 },
+      { "id": "sent_sally_open",   "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Open the sally port!",                   "narrator_line": "Open the sally port — sortie party, move out!",                             "value": true,                                      "timeout_ms": 3000 },
+      { "id": "sent_sally_close",  "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Seal the sally port!",                   "narrator_line": "Seal the sally port! They've found it!",                                    "value": false,                                     "timeout_ms": 3000 },
+      { "id": "sent_alarm",        "target_arch": "SENTINEL",  "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Raise the alarm!",                       "narrator_line": "Raise the alarm! All hands to the walls!",                                  "value": null,                                      "timeout_ms": 3000 },
+
+      { "id": "med_blue",          "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": 1, "tier": "T3", "label": "Mix BLUE fever remedy!",                 "narrator_line": "Apothecary! Mix the blue fever remedy — the garrison is falling ill!",      "value": [0,80,200],   "tolerance": 30,              "timeout_ms": 8000 },
+      { "id": "med_red",           "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": 1, "tier": "T3", "label": "Mix RED wound salve!",                   "narrator_line": "Apothecary! Red wound salve — the injured are piling up!",                  "value": [200,30,30],  "tolerance": 30,              "timeout_ms": 8000 },
+      { "id": "med_green",         "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": 1, "tier": "T3", "label": "Mix GREEN antidote!",                    "narrator_line": "Mix the green antidote — the well may be poisoned!",                        "value": [30,200,50],  "tolerance": 30,              "timeout_ms": 8000 },
+      { "id": "med_dose_150",      "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": 2, "tier": "T2", "label": "Tonic dose to 150!",                     "narrator_line": "Apothecary! Tonic to one-fifty — the Captain needs it!",                    "value": 150,                                       "timeout_ms": 6000 },
+      { "id": "med_dose_80",       "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": 2, "tier": "T2", "label": "Reduce tonic to 80!",                    "narrator_line": "Ease the tonic to eighty — any more will dull his wits!",                   "value": 80,                                        "timeout_ms": 6000 },
+      { "id": "med_dose_250",      "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": 2, "tier": "T2", "label": "Emergency dose — 250!",                  "narrator_line": "Emergency dose! Crank it to two-fifty — he's fading!",                      "value": 250,                                       "timeout_ms": 6000 },
+      { "id": "med_water_on",      "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Issue the water ration!",                "narrator_line": "Issue the water ration — the men are parched!",                             "value": true,                                      "timeout_ms": 3000 },
+      { "id": "med_water_off",     "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Cut the water ration!",                  "narrator_line": "Cut the ration — we must conserve the well!",                               "value": false,                                     "timeout_ms": 3000 },
+      { "id": "med_wounds",        "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": 4, "tier": "T1", "label": "Bind the wounded!",                      "narrator_line": "Apothecary! Bind the wounded — get them back to the wall!",                 "value": null,                                      "timeout_ms": 3000 },
+      { "id": "med_salts",         "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Smelling salts — revive him!",           "narrator_line": "Smelling salts! Revive that man — we need every sword!",                    "value": null,                                      "timeout_ms": 3000 },
+
+      { "id": "ana_code_721",      "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": 1, "tier": "T3", "label": "Cipher code: 7-2-1!",                   "narrator_line": "Scribe! Cipher code seven-two-one — decode the enemy dispatch!",            "value": "721",                                     "timeout_ms": 7000 },
+      { "id": "ana_code_4519",     "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": 1, "tier": "T3", "label": "Cipher code: 4-5-1-9!",                 "narrator_line": "Scribe! Code four-five-one-nine — the spy's message!",                      "value": "4519",                                    "timeout_ms": 8000 },
+      { "id": "ana_code_308",      "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": 1, "tier": "T3", "label": "Cipher code: 3-0-8!",                   "narrator_line": "Scribe! Three-zero-eight — crack the enemy cipher!",                        "value": "308",                                     "timeout_ms": 7000 },
+      { "id": "ana_bearing_140",   "target_arch": "ANALYST",   "action": "MATCH_WAVE",   "slot": 2, "tier": "T2", "label": "Map bearing to 140!",                   "narrator_line": "Scribe! Map bearing to one-forty — mark the enemy camp!",                   "value": 140, "tolerance": 15,                      "timeout_ms": 6000 },
+      { "id": "ana_bearing_80",    "target_arch": "ANALYST",   "action": "MATCH_WAVE",   "slot": 2, "tier": "T2", "label": "Map bearing to 80!",                    "narrator_line": "Bearing eighty — mark the siege tower approach!",                           "value": 80,  "tolerance": 15,                      "timeout_ms": 6000 },
+      { "id": "ana_bearing_210",   "target_arch": "ANALYST",   "action": "MATCH_WAVE",   "slot": 2, "tier": "T2", "label": "Map bearing to 210!",                   "narrator_line": "Bearing two-ten — that's the relief column's route!",                       "value": 210, "tolerance": 15,                      "timeout_ms": 6000 },
+      { "id": "ana_ledger_on",     "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Open the war ledger!",                  "narrator_line": "Open the war ledger — what supplies remain?",                               "value": true,                                      "timeout_ms": 3000 },
+      { "id": "ana_ledger_off",    "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Close the war ledger!",                 "narrator_line": "Stow the ledger — we've got the count!",                                    "value": false,                                     "timeout_ms": 3000 },
+      { "id": "ana_spy",           "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Read the spy report!",                  "narrator_line": "Read the spy report — where is the enemy weak?",                            "value": true,                                      "timeout_ms": 3000 },
+      { "id": "ana_seal",          "target_arch": "ANALYST",   "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Seal the message!",                     "narrator_line": "Seal that message — send it by pigeon before dawn!",                        "value": null,                                      "timeout_ms": 3000 },
+
+      { "id": "sco_sweep_120",     "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "tier": "T2", "label": "Tower sweep: bearing 120!",             "narrator_line": "Watchman! Sweep the tower to bearing one-twenty!",                          "value": 120, "tolerance": 15,                      "timeout_ms": 6000 },
+      { "id": "sco_sweep_200",     "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "tier": "T2", "label": "Sweep to bearing 200!",                 "narrator_line": "Watchman! Bearing two hundred — what's moving out there?",                  "value": 200, "tolerance": 15,                      "timeout_ms": 6000 },
+      { "id": "sco_sweep_60",      "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "tier": "T2", "label": "Sweep to bearing 60!",                  "narrator_line": "Sweep to sixty — movement in the tree line!",                               "value": 60,  "tolerance": 15,                      "timeout_ms": 6000 },
+      { "id": "sco_beacon_on",     "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Light the beacon fire!",                "narrator_line": "Light the beacon! Signal for the relief column!",                           "value": true,                                      "timeout_ms": 3000 },
+      { "id": "sco_beacon_off",    "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Douse the beacon!",                     "narrator_line": "Douse the beacon — it's drawing their fire!",                               "value": false,                                     "timeout_ms": 3000 },
+      { "id": "sco_east",          "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "East watch — eyes open!",               "narrator_line": "Watchman! East watch — report what you see!",                               "value": true,                                      "timeout_ms": 3000 },
+      { "id": "sco_west",          "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "West watch — scan the ridge!",          "narrator_line": "West watch — scan that ridge for siege engines!",                           "value": true,                                      "timeout_ms": 3000 },
+      { "id": "sco_arrow_slit",    "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 5, "tier": "T1", "label": "Man the arrow slits!",                  "narrator_line": "Arrow slits manned! Fire at anything that moves!",                          "value": true,                                      "timeout_ms": 3000 },
+
+      { "id": "cmd_defend",        "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Orders: DEFEND WALLS!",                 "narrator_line": "Castellan! Defend the walls — position one!",                               "value": 1,                                         "timeout_ms": 5000 },
+      { "id": "cmd_sortie",        "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Orders: SORTIE!",                       "narrator_line": "Castellan! Sortie order — position two! Out the gates!",                    "value": 2,                                         "timeout_ms": 5000 },
+      { "id": "cmd_fallback",      "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Orders: FALL BACK!",                    "narrator_line": "Fall back to the keep — position three!",                                   "value": 3,                                         "timeout_ms": 5000 },
+      { "id": "cmd_laststand",     "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Orders: LAST STAND!",                   "narrator_line": "Last stand — position four! No retreat! No surrender!",                     "value": 4,                                         "timeout_ms": 5000 },
+      { "id": "cmd_confirm",       "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": 2, "tier": "T1", "label": "Confirm the order!",                    "narrator_line": "Castellan! Confirm that order — send the runners!",                         "value": null,                                      "timeout_ms": 3000 },
+      { "id": "cmd_seal",          "target_arch": "COMMANDER", "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Apply the Lord's seal!",                "narrator_line": "Apply the Lord's seal — authorize the command!",                            "value": true,                                      "timeout_ms": 3000 },
+      { "id": "cmd_bell",          "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": 4, "tier": "T1", "label": "Toll the warning bell!",                "narrator_line": "Toll the bell! All hands to battle stations!",                              "value": null,                                      "timeout_ms": 3000 },
+      { "id": "cmd_council",       "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Call a war council!",                   "narrator_line": "War council! Officers report — what is our status?",                        "value": null,                                      "timeout_ms": 3000 }
+    ],
+
+    "cooperative": [
+      { "id": "coop_cmd_tell_nav_left",    "display_on": "COMMANDER", "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Tell Gate: ballista LEFT!",             "narrator_line": "Castellan! Tell the Gatekeeper — ballista to the left!",                "value": {"x":-80,"y":0}, "tolerance": {"x":15,"y":20}, "timeout_ms": 12000 },
+      { "id": "coop_eng_tell_nav_high",    "display_on": "ENGINEER",  "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Tell Gate: aim HIGH!",                  "narrator_line": "Mason! Shout to the Gatekeeper — aim high, the ridge!",                 "value": {"x":0,"y":80},  "tolerance": {"x":20,"y":15}, "timeout_ms": 12000 },
+      { "id": "coop_ana_tell_eng_max",     "display_on": "ANALYST",   "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Tell Mason: brace to max!",             "narrator_line": "Scribe! Tell the Mason — wall brace to maximum!",                       "value": 100, "tolerance": 10,                           "timeout_ms": 10000 },
+      { "id": "coop_cmd_tell_eng_half",    "display_on": "COMMANDER", "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Tell Mason: brace to half!",            "narrator_line": "Castellan! Tell the Mason — half brace, save timber!",                  "value": 50,  "tolerance": 10,                           "timeout_ms": 10000 },
+      { "id": "coop_nav_tell_op_88",       "display_on": "NAVIGATOR", "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Tell Herald: signal 88!",               "narrator_line": "Gatekeeper! Tell the Herald — sound code eighty-eight!",                "value": 88,                                             "timeout_ms": 10000 },
+      { "id": "coop_sco_tell_op_42",       "display_on": "SCOUT",     "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Tell Herald: signal 42!",               "narrator_line": "Watchman! Shout to the Herald — code forty-two!",                       "value": 42,                                             "timeout_ms": 10000 },
+      { "id": "coop_med_tell_sent_lock",   "display_on": "MEDIC",     "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Tell Guard: lock dungeon!",             "narrator_line": "Apothecary! Shout to the Captain — lock the dungeon!",                  "value": true,                                           "timeout_ms": 6000 },
+      { "id": "coop_op_tell_sent_alarm",   "display_on": "OPERATOR",  "target_arch": "SENTINEL",  "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Tell Guard: raise alarm!",              "narrator_line": "Herald! Tell the Captain of the Guard — raise the alarm!",              "value": null,                                           "timeout_ms": 6000 },
+      { "id": "coop_eng_tell_med_water",   "display_on": "ENGINEER",  "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Tell Apoth: issue water!",              "narrator_line": "Mason! Tell the Apothecary — issue the water ration!",                  "value": true,                                           "timeout_ms": 6000 },
+      { "id": "coop_sent_tell_med_salts",  "display_on": "SENTINEL",  "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Tell Apoth: smelling salts!",           "narrator_line": "Captain! Tell the Apothecary — salts, NOW!",                            "value": null,                                           "timeout_ms": 6000 },
+      { "id": "coop_nav_tell_ana_308",     "display_on": "NAVIGATOR", "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": 1, "tier": "T3", "label": "Tell Scribe: cipher 3-0-8!",            "narrator_line": "Gatekeeper! Tell the Scribe — cipher three-zero-eight!",                "value": "308",                                          "timeout_ms": 12000 },
+      { "id": "coop_cmd_tell_ana_bearing", "display_on": "COMMANDER", "target_arch": "ANALYST",   "action": "MATCH_WAVE",   "slot": 2, "tier": "T2", "label": "Tell Scribe: bearing 160!",             "narrator_line": "Castellan! Tell the Scribe — map bearing one-sixty!",                   "value": 160, "tolerance": 15,                           "timeout_ms": 10000 },
+      { "id": "coop_ana_tell_sco_120",     "display_on": "ANALYST",   "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "tier": "T2", "label": "Tell Watch: sweep to 120!",             "narrator_line": "Scribe! Tell the Watchman — tower sweep to one-twenty!",                "value": 120, "tolerance": 15,                           "timeout_ms": 10000 },
+      { "id": "coop_op_tell_sco_beacon",   "display_on": "OPERATOR",  "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Tell Watch: light beacon!",             "narrator_line": "Herald! Tell the Watchman — light the beacon fire!",                    "value": true,                                           "timeout_ms": 6000 },
+      { "id": "coop_sco_tell_cmd_defend",  "display_on": "SCOUT",     "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Tell Castellan: defend walls!",          "narrator_line": "Watchman! Tell the Castellan — defend the walls!",                      "value": 1,                                              "timeout_ms": 8000 },
+      { "id": "coop_med_tell_cmd_seal",    "display_on": "MEDIC",     "target_arch": "COMMANDER", "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Tell Castellan: Lord's seal!",           "narrator_line": "Apothecary! Shout to the Castellan — apply the seal!",                  "value": true,                                           "timeout_ms": 6000 }
+    ]
+  },
+
+  "crises": [
+    {
+      "id": "crisis_battering_ram",
+      "type": "MUSHROOM_ALL",
+      "label": "BATTERING RAM!",
+      "narrator_line": "BATTERING RAM AT THE GATE! ALL HANDS — BRACE!",
+      "required_count": "all",
+      "timeout_ms": 5000,
+      "penalty": "health_major"
+    },
+    {
+      "id": "crisis_fire_arrows",
+      "type": "MUSHROOM_THRESHOLD",
+      "label": "FIRE ARROWS INCOMING!",
+      "narrator_line": "FIRE ARROWS! Take cover — at least four of you! SHIELDS UP!",
+      "required_count": 4,
+      "timeout_ms": 6000,
+      "penalty": "health_minor"
+    },
+    {
+      "id": "crisis_siege_tower",
+      "type": "MULTI_ACTION",
+      "label": "SIEGE TOWER!",
+      "narrator_line": "SIEGE TOWER ON THE WALL! Mason — brace the wall! Watchman — spot the approach! HOLD!",
+      "actions": [
+        { "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "value": 100,  "tolerance": 10 },
+        { "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "value": 120,  "tolerance": 15 },
+        { "rest": "MUSHROOM" }
+      ],
+      "timeout_ms": 7000,
+      "penalty": "health_major"
+    },
+    {
+      "id": "crisis_sappers",
+      "type": "MULTI_ACTION",
+      "label": "SAPPERS TUNNELLING!",
+      "narrator_line": "SAPPERS BENEATH THE WALLS! Lock the dungeon! Scribe — find the tunnel! Everyone — STAMP!",
+      "actions": [
+        { "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 3, "value": true },
+        { "target_arch": "ANALYST",   "action": "MATCH_WAVE",   "slot": 2, "value": 100,  "tolerance": 15 },
+        { "rest": "MUSHROOM" }
+      ],
+      "timeout_ms": 7000,
+      "penalty": "health_minor"
+    }
+  ],
+
+  "phases": [
+    {
+      "id": "intro",
+      "type": "NARRATION",
+      "duration_sec": 60,
+      "narrator_lines": [
+        "Hear me, garrison of Castle Aldric. I am the Castellan, and I bring grave news.",
+        "A great host marches from the south. Ten thousand strong, with siege engines and sappers.",
+        "Our Lord rides north with the army. We are alone. Reinforcements are three days' march away.",
+        "We must hold these walls. To your stations. God and Saint George defend us."
+      ]
+    },
+
+    {
+      "id": "frantic_1",
+      "type": "FRANTIC",
+      "duration_sec": 240,
+      "difficulty": {
+        "commands_per_min": { "start": 3, "end": 5 },
+        "coop_ratio": 0.15,
+        "crisis_chance_per_30s": 0.10,
+        "timeout_multiplier": 1.3
+      },
+      "pools": ["direct", "cooperative"],
+      "crises": ["crisis_fire_arrows", "crisis_sappers"],
+      "narrator_lines_ambient": [
+        "Skirmishers at the tree line. Testing our defenses.",
+        "Steady, lads. Don't waste arrows on scouts.",
+        "They're probing the east wall — reinforce it!",
+        "Keep your heads down and your hands busy."
+      ]
+    },
+
+    {
+      "id": "branch_1",
+      "type": "BRANCH",
+      "evaluate": "frantic_1",
+      "threshold": 0.55,
+      "win": {
+        "narrator_lines": [
+          "The vanguard is scattered! Well done — they'll think twice before testing us again.",
+          "But scouts report the main host with siege towers. Prepare for the true assault."
+        ],
+        "next_phase": "frantic_2_W"
+      },
+      "lose": {
+        "narrator_lines": [
+          "They've found our weaknesses. The outer palisade is compromised.",
+          "The main army approaches and they know exactly where to strike. Brace yourselves."
+        ],
+        "next_phase": "frantic_2_L"
+      }
+    },
+
+    {
+      "id": "frantic_2_W",
+      "type": "FRANTIC",
+      "duration_sec": 270,
+      "difficulty": {
+        "commands_per_min": { "start": 5, "end": 8 },
+        "coop_ratio": 0.30,
+        "crisis_chance_per_30s": 0.20,
+        "timeout_multiplier": 1.1
+      },
+      "pools": ["direct", "cooperative"],
+      "crises": ["crisis_battering_ram", "crisis_fire_arrows", "crisis_siege_tower"],
+      "narrator_lines_ambient": [
+        "Siege towers rolling! Archers — fire at the operators!",
+        "The battering ram is at the gate — hold fast!",
+        "Boiling water from the murder holes! Pour it!",
+        "They're raising ladders on the south wall!"
+      ]
+    },
+
+    {
+      "id": "frantic_2_L",
+      "type": "FRANTIC",
+      "duration_sec": 250,
+      "difficulty": {
+        "commands_per_min": { "start": 5, "end": 7 },
+        "coop_ratio": 0.35,
+        "crisis_chance_per_30s": 0.25,
+        "timeout_multiplier": 1.0
+      },
+      "pools": ["direct", "cooperative"],
+      "crises": ["crisis_battering_ram", "crisis_fire_arrows", "crisis_siege_tower", "crisis_sappers"],
+      "narrator_lines_ambient": [
+        "They know our weak points! Shore up the east wall!",
+        "The moat is filling with debris — they're building a crossing!",
+        "We're losing men too quickly — Apothecary, keep them standing!",
+        "Hold the walls! Do not yield an inch!"
+      ]
+    },
+
+    {
+      "id": "branch_2",
+      "type": "BRANCH",
+      "evaluate": "current",
+      "threshold": 0.55,
+      "condition_per_path": {
+        "W": {
+          "win": {
+            "narrator_lines": [
+              "Their siege tower is ablaze! The main assault breaks against our walls!",
+              "They're pulling back to regroup. Now — counterattack! Sortie parties, make ready!"
+            ],
+            "next_phase": "frantic_3_WW"
+          },
+          "lose": {
+            "narrator_lines": [
+              "The outer wall is breached! They're in the bailey!",
+              "Fall back to the inner keep! Bar the gates — defend the tower!"
+            ],
+            "next_phase": "frantic_3_WL"
+          }
+        },
+        "L": {
+          "win": {
+            "narrator_lines": [
+              "A sortie from the sally port cut their supply train! The siege engines are burning!",
+              "The enemy is in disarray — press the advantage! Every man who can hold a blade!"
+            ],
+            "next_phase": "frantic_3_LW"
+          },
+          "lose": {
+            "narrator_lines": [
+              "The keep's outer door is cracking. The courtyard is lost.",
+              "This is the last stand. Every man to the great hall. We hold or we die."
+            ],
+            "next_phase": "frantic_3_LL"
+          }
+        }
+      }
+    },
+
+    {
+      "id": "frantic_3_WW",
+      "type": "FRANTIC",
+      "duration_sec": 270,
+      "difficulty": {
+        "commands_per_min": { "start": 8, "end": 12 },
+        "coop_ratio": 0.40,
+        "crisis_chance_per_30s": 0.30,
+        "timeout_multiplier": 0.95
+      },
+      "pools": ["direct", "cooperative"],
+      "crises": ["crisis_battering_ram", "crisis_fire_arrows", "crisis_siege_tower", "crisis_sappers"],
+      "narrator_lines_ambient": [
+        "The sortie is cutting through their camp!",
+        "Burn the siege engines! All of them!",
+        "Their general's banner is wavering — push harder!",
+        "Rally to me! One final push and they'll break!"
+      ]
+    },
+
+    {
+      "id": "frantic_3_WL",
+      "type": "FRANTIC",
+      "duration_sec": 250,
+      "difficulty": {
+        "commands_per_min": { "start": 7, "end": 11 },
+        "coop_ratio": 0.45,
+        "crisis_chance_per_30s": 0.35,
+        "timeout_multiplier": 0.90
+      },
+      "pools": ["direct", "cooperative"],
+      "crises": ["crisis_battering_ram", "crisis_fire_arrows", "crisis_siege_tower", "crisis_sappers"],
+      "narrator_lines_ambient": [
+        "They're in the courtyard! Archers — fire down from the tower!",
+        "Bar every door! Barricade the stairwells!",
+        "The keep must hold — fight for every corridor!",
+        "Do not let them reach the great hall!"
+      ]
+    },
+
+    {
+      "id": "frantic_3_LW",
+      "type": "FRANTIC",
+      "duration_sec": 250,
+      "difficulty": {
+        "commands_per_min": { "start": 7, "end": 11 },
+        "coop_ratio": 0.45,
+        "crisis_chance_per_30s": 0.30,
+        "timeout_multiplier": 0.95
+      },
+      "pools": ["direct", "cooperative"],
+      "crises": ["crisis_battering_ram", "crisis_fire_arrows", "crisis_siege_tower", "crisis_sappers"],
+      "narrator_lines_ambient": [
+        "The enemy is scattered — don't let them regroup!",
+        "Secure the outer wall before they return!",
+        "Their sappers are retreating — chase them down!",
+        "One more effort, lads! The day is nearly ours!"
+      ]
+    },
+
+    {
+      "id": "frantic_3_LL",
+      "type": "FRANTIC",
+      "duration_sec": 240,
+      "difficulty": {
+        "commands_per_min": { "start": 6, "end": 10 },
+        "coop_ratio": 0.50,
+        "crisis_chance_per_30s": 0.40,
+        "timeout_multiplier": 0.85
+      },
+      "pools": ["direct", "cooperative"],
+      "crises": ["crisis_battering_ram", "crisis_fire_arrows", "crisis_siege_tower", "crisis_sappers"],
+      "narrator_lines_ambient": [
+        "The walls are crumbling! Hold together!",
+        "Every man who can stand — to the barricade!",
+        "This is it! Fight for your lives!",
+        "If the keep falls, all is lost! HOLD!"
+      ]
+    },
+
+    {
+      "id": "branch_3",
+      "type": "BRANCH",
+      "evaluate": "current",
+      "threshold": 0.55
+    }
+  ],
+
+  "outcomes": {
+    "metrics_weights": {
+      "direct_rate":  0.30,
+      "coop_rate":    0.30,
+      "timeout_rate": 0.20,
+      "crisis_rate":  0.20
+    },
+    "disaster": {
+      "tier": "DISASTER",
+      "narrator_lines": [
+        "The gatehouse collapses. The great hall burns.",
+        "Castle Aldric falls. The banner is torn down and trampled in the mud.",
+        "When the relief column arrives three days hence, they find only ruins."
+      ]
+    },
+    "endings": {
+      "WWW": {
+        "tier": "TRIUMPH",
+        "narrator_lines": [
+          "The enemy host breaks and flees the field! Castle Aldric stands unbreached!",
+          "Not a single enemy set foot within the inner wall. A perfect defence.",
+          "When the Lord returns, he will find his castle whole and his garrison proud.",
+          "God and Saint George have smiled upon us. Well fought, every one of you."
+        ]
+      },
+      "WWL": {
+        "tier": "SUCCESS",
+        "narrator_lines": [
+          "The enemy withdraws, but the inner keep bears the scars of a brutal final assault.",
+          "Castle Aldric holds. The banner still flies, though the walls are blackened.",
+          "A difficult end to what began as a masterful defence. But you held."
+        ]
+      },
+      "WLW": {
+        "tier": "SUCCESS",
+        "narrator_lines": [
+          "After losing the outer bailey, a desperate counterattack retook the walls.",
+          "The enemy retreats in disarray. Castle Aldric is battered but unbroken.",
+          "A hard-won victory. The garrison earned its rest today."
+        ]
+      },
+      "WLL": {
+        "tier": "SURVIVE",
+        "sub_analysis": true,
+        "narrator_lines": [
+          "The castle is a ruin. Half the garrison lies wounded in the great hall.",
+          "But the banner still flies. When reinforcements arrive, they find you alive.",
+          "A siege that started so well. What went wrong?"
+        ]
+      },
+      "LWW": {
+        "tier": "SUCCESS",
+        "narrator_lines": [
+          "What a rally! A terrible start nearly cost everything, but the garrison found its steel.",
+          "The enemy is routed. Castle Aldric's flag flies proud over the carnage.",
+          "From the brink of defeat, you forged a victory the bards will sing of."
+        ]
+      },
+      "LWL": {
+        "tier": "SURVIVE",
+        "sub_analysis": true,
+        "narrator_lines": [
+          "Castle Aldric stands, but barely. Every wall is breached. The moat runs red.",
+          "The enemy withdrew at nightfall, too bloodied to finish the job.",
+          "You survived through stubbornness alone. The relief column finds a garrison on its knees."
+        ]
+      },
+      "LLW": {
+        "tier": "SURVIVE",
+        "narrator_lines": [
+          "A miracle at the darkest hour. One final sally drove them from the great hall stairs.",
+          "The castle is a smoking shell, but it did not fall. Against all odds.",
+          "Do not let the bards embellish this. It was not courage — it was desperation."
+        ]
+      },
+      "LLL": {
+        "tier": "FAILURE",
+        "sub_analysis": true,
+        "narrator_lines": [
+          "The great hall door splinters. The enemy pours through.",
+          "Castle Aldric's garrison lays down its arms. The siege is over.",
+          "When the relief column arrives, they find the enemy's banner on the tower."
+        ]
+      }
+    }
+  },
+
+  "narrator": {
+    "voice": "castle_castellan",
+    "tts_engine": "local",
+    "between_commands_lines": [
+      "Steady, lads! Hold the line!",
+      "Time is our ally — the relief column marches!",
+      "To your stations! No rest for the weary!",
+      "They come again — be ready!",
+      "Move! Move! Move!",
+      "That is an order from the Castellan!",
+      "For Castle Aldric! For the Lord!",
+      "Every stone we hold is a stone they cannot take!"
+    ]
+  }
+}
