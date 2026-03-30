@@ -12,6 +12,7 @@
 - [Phase 2 — NFC Card & Scenario Load](#phase-2--nfc-card--scenario-load)
 - [Phase 3 — Ready Up & Countdown](#phase-3--ready-up--countdown)
 - [Phase 4 — Game: Intro](#phase-4--game-intro)
+- [Phase 4.5 — Game: Pre-Flight](#phase-45--game-pre-flight)
 - [Phase 5 — Game: Frantic](#phase-5--game-frantic)
 - [Phase 6 — Game: Wrap-Up](#phase-6--game-wrap-up)
 - [Phase 7 — Score & Post-Game](#phase-7--score--post-game)
@@ -38,10 +39,14 @@
 │                         ▲        │             │        │
 │                         │        │      ┌──────┘        │
 │                         │        │      ▼               │
-│                         │        │    INTRO ──► FRANTIC │
-│                         │        │                │     │
-│                         │        │                ▼     │
-│                         │        │             WRAPUP   │
+│                         │        │    INTRO              │
+│                         │        │      ▼               │
+│                         │        │    PREFLIGHT          │
+│                         │        │      ▼               │
+│                         │        │    FRANTIC            │
+│                         │        │      │               │
+│                         │        │      ▼               │
+│                         │        │    WRAPUP             │
 │                         │        │                │     │
 │                         │        │                ▼     │
 │                         │        │             SCORE    │
@@ -185,10 +190,10 @@ Hub                       Tablet 1         Tablet 2
    - Hub broadcasts `NFC_PLACED` with card ID, title, and pack name.
 
 2. **Hub pushes `OLED_LABELS` to each connected tablet.**
-   - Each tablet gets 5 narrative-appropriate labels for its control OLEDs, based on the scenario theme + the tablet's archetype.
-   - E.g., Navigator in "Pirate Hunt" gets: `"Helm"`, `"Spyglass"`, `"Port Sail"`, `"Starboard Sail"`, `"Anchor"`.
+   - Each tablet gets 9 narrative-appropriate labels for its control OLEDs (7 universal slots + 2 specialty slots), based on the scenario theme + the tablet's archetype.
+   - E.g., Navigator in "Pirate Hunt" gets: `"Helm"`, `"Sails"`, `"Anchor"`, `"Cutlass"`, `"Rum"`, `"Spyglass"`, `"Cannons"`, `"Wheel"`, `"Wind Gauge"`.
 
-3. **Tablets render OLED labels** on their 5 per-slot displays.
+3. **Tablets render OLED labels** on their 9 per-slot displays.
 
 4. **Lobby state refreshes** — `LOBBY_STATE` now includes `scenario: "PIRATE_HUNT_01"`, `nfc: true`.
 
@@ -209,8 +214,8 @@ Hub                         Tablet 1              Tablet 2
  │── NFC_PLACED ────────────►│                    │
  │── NFC_PLACED ──────────────────────────────────►│
  │                            │                     │
- │── OLED_LABELS ───────────►│  (5 labels for Navigator)
- │── OLED_LABELS ──────────────────────────────────►│  (5 labels for Engineer)
+ │── OLED_LABELS ───────────►│  (9 labels for Navigator)
+ │── OLED_LABELS ──────────────────────────────────►│  (9 labels for Engineer)
  │                            │                     │
  │── LOBBY_STATE ───────────►│                    │  (now includes scenario)
  │── LOBBY_STATE ──────────────────────────────────►│
@@ -293,8 +298,8 @@ Tablet 1          Hub                   Tablet 2
 
 3. **Hub may send initial `SCORE_UPDATE`** (health: 100, score: 0, streak: 0).
 
-4. **When intro narration finishes → Hub sends `PHASE_CHANGE` (phase: `FRANTIC`).**
-   - Hub → state `GAME_FRANTIC`.
+4. **When intro narration finishes → Hub sends `PHASE_CHANGE` (phase: `PREFLIGHT`).**
+   - Hub → state `GAME_PREFLIGHT`.
 
 ### What tablets display
 
@@ -315,8 +320,61 @@ Hub                          Tablet 1              Tablet 2
  │── SCORE_UPDATE ─────────────────────────────────►│
  │                             │                     │
  │  [Intro ends]               │                     │
- │── PHASE_CHANGE(FRANTIC) ──►│                    │
- │── PHASE_CHANGE(FRANTIC) ────────────────────────►│
+ │── PHASE_CHANGE(PREFLIGHT)─►│                    │
+ │── PHASE_CHANGE(PREFLIGHT)───────────────────────►│
+```
+
+---
+
+## Phase 4.5 — Game: Pre-Flight
+
+**Duration:** 30–60 seconds (scenario-defined)
+
+### Hub state: `GAME_PREFLIGHT`
+
+A scripted initialization phase that establishes a known starting state for all stateful controls and doubles as crew onboarding. Players learn their controls before the frantic phase begins.
+
+### What happens
+
+1. **Hub sends `PHASE_CHANGE` (phase: `PREFLIGHT`).**
+
+2. **Hub sends pre-flight commands** to each tablet, one at a time per player.
+   - These are drawn from the scenario's `PREFLIGHT` phase `init_commands`.
+   - Example: "Set Port Thruster to ON" (toggle_1 → true), "Set Thrust Lever to 50%" (specialty_b slider → 50).
+   - Each command establishes the starting state of a stateful control.
+
+3. **Players execute each pre-flight command.**
+   - Tablet sends `STATE` on control change.
+   - Hub validates and sends `CMD_RESULT`.
+   - Timeouts are generous (no pressure — this is onboarding, not gameplay).
+
+4. **Hub does NOT block on negligent players.**
+   - If a player ignores a pre-flight command, the Hub logs it and moves on after timeout.
+   - The Hub uses the default state (off / zero) for uninitialized controls.
+   - Pre-flight encourages but doesn't enforce.
+
+5. **Narrator speaks encouragingly** during pre-flight:
+   - "All crew, run your systems check."
+   - "Navigator, set your thrusters."
+
+6. **When all init commands are issued → Hub sends `PHASE_CHANGE` (phase: `FRANTIC`).**
+   - Hub → state `GAME_FRANTIC`.
+
+### Message sequence
+
+```
+Hub                          Tablet 1 (Nav)        Tablet 2 (Eng)
+ │                             │                     │
+ │── COMMAND(PREFLIGHT) ─────►│                    │  "Set Port Thruster to ON"
+ │                             │── STATE ──────────►│  (toggle flipped)
+ │── CMD_RESULT(SUCCESS) ────►│                    │
+ │                             │                     │
+ │── COMMAND(PREFLIGHT) ──────────────────────────►│  "Set Fuel Valve to 75%"
+ │                             │                     │── STATE ────────►│
+ │── CMD_RESULT(SUCCESS) ──────────────────────────►│
+ │                             │                     │
+ │  [All init commands issued]  │                     │
+ │── PHASE_CHANGE(FRANTIC) ──►all                    all
 ```
 
 ---
@@ -335,7 +393,7 @@ The Hub runs an internal game tick (e.g., every 500ms–2s depending on difficul
 
 1. **Draws a command** from the scenario's randomized command pool.
    - Selects a target player based on their archetype and available controls.
-   - Selects a command type: `DIRECT`, `COOP`, or `CRISIS`.
+   - Selects a command type: `DIRECT`, `COOP`, `OPEN`, or `CRISIS`.
    - Calculates timeout based on difficulty curve (gets shorter as game progresses).
 
 2. **Sends the command to the target tablet:**
@@ -352,6 +410,14 @@ The Hub runs an internal game tick (e.g., every 500ms–2s depending on difficul
      - Player A shouts the instruction to Player B.
      - Player B executes on their tablet → their tablet sends `STATE`/`SUBMIT`.
      - Hub correlates the action to the pending coop command → sends `CMD_RESULT` to both.
+
+   - **Open command → `COMMAND` (mode: `OPEN`)** broadcast to all tablets with the matching specialty element.
+     - Command appears on 2 tablets simultaneously (the 2 archetypes that share that specialty element).
+     - Example: "Someone — hard evasive left!" appears on Navigator and Scout (both have joystick).
+     - First player to submit the correct response wins the command.
+     - Hub sends `CMD_RESULT(SUCCESS)` to the winner.
+     - Hub sends a cooperative green flash + positive feedback to the other responder (not a failure — team spirit).
+     - This mechanic encourages awareness and speed without punishing the slower player.
 
    - **Crisis → `CRISIS`** broadcast to all.
      - All tablets alarm: siren, vibration, screen flash.

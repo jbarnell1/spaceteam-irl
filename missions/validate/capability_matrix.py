@@ -3,6 +3,16 @@
 These mappings are the single source of truth for which physical controls
 exist on each tablet archetype and what action types they support.
 Derived from docs/tablet-archetypes.md and docs/scenario-schema.md.
+
+Layout (every tablet):
+  Universal base — 3 toggle switches, 4 momentary buttons, 1 crisis button, 1 submit button
+  Specialty elements — 2 per archetype, drawn from a pool of 8 unique elements
+
+Slot naming:
+  toggle_1 / toggle_2 / toggle_3          — universal toggles (bat / rocker / paddle)
+  button_1 / button_2 / button_3 / button_4  — universal momentary (round-red / square-blue / oval-yellow / diamond-green)
+  specialty_a / specialty_b               — archetype-specific elements
+  crisis / submit                         — always present, not scenario-commanded (crisis is event-driven)
 """
 
 ARCHETYPES = [
@@ -10,71 +20,146 @@ ARCHETYPES = [
     "MEDIC", "ANALYST", "SCOUT", "COMMANDER",
 ]
 
+# ──────────────────────────────────────────────────────────────────────
+# Specialty Element Pool (8 elements, each on exactly 2 archetypes)
+# ──────────────────────────────────────────────────────────────────────
+#   JOYSTICK         — Navigator, Scout
+#   SLIDER           — Navigator, Engineer
+#   BARREL_JACKS     — Engineer, Commander
+#   ROTARY_ENCODER   — Operator, Medic
+#   NUMBER_PAD       — Operator, Analyst
+#   NFC_SCANNER      — Sentinel, Commander
+#   ROTARY_SWITCH    — Sentinel, Analyst
+#   COLOR_DIAL       — Medic, Scout
+# ──────────────────────────────────────────────────────────────────────
+
 # Maps archetype -> slot -> action type supported by that physical control.
-# Slot 1 = Signature control, Slot 2 = Medium control, Slots 3-5 = Simple controls.
+# Universal slots use the same names on every tablet.
+# Specialty slots (specialty_a, specialty_b) vary by archetype.
 CAPABILITY_MATRIX = {
     "NAVIGATOR": {
-        1: "SET_JOYSTICK",    # Analog Joystick (2-axis ADC + click)
-        2: "SET_SLIDER",      # Linear Slider 45mm (ADC)
-        3: "SET_TOGGLE",      # Toggle
-        4: "SET_TOGGLE",      # Toggle
-        5: "PRESS_BUTTON",    # Momentary Pushbutton
+        "toggle_1":    "SET_TOGGLE",      # Bat toggle
+        "toggle_2":    "SET_TOGGLE",      # Rocker toggle
+        "toggle_3":    "SET_TOGGLE",      # Paddle toggle
+        "button_1":    "PRESS_BUTTON",    # Round red
+        "button_2":    "PRESS_BUTTON",    # Square blue
+        "button_3":    "PRESS_BUTTON",    # Oval yellow
+        "button_4":    "PRESS_BUTTON",    # Diamond green
+        "specialty_a": "SET_JOYSTICK",    # Joystick (2-axis ADC + click)
+        "specialty_b": "SET_SLIDER",      # Linear Slider / Fader (ADC)
     },
     "ENGINEER": {
-        1: "SET_SLIDER",      # Linear Slider 60mm (ADC)
-        2: "PRESS_BUTTON",    # Illuminated Arcade Button
-        3: "SET_TOGGLE",      # Toggle
-        4: "SET_TOGGLE",      # Toggle
-        5: "SET_TOGGLE",      # Toggle
+        "toggle_1":    "SET_TOGGLE",
+        "toggle_2":    "SET_TOGGLE",
+        "toggle_3":    "SET_TOGGLE",
+        "button_1":    "PRESS_BUTTON",
+        "button_2":    "PRESS_BUTTON",
+        "button_3":    "PRESS_BUTTON",
+        "button_4":    "PRESS_BUTTON",
+        "specialty_a": "SET_SLIDER",      # Linear Slider / Fader (ADC)
+        "specialty_b": "PLUG_JACK",       # Barrel Jack Patch Bay (3 ports, 3 wires)
     },
     "OPERATOR": {
-        1: "SET_ENCODER",     # Rotary Encoder (A/B + click)
-        2: "SET_TOGGLE",      # Covered Safety Toggle
-        3: "SET_TOGGLE",      # Toggle
-        4: "PRESS_BUTTON",    # Momentary
-        5: "PRESS_BUTTON",    # Momentary
+        "toggle_1":    "SET_TOGGLE",
+        "toggle_2":    "SET_TOGGLE",
+        "toggle_3":    "SET_TOGGLE",
+        "button_1":    "PRESS_BUTTON",
+        "button_2":    "PRESS_BUTTON",
+        "button_3":    "PRESS_BUTTON",
+        "button_4":    "PRESS_BUTTON",
+        "specialty_a": "SET_ENCODER",     # Rotary Encoder (A/B + click)
+        "specialty_b": "ENTER_CODE",      # 4-Button Number Pad
     },
     "SENTINEL": {
-        1: "SCAN_NFC",        # NFC/RFID Scanner RC522 (SPI)
-        2: "SET_ROTARY_SW",   # 3-Position Rotary Switch (ADC ladder)
-        3: "SET_TOGGLE",      # Toggle
-        4: "SET_TOGGLE",      # Toggle
-        5: "PRESS_BUTTON",    # Momentary
+        "toggle_1":    "SET_TOGGLE",
+        "toggle_2":    "SET_TOGGLE",
+        "toggle_3":    "SET_TOGGLE",
+        "button_1":    "PRESS_BUTTON",
+        "button_2":    "PRESS_BUTTON",
+        "button_3":    "PRESS_BUTTON",
+        "button_4":    "PRESS_BUTTON",
+        "specialty_a": "SCAN_NFC",        # NFC/RFID Scanner RC522 (SPI)
+        "specialty_b": "SET_ROTARY_SW",   # 6-Position Rotary Switch (ADC ladder)
     },
     "MEDIC": {
-        1: "MATCH_COLOR",     # Color-Match Dial (ADC pot + NeoPixel)
-        2: "SET_ENCODER",     # Rotary Encoder (small, EC11-style)
-        3: "SET_TOGGLE",      # Toggle
-        4: "PRESS_BUTTON",    # Momentary
-        5: "PRESS_BUTTON",    # Momentary
+        "toggle_1":    "SET_TOGGLE",
+        "toggle_2":    "SET_TOGGLE",
+        "toggle_3":    "SET_TOGGLE",
+        "button_1":    "PRESS_BUTTON",
+        "button_2":    "PRESS_BUTTON",
+        "button_3":    "PRESS_BUTTON",
+        "button_4":    "PRESS_BUTTON",
+        "specialty_a": "MATCH_COLOR",     # Color Dial (pot + 2 RGB LEDs)
+        "specialty_b": "SET_ENCODER",     # Rotary Encoder (EC11-style)
     },
     "ANALYST": {
-        1: "ENTER_CODE",      # 4-Button Keypad
-        2: "MATCH_WAVE",      # LED Wave Dial (small pot + 4-LED bar)
-        3: "SET_TOGGLE",      # Toggle
-        4: "SET_TOGGLE",      # Toggle
-        5: "PRESS_BUTTON",    # Momentary
+        "toggle_1":    "SET_TOGGLE",
+        "toggle_2":    "SET_TOGGLE",
+        "toggle_3":    "SET_TOGGLE",
+        "button_1":    "PRESS_BUTTON",
+        "button_2":    "PRESS_BUTTON",
+        "button_3":    "PRESS_BUTTON",
+        "button_4":    "PRESS_BUTTON",
+        "specialty_a": "ENTER_CODE",      # 4-Button Number Pad
+        "specialty_b": "SET_ROTARY_SW",   # 6-Position Rotary Switch (ADC ladder)
     },
     "SCOUT": {
-        1: "MATCH_WAVE",      # LED Wave Dial (ADC pot + NeoPixel ring)
-        2: "SET_TOGGLE",      # Covered Safety Toggle
-        3: "SET_TOGGLE",      # Toggle
-        4: "SET_TOGGLE",      # Toggle
-        5: "SET_TOGGLE",      # Toggle
+        "toggle_1":    "SET_TOGGLE",
+        "toggle_2":    "SET_TOGGLE",
+        "toggle_3":    "SET_TOGGLE",
+        "button_1":    "PRESS_BUTTON",
+        "button_2":    "PRESS_BUTTON",
+        "button_3":    "PRESS_BUTTON",
+        "button_4":    "PRESS_BUTTON",
+        "specialty_a": "SET_JOYSTICK",    # Joystick (2-axis ADC + click)
+        "specialty_b": "MATCH_COLOR",     # Color Dial (pot + 2 RGB LEDs)
     },
     "COMMANDER": {
-        1: "SET_ROTARY_SW",   # Multi-Position Rotary Switch 6-pos (ADC ladder)
-        2: "PRESS_BUTTON",    # Illuminated Arcade Button
-        3: "SET_TOGGLE",      # Toggle
-        4: "PRESS_BUTTON",    # Momentary
-        5: "PRESS_BUTTON",    # Momentary
+        "toggle_1":    "SET_TOGGLE",
+        "toggle_2":    "SET_TOGGLE",
+        "toggle_3":    "SET_TOGGLE",
+        "button_1":    "PRESS_BUTTON",
+        "button_2":    "PRESS_BUTTON",
+        "button_3":    "PRESS_BUTTON",
+        "button_4":    "PRESS_BUTTON",
+        "specialty_a": "PLUG_JACK",       # Barrel Jack Patch Bay (3 ports, 3 wires)
+        "specialty_b": "SCAN_NFC",        # NFC/RFID Scanner RC522 (SPI)
     },
 }
 
-# Command complexity tiers: action -> human effort required.
+# ──────────────────────────────────────────────────────────────────────
+# Slot Classification
+# ──────────────────────────────────────────────────────────────────────
+UNIVERSAL_SLOTS = [
+    "toggle_1", "toggle_2", "toggle_3",
+    "button_1", "button_2", "button_3", "button_4",
+]
+SPECIALTY_SLOTS = ["specialty_a", "specialty_b"]
+ALL_COMMANDABLE_SLOTS = UNIVERSAL_SLOTS + SPECIALTY_SLOTS
+
+# ──────────────────────────────────────────────────────────────────────
+# Element → Archetype reverse lookup
+# ──────────────────────────────────────────────────────────────────────
+ELEMENT_ARCHETYPES = {
+    "SET_JOYSTICK":  ["NAVIGATOR", "SCOUT"],
+    "SET_SLIDER":    ["NAVIGATOR", "ENGINEER"],
+    "PLUG_JACK":     ["ENGINEER", "COMMANDER"],
+    "SET_ENCODER":   ["OPERATOR", "MEDIC"],
+    "ENTER_CODE":    ["OPERATOR", "ANALYST"],
+    "SCAN_NFC":      ["SENTINEL", "COMMANDER"],
+    "SET_ROTARY_SW": ["SENTINEL", "ANALYST"],
+    "MATCH_COLOR":   ["MEDIC", "SCOUT"],
+}
+
+# ──────────────────────────────────────────────────────────────────────
+# Command Complexity Tiers
+# ──────────────────────────────────────────────────────────────────────
+# T1 = quick binary actions (toggles, button presses)
+# T2 = moderate precision (slider, encoder, rotary switch, patch bay)
+# T3 = high complexity (joystick 2-axis, color matching, code entry, NFC scan)
 TIER_ACTIONS = {
     "T1": {"SET_TOGGLE", "PRESS_BUTTON"},
-    "T2": {"SET_SLIDER", "SET_ENCODER", "SET_ROTARY_SW", "MATCH_WAVE"},
+    "T2": {"SET_SLIDER", "SET_ENCODER", "SET_ROTARY_SW", "PLUG_JACK"},
     "T3": {"SET_JOYSTICK", "MATCH_COLOR", "ENTER_CODE", "SCAN_NFC"},
 }
 
@@ -88,7 +173,35 @@ TIER_TIMEOUT_RANGE = {
 # All valid action types (union of all tiers).
 ALL_ACTIONS = TIER_ACTIONS["T1"] | TIER_ACTIONS["T2"] | TIER_ACTIONS["T3"]
 
-# Crisis event types.
+# ──────────────────────────────────────────────────────────────────────
+# Stateful vs Momentary Controls
+# ──────────────────────────────────────────────────────────────────────
+# Stateful controls retain their position — the Hub must track state
+# and only issue valid commands (e.g., don't command "turn ON" if already ON).
+# Scenario command pools MUST provide both ON and OFF variants for binary
+# stateful actions, and multiple target values for continuous stateful actions.
+STATEFUL_ACTIONS = {
+    "SET_TOGGLE",       # binary: on / off
+    "PLUG_JACK",        # binary per-port: wire-in / wire-out (tracked per port)
+    "SET_SLIDER",       # continuous: 0–100
+    "SET_ENCODER",      # continuous: integer position
+    "SET_ROTARY_SW",    # discrete: 1–6
+    "MATCH_COLOR",      # continuous: [r, g, b]
+}
+
+# Momentary controls are fire-and-forget — no state tracking needed.
+MOMENTARY_ACTIONS = {
+    "PRESS_BUTTON",     # momentary push
+    "ENTER_CODE",       # sequence entry (resets after submit)
+    "SCAN_NFC",         # tap-to-scan (event, not state)
+}
+
+# Binary stateful actions that MUST have both true/false values in pools.
+BINARY_STATEFUL_ACTIONS = {"SET_TOGGLE"}
+
+# ──────────────────────────────────────────────────────────────────────
+# Crisis Event Types
+# ──────────────────────────────────────────────────────────────────────
 CRISIS_TYPES = {"CRISIS_ALL", "CRISIS_THRESHOLD", "MULTI_ACTION"}
 
 # Crisis penalty types.
@@ -97,6 +210,9 @@ CRISIS_PENALTIES = {"health_minor", "health_major"}
 # Outcome tiers.
 OUTCOME_TIERS = {"TRIUMPH", "SUCCESS", "SURVIVE", "FAILURE", "DISASTER"}
 
+# ──────────────────────────────────────────────────────────────────────
+# Branch Structure
+# ──────────────────────────────────────────────────────────────────────
 # All 8 branch paths (Win/Lose across 3 branch points).
 BRANCH_PATHS = ["WWW", "WWL", "WLW", "WLL", "LWW", "LWL", "LLW", "LLL"]
 
@@ -119,7 +235,11 @@ PATH_PHASES = {
     "LLL": ["frantic_1", "frantic_2_L", "frantic_3_LL"],
 }
 
-# Label length limits.
+# ──────────────────────────────────────────────────────────────────────
+# Label & Pool Constraints
+# ──────────────────────────────────────────────────────────────────────
+# OLED labels: one per commandable slot (7 universal + 2 specialty = 9)
+OLED_LABEL_COUNT = 9
 OLED_LABEL_MAX = 16
 SCREEN_LABEL_MAX = 40
 NARRATOR_LINE_MAX = 200
@@ -131,6 +251,19 @@ MIN_COOP_PER_ARCH = 2
 # Minimum crises per scenario.
 MIN_CRISES = 2
 
+# ──────────────────────────────────────────────────────────────────────
+# Command Targeting Modes
+# ──────────────────────────────────────────────────────────────────────
+# TARGETED  — command for a specific archetype (target_arch = "NAVIGATOR")
+# OPEN      — any archetype with the right element can answer (target = "ANY")
+#             First correct responder wins; others get cooperative green flash.
+# COOP      — displayed on one player's screen, executed by another
+COMMAND_MODES = {"TARGETED", "OPEN", "COOP"}
+
+
+# ──────────────────────────────────────────────────────────────────────
+# Helper Functions
+# ──────────────────────────────────────────────────────────────────────
 
 def get_tier(action):
     """Return the tier (T1/T2/T3) for a given action type, or None."""
@@ -148,3 +281,30 @@ def get_valid_actions(archetype):
 def is_valid_command(archetype, action, slot):
     """Check if an archetype can perform this action on this slot."""
     return CAPABILITY_MATRIX.get(archetype, {}).get(slot) == action
+
+
+def get_archetypes_for_action(action):
+    """Return list of archetypes that have this action on any slot."""
+    result = []
+    for arch, slots in CAPABILITY_MATRIX.items():
+        if action in slots.values():
+            result.append(arch)
+    return result
+
+
+def get_slot_for_action(archetype, action):
+    """Return the slot name where an archetype has this action, or None."""
+    for slot, act in CAPABILITY_MATRIX.get(archetype, {}).items():
+        if act == action:
+            return slot
+    return None
+
+
+def is_stateful(action):
+    """Return True if the action type tracks persistent state."""
+    return action in STATEFUL_ACTIONS
+
+
+def is_specialty_slot(slot):
+    """Return True if the slot is a specialty element (not universal base)."""
+    return slot in ("specialty_a", "specialty_b")

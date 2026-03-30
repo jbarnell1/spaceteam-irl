@@ -1,6 +1,6 @@
 # Scenario Schema & Mission Architect
 
-> **Version:** 0.1.0 (Draft)
+> **Version:** 0.2.0 (Universal Base + Specialty Elements)
 >
 > This document defines the **scenario file format** — what a game pack actually contains — and the **Mission Architect** system that generates them. Every NFC card and companion-app game pack maps to one scenario file conforming to this schema.
 >
@@ -11,17 +11,24 @@
 ## Table of Contents
 
 - [Command Capability Matrix](#command-capability-matrix)
+  - [Slot Layout](#slot-layout)
   - [Action Types per Archetype](#action-types-per-archetype)
   - [Shared Actions (All Archetypes)](#shared-actions-all-archetypes)
   - [Command Complexity Tiers](#command-complexity-tiers)
+  - [Statefulness](#statefulness)
+- [Command Targeting Modes](#command-targeting-modes)
 - [Scenario File Format](#scenario-file-format)
   - [Top-Level Structure](#top-level-structure)
   - [Metadata](#metadata)
   - [Role Map](#role-map)
   - [OLED Label Map](#oled-label-map)
   - [Command Pools](#command-pools)
+    - [Direct Commands](#direct-commands)
+    - [Cooperative Commands](#cooperative-commands)
+    - [Open Commands](#open-commands)
   - [Crisis Events](#crisis-events)
   - [Phase Definitions](#phase-definitions)
+    - [Pre-Flight Phase](#pre-flight-phase)
   - [Outcome Branches](#outcome-branches)
   - [Narrator Script](#narrator-script)
 - [Outcome & Branching System](#outcome--branching-system)
@@ -32,6 +39,7 @@
 - [Difficulty & Pacing](#difficulty--pacing)
   - [Difficulty Curves](#difficulty-curves)
   - [Adaptive Pacing](#adaptive-pacing)
+  - [Narrator-Driven Pacing](#narrator-driven-pacing)
 - [Replayability Mechanisms](#replayability-mechanisms)
 - [Mission Architect (Content Engine)](#mission-architect-content-engine)
   - [Inputs](#inputs)
@@ -45,33 +53,65 @@
 
 This is the master reference for what commands each archetype can physically execute. Every command in every scenario must map to an entry in this matrix.
 
+### Slot Layout
+
+Every tablet has **9 commandable slots** arranged in two groups:
+
+**Universal Base (7 slots, identical on every tablet):**
+
+| Slot | Control | Action Type | Value Format |
+|---|---|---|---|
+| `toggle_1` | Bat toggle switch | `SET_TOGGLE` | `bool` |
+| `toggle_2` | Rocker toggle switch | `SET_TOGGLE` | `bool` |
+| `toggle_3` | Paddle toggle switch | `SET_TOGGLE` | `bool` |
+| `button_1` | Round red button | `PRESS_BUTTON` | `null` |
+| `button_2` | Square blue button | `PRESS_BUTTON` | `null` |
+| `button_3` | Oval yellow button | `PRESS_BUTTON` | `null` |
+| `button_4` | Diamond green button | `PRESS_BUTTON` | `null` |
+
+**Specialty Elements (2 slots, archetype-specific):**
+
+| Slot | Varies by archetype |
+|---|---|
+| `specialty_a` | First specialty element |
+| `specialty_b` | Second specialty element |
+
 ### Action Types per Archetype
 
-Each row is an archetype. Each column is a protocol action type. The cell shows which **slot** handles that action and the **value format** expected.
+Each row shows what action types are available on the specialty slots. All archetypes share the 7 universal slots (3× `SET_TOGGLE` + 4× `PRESS_BUTTON`).
 
-| Archetype | `SET_JOYSTICK` | `SET_SLIDER` | `SET_ENCODER` | `SCAN_NFC` | `MATCH_COLOR` | `ENTER_CODE` | `MATCH_WAVE` | `SET_ROTARY_SW` | `SET_TOGGLE` | `PRESS_BUTTON` |
-|---|---|---|---|---|---|---|---|---|---|---|
-| **Navigator** | Slot 1 `{x,y}` | Slot 2 `0–100` | — | — | — | — | — | — | Slots 3–4 | Slot 5 |
-| **Engineer** | — | Slot 1 `0–100` | — | — | — | — | — | — | Slots 3–5 | Slot 2 |
-| **Operator** | — | — | Slot 1 `int16` | — | — | — | — | — | Slots 2–3 | Slots 4–5 |
-| **Sentinel** | — | — | — | Slot 1 `uid` | — | — | — | Slot 2 `1–3` | Slots 3–4 | Slot 5 |
-| **Medic** | — | — | Slot 2 `int16` | — | Slot 1 `[r,g,b]` | — | — | — | Slot 3 | Slots 4–5 |
-| **Analyst** | — | — | — | — | — | Slot 1 `"4231"` | Slot 2 `0–255` | — | Slots 3–4 | Slot 5 |
-| **Scout** | — | — | — | — | — | — | Slot 1 `0–255` | — | Slots 2–5 | — |
-| **Commander** | — | — | — | — | — | — | — | Slot 1 `1–6` | Slot 3 | Slots 2, 4–5 |
+| Archetype | `specialty_a` | `specialty_b` |
+|---|---|---|
+| **Navigator** | `SET_JOYSTICK` `{x,y}` | `SET_SLIDER` `0–100` |
+| **Engineer** | `SET_SLIDER` `0–100` | `PLUG_JACK` `{port,wire}` |
+| **Operator** | `SET_ENCODER` `int` | `ENTER_CODE` `"3142"` |
+| **Sentinel** | `SCAN_NFC` `"uid"` | `SET_ROTARY_SW` `1–6` |
+| **Medic** | `MATCH_COLOR` `[r,g,b]` | `SET_ENCODER` `int` |
+| **Analyst** | `ENTER_CODE` `"3142"` | `SET_ROTARY_SW` `1–6` |
+| **Scout** | `SET_JOYSTICK` `{x,y}` | `MATCH_COLOR` `[r,g,b]` |
+| **Commander** | `PLUG_JACK` `{port,wire}` | `SCAN_NFC` `"uid"` |
 
-**Reading this matrix:** To author a command for the Engineer, you can use `SET_SLIDER` (targets Slot 1), `SET_TOGGLE` (targets Slots 3, 4, or 5), or `PRESS_BUTTON` (targets Slot 2). You cannot ask the Engineer to `SCAN_NFC` — they don't have that hardware.
+**Element sharing:** Each specialty element appears on exactly 2 archetypes. This enables OPEN commands (either archetype can answer) and cross-tablet commands.
 
-**T2 symmetry:** Each T2 action type (`SET_SLIDER`, `SET_ENCODER`, `SET_ROTARY_SW`, `MATCH_WAVE`) appears on exactly two archetypes — once as a Slot 1 signature control and once as a Slot 2 medium control. This ensures every archetype has T1, T2, and T3 command variety.
+| Element | Action Type | Archetypes |
+|---|---|---|
+| Joystick | `SET_JOYSTICK` | Navigator, Scout |
+| Slider | `SET_SLIDER` | Navigator, Engineer |
+| Barrel Jack Patch Bay | `PLUG_JACK` | Engineer, Commander |
+| Rotary Encoder | `SET_ENCODER` | Operator, Medic |
+| Number Pad | `ENTER_CODE` | Operator, Analyst |
+| NFC Scanner | `SCAN_NFC` | Sentinel, Commander |
+| Rotary Switch | `SET_ROTARY_SW` | Sentinel, Analyst |
+| Color Dial | `MATCH_COLOR` | Medic, Scout |
 
 ### Shared Actions (All Archetypes)
 
-These target **base tablet components** present on every archetype and are not slot-specific:
+These target **base tablet components** present on every archetype and are not scenario-commanded:
 
 | Action | Component | Notes |
 |---|---|---|
 | `CRISIS_BTN` | Crisis Button (guarded illuminated pushbutton) | Crisis events — every player has one |
-| `SUBMIT` | Submit Button | Not a command action; used to lock in analog values |
+| `SUBMIT` | Submit Button | Locks in analog/specialty values — not a command action |
 
 ### Command Complexity Tiers
 
@@ -80,10 +120,82 @@ Commands are classified by how much cognitive/physical effort they require. The 
 | Tier | Description | Action Types | Avg. Execution Time |
 |---|---|---|---|
 | **T1 — Quick** | Binary flip or press. Instant. | `SET_TOGGLE`, `PRESS_BUTTON` | 1–2 seconds |
-| **T2 — Standard** | Moderate precision or matching. Requires aiming. | `SET_SLIDER`, `SET_ENCODER`, `SET_ROTARY_SW`, `MATCH_WAVE` | 3–6 seconds |
-| **T3 — Complex** | Multi-step or high precision. Requires focus. | `SET_JOYSTICK`, `MATCH_COLOR`, `ENTER_CODE`, `SCAN_NFC` | 5–12 seconds |
+| **T2 — Standard** | Moderate precision or matching. | `SET_SLIDER`, `SET_ENCODER`, `SET_ROTARY_SW`, `PLUG_JACK` | 3–6 seconds |
+| **T3 — Complex** | Multi-step or high precision. | `SET_JOYSTICK`, `MATCH_COLOR`, `ENTER_CODE`, `SCAN_NFC` | 5–12 seconds |
 
-The Mission Architect tags every command with its tier. The Hub's difficulty system uses this to balance workload.
+### Statefulness
+
+Controls fall into two categories that affect command generation:
+
+**Stateful controls** retain their physical position between commands. The Hub tracks state and ensures it only issues *valid* commands (e.g., won't say "flip switch ON" if already ON).
+
+| Control | State Model | Pool Requirement |
+|---|---|---|
+| Toggles (`SET_TOGGLE`) | Binary ON/OFF | Must have both `true` and `false` variants per toggle |
+| Barrel Jacks (`PLUG_JACK`) | Binary per port (wire in/out) | Multiple wire/port combinations |
+| Slider (`SET_SLIDER`) | Continuous 0–100 | Multiple distinct target values |
+| Rotary Encoder (`SET_ENCODER`) | Continuous integer | Multiple distinct target values |
+| Rotary Switch (`SET_ROTARY_SW`) | Discrete 1–6 | Multiple position targets |
+| Color Dial (`MATCH_COLOR`) | Continuous [r,g,b] | Multiple distinct color targets |
+
+**Momentary controls** are fire-and-forget. No state tracking needed:
+
+| Control | Model |
+|---|---|
+| Buttons (`PRESS_BUTTON`) | Event — press and release |
+| Number Pad (`ENTER_CODE`) | Sequence — resets after submit |
+| NFC Scanner (`SCAN_NFC`) | Event — tap to scan |
+
+The Hub tracks uncommanded state changes (a player flips a toggle without being told). No penalty for momentary presses. For stateful changes, the Hub updates its state table silently (natural consequences — it may affect future command generation). On harder difficulties, wrong submissions trigger active lockout (1–2 second input freeze on that control).
+
+---
+
+## Command Targeting Modes
+
+Three modes govern who sees a command and who executes it:
+
+### TARGETED (Direct)
+
+Default mode. Command targets a specific archetype. Only that player sees and executes it.
+
+```json
+{
+  "target_arch": "NAVIGATOR",
+  "action": "SET_SLIDER",
+  "slot": "specialty_b",
+  "value": 75,
+  ...
+}
+```
+
+### OPEN
+
+Command targets `"ANY"` — any archetype with the required action type can respond. Sent to all eligible tablets simultaneously. The **first correct responder wins**. Other eligible tablets receive a **cooperative green flash** (positive, not punishing).
+
+```json
+{
+  "target": "ANY",
+  "action": "SET_JOYSTICK",
+  "value": {"x": -80, "y": 0},
+  ...
+}
+```
+
+For this command, both Navigator and Scout have a joystick. The Hub auto-resolves each tablet's slot from the capability matrix. OPEN commands increase engagement on harder difficulties and create emergent racing dynamics.
+
+### COOP (Cross-Tablet)
+
+Command appears on one player's screen but targets another player's controls. The display player must verbally shout the instruction.
+
+```json
+{
+  "display_on": "COMMANDER",
+  "target_arch": "NAVIGATOR",
+  "action": "SET_JOYSTICK",
+  "slot": "specialty_a",
+  ...
+}
+```
 
 ---
 
@@ -99,7 +211,11 @@ A scenario is a **JSON file** stored on the Hub's internal flash. It is the comp
   "meta": { },
   "roles": { },
   "oled_labels": { },
-  "command_pools": { },
+  "command_pools": {
+    "direct": [ ],
+    "cooperative": [ ],
+    "open": [ ]
+  },
   "crises": [ ],
   "phases": [ ],
   "outcomes": { },
@@ -111,690 +227,397 @@ A scenario is a **JSON file** stored on the Hub's internal flash. It is the comp
 
 ```json
 "meta": {
-  "id": "PIRATE_HUNT_01",
-  "title": "The Crimson Galleon",
-  "pack": "PIRATE_ADVENTURES",
-  "theme": "pirate",
+  "id": "STATION_OMEGA_01",
+  "title": "Station Omega",
+  "pack": "DEEP_SPACE_COLLECTION",
+  "theme": "space",
   "subject": "teamwork",
   "age_rating": "8+",
   "difficulty": "medium",
-  "player_count": { "min": 2, "max": 8 },
-  "duration_sec": { "min": 180, "max": 420 },
+  "player_count": { "min": 3, "max": 8 },
+  "duration_sec": { "min": 840, "max": 900 },
+  "adaptive_pacing": true,
   "version": "1.0.0",
   "author": "mission_architect"
 }
 ```
 
-| Field | Description |
-|---|---|
-| `id` | Unique scenario identifier (matches NFC card payload) |
-| `pack` | Parent game pack this scenario belongs to |
-| `theme` | Theme key — drives role names and OLED labels |
-| `subject` | Optional educational subject (for school/STEM packs) |
-| `player_count` | Scenario works with this range of connected archetypes |
-| `duration_sec` | Approximate game duration (Hub targets this range) |
+| Field | Type | Description |
+|---|---|---|
+| `id` | `string` | Unique scenario identifier (UPPER_SNAKE) |
+| `title` | `string` | Human-readable name |
+| `pack` | `string` | Parent game pack ID |
+| `theme` | `string` | Thematic setting (space, pirate, fantasy, etc.) |
+| `subject` | `string` | Educational/thematic focus |
+| `age_rating` | `string` | Target age group |
+| `difficulty` | `string` | `easy`, `medium`, `hard`, or `extreme` — resolves all per-phase tuning from presets |
+| `player_count` | `{min, max}` | Supported player range (1–8) |
+| `duration_sec` | `{min, max}` | Expected total play time in seconds |
+| `adaptive_pacing` | `bool` | Whether Hub adjusts command rate based on performance |
+| `version` | `semver` | Schema version for this scenario |
+| `author` | `string` | `mission_architect` or human author tag |
 
 ### Role Map
 
-Maps generic archetype IDs to theme-specific narrative role names. The Hub pushes these to tablet command screens.
+Maps archetype IDs to scenario-specific role names:
 
 ```json
 "roles": {
-  "NAVIGATOR":  "Quartermaster",
-  "ENGINEER":   "Ship's Carpenter",
-  "OPERATOR":   "Signalman",
-  "SENTINEL":   "Master-at-Arms",
-  "MEDIC":      "Surgeon",
-  "ANALYST":    "Cartographer",
-  "SCOUT":      "Lookout",
-  "COMMANDER":  "Bosun"
+  "NAVIGATOR":  "Helm Officer",
+  "ENGINEER":   "Systems Engineer",
+  "OPERATOR":   "Comms Officer",
+  "SENTINEL":   "Security Chief",
+  "MEDIC":      "Medical Officer",
+  "ANALYST":    "Science Officer",
+  "SCOUT":      "Recon Officer",
+  "COMMANDER":  "Station Commander"
 }
 ```
-
-A scenario only needs to define roles for the archetypes it supports. If 3 archetypes connect that aren't in the role map, the Hub uses generic fallback names.
 
 ### OLED Label Map
 
-Five narrative labels per archetype, sent via `OLED_LABELS` at scenario load.
+Assigns narrative labels (max 16 chars) to each of a tablet's 9 commandable slots:
 
 ```json
 "oled_labels": {
-  "NAVIGATOR": ["Ship's Wheel", "Anchor Release", "Port Sail", "Starboard Sail", "Mark Position"],
-  "ENGINEER":  ["Sail Hoist", "Fire Cannons", "Bilge Pump", "Cargo Hatch", "Gunport Doors"],
-  "SENTINEL":  ["Captain's Seal", "Brace for Impact", "Armor Plating", "Boarding Nets", "Ring Bell"],
-  "MEDIC":     ["Brew Tonic", "Apply Poultice", "Sickbay Lantern", "Check Pulse", "Call for Rum"],
-  "ANALYST":   ["Chart Course", "Decode Signal", "Compass Bearing", "Star Chart", "Log Entry"],
-  "SCOUT":     ["Spyglass Sweep", "Stealth Mode", "Port Watch", "Starboard Watch", "Crow's Nest"],
-  "OPERATOR":  ["Signal Flags", "Emergency Flare", "Semaphore", "Hail Ship", "Send Warning"],
-  "COMMANDER": ["Fleet Formation", "Give the Order", "Flag Signals", "Bosun's Whistle", "Ship's Log"]
-}
-```
-
-Label order matches slot order (index 0 = Slot 1, etc.).
-
-### Command Pools
-
-The core of the scenario. Each pool is a named bucket of commands that the Hub draws from during the frantic phase. Commands are **never hardcoded in sequence** — the Hub randomly selects from pools, ensuring replayability.
-
-```json
-"command_pools": {
-  "direct": [
-    {
-      "id": "nav_steer_port",
-      "target_arch": "NAVIGATOR",
-      "action": "SET_JOYSTICK",
-      "slot": 1,
-      "tier": "T3",
-      "label": "Hard to port!",
-      "narrator_line": "Quartermaster! Hard to port — reef ahead!",
-      "value": { "x": -80, "y": 0 },
-      "tolerance": { "x": 15, "y": 20 },
-      "timeout_ms": 8000
-    },
-    {
-      "id": "eng_full_sail",
-      "target_arch": "ENGINEER",
-      "action": "SET_SLIDER",
-      "slot": 1,
-      "tier": "T2",
-      "label": "Full sail!",
-      "narrator_line": "Carpenter! Hoist the mainsail — full speed!",
-      "value": 100,
-      "tolerance": 10,
-      "timeout_ms": 5000
-    },
-    {
-      "id": "sent_scan_red",
-      "target_arch": "SENTINEL",
-      "action": "SCAN_NFC",
-      "slot": 1,
-      "tier": "T3",
-      "label": "Scan the RED seal!",
-      "narrator_line": "Master-at-Arms! I need the crimson captain's seal — NOW!",
-      "value": "RED_SEAL",
-      "timeout_ms": 10000
-    },
-    {
-      "id": "med_green_tonic",
-      "target_arch": "MEDIC",
-      "action": "MATCH_COLOR",
-      "slot": 1,
-      "tier": "T3",
-      "label": "Mix GREEN tonic!",
-      "narrator_line": "Surgeon! The first mate needs the green tonic — mix it!",
-      "value": [0, 200, 50],
-      "tolerance": 30,
-      "timeout_ms": 8000
-    },
-    {
-      "id": "analyst_code_314",
-      "target_arch": "ANALYST",
-      "action": "ENTER_CODE",
-      "slot": 1,
-      "tier": "T3",
-      "label": "Enter code 3-1-4!",
-      "narrator_line": "Cartographer! The map says 3-1-4 — punch it in!",
-      "value": "314",
-      "timeout_ms": 7000
-    },
-    {
-      "id": "nav_toggle_port",
-      "target_arch": "NAVIGATOR",
-      "action": "SET_TOGGLE",
-      "slot": 3,
-      "tier": "T1",
-      "label": "Port sail — ON!",
-      "narrator_line": "Raise the port sail!",
-      "value": true,
-      "timeout_ms": 3000
-    }
+  "NAVIGATOR": [
+    "Port Thruster", "Stbd Thruster", "Drift Brake",
+    "Mark Waypoint", "Flare Launch", "Sensor Ping", "Dock Clamp",
+    "Helm Control", "Thrust Lever"
   ],
-  "cooperative": [
-    {
-      "id": "coop_tell_eng_half",
-      "display_on": "NAVIGATOR",
-      "target_arch": "ENGINEER",
-      "action": "SET_SLIDER",
-      "slot": 1,
-      "tier": "T2",
-      "label": "Tell the Carpenter: half sail!",
-      "narrator_line": "Quartermaster! Tell the Carpenter — half sail, now!",
-      "value": 50,
-      "tolerance": 10,
-      "timeout_ms": 10000
-    },
-    {
-      "id": "coop_tell_sent_lock",
-      "display_on": "MEDIC",
-      "target_arch": "SENTINEL",
-      "action": "SET_TOGGLE",
-      "slot": 3,
-      "tier": "T1",
-      "label": "Tell the Master-at-Arms: armor ON!",
-      "narrator_line": "Surgeon! Shout to the Master-at-Arms — raise the armor plating!",
-      "value": true,
-      "timeout_ms": 6000
-    }
+  "ENGINEER": [
+    "Reactor", "Coolant Valve", "Fuel Dump",
+    "Emergency Vent", "Purge Line", "System Reset", "Aux Power",
+    "Power Grid", "Patch Bay"
   ]
 }
 ```
 
-#### Command Object Fields
+**Order:** `[toggle_1, toggle_2, toggle_3, button_1, button_2, button_3, button_4, specialty_a, specialty_b]`
+
+Each label is max 16 characters.
+
+### Command Pools
+
+Commands are organized into three pools from which the Hub draws randomly during play:
+
+#### Direct Commands
+
+Targeted at a specific archetype. The player sees the command on their screen and executes it.
+
+```json
+{
+  "id": "nav_hard_port",
+  "target_arch": "NAVIGATOR",
+  "action": "SET_JOYSTICK",
+  "slot": "specialty_a",
+  "tier": "T3",
+  "label": "Hard to port — debris field!",
+  "narrator_line": "Helm! Hard to port — debris field dead ahead!",
+  "value": {"x": -80, "y": 0},
+  "tolerance": {"x": 15, "y": 20},
+  "timeout_ms": 8000
+}
+```
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `id` | `string` | Yes | Unique command identifier within this scenario |
-| `target_arch` | `string` | Yes | Archetype that must physically execute the action |
-| `action` | `string` | Yes | Protocol action type (must match [capability matrix](#action-types-per-archetype)) |
-| `slot` | `uint8` | Yes | Which slot on the target archetype (1–5) |
-| `tier` | `string` | Yes | `T1`, `T2`, or `T3` — complexity tier |
-| `label` | `string` | Yes | Short text shown on the player's command screen |
-| `narrator_line` | `string` | Yes | Full narrator voice line (for audio playback on Hub) |
-| `value` | varies | Yes | Target value the player must achieve |
-| `tolerance` | varies | No | Acceptable deviation from `value` (for analog controls). Omit for binary actions. |
-| `timeout_ms` | `uint16` | Yes | Time allowed before the command expires |
-| `display_on` | `string` | Coop only | Archetype whose screen shows this command (the "shouter") |
+| `id` | `string` | ✓ | Unique command identifier |
+| `target_arch` | `string` | ✓ | Target archetype (must be in `ARCHETYPES`) |
+| `action` | `string` | ✓ | Action type (must match archetype's slot capability) |
+| `slot` | `string` | ✓ | Slot name: `toggle_1`–`toggle_3`, `button_1`–`button_4`, `specialty_a`, `specialty_b` |
+| `tier` | `string` | ✓ | `T1`, `T2`, or `T3` |
+| `label` | `string` | ✓ | Display text on command screen (max 40 chars) |
+| `narrator_line` | `string` | ✓ | Audio text (max 200 chars) |
+| `value` | varies | ✓ | Target value (format depends on action type) |
+| `tolerance` | varies | | Acceptable deviation from target (analog/continuous controls) |
+| `timeout_ms` | `int` | ✓ | Base timeout in milliseconds |
 
-#### Pool Types
+#### Cooperative Commands
 
-| Pool | Key | Description |
-|---|---|---|
-| **Direct** | `direct` | Hub → one player's screen. That player executes the command on their own tablet. |
-| **Cooperative** | `cooperative` | Hub → Player A's screen (the "shouter"). Player A must verbally communicate the command to Player B (the "executor"). Player B executes it on their tablet. Tests communication under pressure. |
-
-> **Crisis events** are defined separately (see below) because they operate on different mechanics.
-
-### Crisis Events
-
-Crises interrupt normal command flow. They target **all players** (via the Crisis Button) or **subsets** (via specific controls).
+Displayed on one player's screen, executed by another player. The display player must shout the instruction.
 
 ```json
-"crises": [
-  {
-    "id": "crisis_hull_breach",
-    "type": "CRISIS_ALL",
-    "label": "HULL BREACH!",
-    "narrator_line": "HULL BREACH! ALL HANDS — BRACE! BRACE! BRACE!",
-    "required_count": "all",
-    "timeout_ms": 5000,
-    "penalty": "health_major"
-  },
-  {
-    "id": "crisis_fire_below",
-    "type": "CRISIS_THRESHOLD",
-    "label": "FIRE BELOW DECKS!",
-    "narrator_line": "Fire in the hold! I need at least three of you — SMASH THAT BUTTON!",
-    "required_count": 3,
-    "timeout_ms": 6000,
-    "penalty": "health_minor"
-  },
-  {
-    "id": "crisis_rogue_wave",
-    "type": "MULTI_ACTION",
-    "label": "ROGUE WAVE INCOMING!",
-    "narrator_line": "ROGUE WAVE! Navigator — hard starboard! Engineer — cut the sails! Everyone else — BRACE!",
-    "actions": [
-      { "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "value": { "x": 100, "y": 0 }, "tolerance": { "x": 20, "y": 30 } },
-      { "target_arch": "ENGINEER", "action": "SET_SLIDER", "slot": 1, "value": 0, "tolerance": 10 },
-      { "rest": "CRISIS_BTN" }
-    ],
-    "timeout_ms": 7000,
-    "penalty": "health_major"
-  }
-]
+{
+  "id": "coop_cmd_tell_nav_port",
+  "display_on": "COMMANDER",
+  "target_arch": "NAVIGATOR",
+  "action": "SET_JOYSTICK",
+  "slot": "specialty_a",
+  "tier": "T3",
+  "label": "Tell Helm: hard to port!",
+  "narrator_line": "Commander! Tell the Helm Officer — hard to port!",
+  "value": {"x": -80, "y": 0},
+  "tolerance": {"x": 15, "y": 20},
+  "timeout_ms": 12000
+}
 ```
 
-#### Crisis Types
+Additional field: `display_on` — the archetype whose screen shows the command.
 
-| Type | Mechanic |
-|---|---|
-| `CRISIS_ALL` | All connected players must press their Crisis Button within the timeout. |
-| `CRISIS_THRESHOLD` | At least `required_count` players must press the Crisis Button. |
-| `MULTI_ACTION` | Named archetypes execute specific commands; remaining players press the Crisis Button. Most dramatic. |
+#### Open Commands
 
-### Phase Definitions
-
-Phases control pacing, difficulty, and **narrative branching** across the game session. Every standard scenario follows a fixed structure:
-
-```
- INTRO ─► FRANTIC 1 ─► BRANCH 1 ─► FRANTIC 2 ─► BRANCH 2 ─► FRANTIC 3 ─► BRANCH 3 ─► ENDING
-```
-
-This creates a **2×2×2 branching tree = 8 distinct narrative paths** per scenario:
-
-```
-                                                          ┌─ W ── Path A (WWW)
-                                      ┌─ W ── Frantic 3 ─┤
-                   ┌─ W ── Frantic 2 ─┤                   └─ L ── Path B (WWL)
-                   │                  │                    ┌─ W ── Path C (WLW)
-                   │                  └─ L ── Frantic 3 ─┤
- INTRO ► Frantic 1 ┤                                      └─ L ── Path D (WLL)
-                   │                                      ┌─ W ── Path E (LWW)
-                   │                  ┌─ W ── Frantic 3 ─┤
-                   └─ L ── Frantic 2 ─┤                   └─ L ── Path F (LWL)
-                                      │                    ┌─ W ── Path G (LLW)
-                                      └─ L ── Frantic 3 ─┤
-                                                          └─ L ── Path H (LLL)
-```
-
-Each branch point evaluates crew performance using the same [performance metrics](#performance-metrics) and composite score. The tier at each checkpoint determines which narrative fork the story takes — different narrator lines, different difficulty tuning for the next phase, and ultimately a different ending.
-
-#### Phase Naming Convention
-
-With 3 branches producing up to 4 variants of Frantic 2 and up to 4 variants of Frantic 3, phases use a path-suffix naming scheme:
-
-| Phase | Variants | IDs |
-|---|---|---|
-| Frantic 1 | 1 (shared) | `frantic_1` |
-| Frantic 2 | 2 (after W or L) | `frantic_2_W`, `frantic_2_L` |
-| Frantic 3 | 4 (after WW, WL, LW, LL) | `frantic_3_WW`, `frantic_3_WL`, `frantic_3_LW`, `frantic_3_LL` |
-
-> **Authoring shortcut:** Frantic 2 and 3 variants can share the same command pools — only difficulty tuning and ambient narrator lines need to differ. The story branches through narration and tone, not through entirely different command sets. This keeps authoring effort manageable.
+Target `"ANY"` — any archetype that has the required element on their tablet can respond. The Hub broadcasts to all eligible tablets; the first correct responder claims it. Others get a cooperative green flash.
 
 ```json
-"phases": [
-  {
-    "id": "intro",
-    "type": "NARRATION",
-    "duration_sec": 30,
-    "narrator_lines": [
-      "Welcome aboard The Crimson Galleon, you sorry lot!",
-      "We've got wind in our sails and a Royal Navy frigate on our tail.",
-      "Stations, everyone. This is going to get rough."
-    ]
-  },
-  {
-    "id": "frantic_1",
-    "type": "FRANTIC",
-    "duration_sec": 90,
-    "difficulty": {
-      "commands_per_min": { "start": 4, "end": 7 },
-      "coop_ratio": 0.2,
-      "crisis_chance_per_30s": 0.15,
-      "timeout_multiplier": 1.2
-    },
-    "pools": ["direct", "cooperative"],
-    "crises": ["crisis_hull_breach"]
-  },
-  {
-    "id": "branch_1",
-    "type": "BRANCH",
-    "evaluate": "frantic_1",
-    "threshold": 0.55,
-    "win": {
-      "narrator_lines": [
-        "Ha! We're pulling ahead!",
-        "The frigate's falling behind — but don't celebrate yet.",
-        "They're signaling for reinforcements. Round two, crew!"
-      ],
-      "next_phase": "frantic_2_W"
-    },
-    "lose": {
-      "narrator_lines": [
-        "That was sloppy! The frigate is RIGHT on us!",
-        "Half the rigging is torn and the bilge is flooding.",
-        "Get it together or we're all going to the brig!"
-      ],
-      "next_phase": "frantic_2_L"
-    }
-  },
-  {
-    "id": "frantic_2_W",
-    "type": "FRANTIC",
-    "duration_sec": 100,
-    "difficulty": {
-      "commands_per_min": { "start": 7, "end": 10 },
-      "coop_ratio": 0.35,
-      "crisis_chance_per_30s": 0.25,
-      "timeout_multiplier": 1.0
-    },
-    "pools": ["direct", "cooperative"],
-    "crises": ["crisis_hull_breach", "crisis_fire_below"],
-    "narrator_lines_ambient": [
-      "Keep the pressure up!",
-      "They're trying to flank — stay sharp!"
-    ]
-  },
-  {
-    "id": "frantic_2_L",
-    "type": "FRANTIC",
-    "duration_sec": 100,
-    "difficulty": {
-      "commands_per_min": { "start": 6, "end": 9 },
-      "coop_ratio": 0.40,
-      "crisis_chance_per_30s": 0.30,
-      "timeout_multiplier": 0.9
-    },
-    "pools": ["direct", "cooperative"],
-    "crises": ["crisis_hull_breach", "crisis_fire_below", "crisis_rogue_wave"],
-    "narrator_lines_ambient": [
-      "We're taking on water!",
-      "The frigate is alongside — MOVE!"
-    ]
-  },
-  {
-    "id": "branch_2",
-    "type": "BRANCH",
-    "evaluate": "current",
-    "threshold": 0.55,
-    "condition_per_path": {
-      "W": {
-        "win": {
-          "narrator_lines": ["Outstanding! Two for two — they can't touch us!", "One final push and we're free!"],
-          "next_phase": "frantic_3_WW"
-        },
-        "lose": {
-          "narrator_lines": ["We had the lead and you BLEW IT!", "One more chance. Don't waste it."],
-          "next_phase": "frantic_3_WL"
-        }
-      },
-      "L": {
-        "win": {
-          "narrator_lines": ["NOW you're awake! That's more like it!", "Redemption is possible — finish strong!"],
-          "next_phase": "frantic_3_LW"
-        },
-        "lose": {
-          "narrator_lines": ["This is dire. The ship is falling apart around us.", "Last chance. Everything you've got or we're done."],
-          "next_phase": "frantic_3_LL"
-        }
-      }
-    }
-  },
-  {
-    "id": "frantic_3_WW",
-    "type": "FRANTIC",
-    "duration_sec": 90,
-    "difficulty": {
-      "commands_per_min": { "start": 10, "end": 14 },
-      "coop_ratio": 0.45,
-      "crisis_chance_per_30s": 0.35,
-      "timeout_multiplier": 0.9
-    },
-    "pools": ["direct", "cooperative"],
-    "crises": ["crisis_hull_breach", "crisis_fire_below", "crisis_rogue_wave"],
-    "narrator_lines_ambient": ["Final stretch! Don't let up!", "Almost there!"]
-  },
-  {
-    "id": "frantic_3_WL",
-    "type": "FRANTIC",
-    "duration_sec": 90,
-    "difficulty": {
-      "commands_per_min": { "start": 9, "end": 13 },
-      "coop_ratio": 0.50,
-      "crisis_chance_per_30s": 0.40,
-      "timeout_multiplier": 0.85
-    },
-    "pools": ["direct", "cooperative"],
-    "crises": ["crisis_hull_breach", "crisis_fire_below", "crisis_rogue_wave"],
-    "narrator_lines_ambient": ["They're closing again!", "Prove that first round wasn't a fluke!"]
-  },
-  {
-    "id": "frantic_3_LW",
-    "type": "FRANTIC",
-    "duration_sec": 90,
-    "difficulty": {
-      "commands_per_min": { "start": 9, "end": 13 },
-      "coop_ratio": 0.50,
-      "crisis_chance_per_30s": 0.35,
-      "timeout_multiplier": 0.9
-    },
-    "pools": ["direct", "cooperative"],
-    "crises": ["crisis_hull_breach", "crisis_fire_below", "crisis_rogue_wave"],
-    "narrator_lines_ambient": ["Keep this momentum!", "Don't fall back now!"]
-  },
-  {
-    "id": "frantic_3_LL",
-    "type": "FRANTIC",
-    "duration_sec": 90,
-    "difficulty": {
-      "commands_per_min": { "start": 8, "end": 12 },
-      "coop_ratio": 0.50,
-      "crisis_chance_per_30s": 0.45,
-      "timeout_multiplier": 0.8
-    },
-    "pools": ["direct", "cooperative"],
-    "crises": ["crisis_hull_breach", "crisis_fire_below", "crisis_rogue_wave"],
-    "narrator_lines_ambient": ["We're sinking!", "This is it — do or die!"]
-  },
-  {
-    "id": "branch_3",
-    "type": "BRANCH",
-    "evaluate": "current",
-    "threshold": 0.55
-  }
-]
+{
+  "id": "open_joystick_evade",
+  "target": "ANY",
+  "action": "SET_JOYSTICK",
+  "tier": "T3",
+  "label": "Someone — hard evasive left!",
+  "narrator_line": "Anyone with a flight stick — hard evasive left!",
+  "value": {"x": -80, "y": 0},
+  "tolerance": {"x": 15, "y": 20},
+  "timeout_ms": 8000
+}
 ```
-
-The final outcome is determined by combining the three branch results into one of **8 ending paths**:
-
-| Branch 1 | Branch 2 | Branch 3 | Path | Narrative Arc | Typical Tier |
-|---|---|---|---|---|---|
-| W | W | W | **A** | Dominant victory | TRIUMPH |
-| W | W | L | **B** | Strong start, stumbled at the finish | SUCCESS |
-| W | L | W | **C** | Mid-game crisis, recovered | SUCCESS |
-| W | L | L | **D** | Promising start, fell apart | SURVIVE or FAILURE |
-| L | W | W | **E** | Rocky start, full redemption | SUCCESS |
-| L | W | L | **F** | Inconsistent crew | SURVIVE |
-| L | L | W | **G** | Last-second miracle | SURVIVE |
-| L | L | L | **H** | Total collapse | FAILURE or DISASTER |
-
-Each path has its own set of ending narrator lines in the `outcomes` section (see [Outcome Endings](#outcome-endings)).
-
-> **Note:** Health reaching 0 at any point during a frantic phase triggers an immediate DISASTER ending, bypassing the normal branch flow — the ship sinks, the station explodes, game over.
-
-#### Phase Types
-
-| Type | Description |
-|---|---|
-| `NARRATION` | Hub plays narrator lines. No commands issued. Sets the scene. |
-| `FRANTIC` | Active gameplay. Hub draws commands from pools at the specified rate. |
-| `BRANCH` | Hub pauses, evaluates metrics from the preceding frantic phase, selects a narrative fork, plays branch narrator lines, then jumps to the chosen next phase. |
-
-#### Branch Object Fields
 
 | Field | Type | Description |
 |---|---|---|
-| `evaluate` | `string` | Which frantic phase's metrics to evaluate. `"frantic_1"` or `"current"` for the most recent. |
-| `threshold` | `float` | Composite score threshold for WIN. Score >= threshold = WIN, below = LOSE. |
-| `win.narrator_lines` | `string[]` | Narrator lines played if WIN. |
-| `win.next_phase` | `string` | Phase ID to jump to after WIN narration. |
-| `lose.narrator_lines` | `string[]` | Narrator lines played if LOSE. |
-| `lose.next_phase` | `string` | Phase ID to jump to after LOSE narration. |
-| `condition_per_path` | `object` | For branches 2+, keyed by prior path string (e.g., `"W"`, `"L"`). Each key contains its own `win`/`lose` with path-specific narrator lines and next phases. |
+| `target` | `"ANY"` | Literal string `"ANY"` |
+| `action` | `string` | Must be a specialty action (present on 2 archetypes) |
 
-#### Difficulty Parameters
+The Hub auto-resolves the slot for each eligible archetype from the capability matrix. OPEN commands should primarily target specialty elements (since all archetypes share universal controls, OPEN toggle/button commands would go to everyone — use CRISIS events for that).
 
-| Parameter | Description |
+### Crisis Events
+
+Ship-wide emergencies that require multiple players to respond simultaneously:
+
+```json
+{
+  "id": "crisis_hull_breach",
+  "type": "CRISIS_ALL",
+  "label": "HULL BREACH!",
+  "narrator_line": "HULL BREACH! ALL HANDS — BRACE FOR DECOMPRESSION!",
+  "required_count": "all",
+  "timeout_ms": 5000,
+  "penalty": "health_major"
+}
+```
+
+**Crisis types:**
+
+| Type | Description |
 |---|---|
-| `commands_per_min` | Command issue rate. Ramps from `start` to `end` over the phase duration. |
-| `coop_ratio` | Fraction of commands drawn from the `cooperative` pool (0.0–1.0). Higher = more cross-table shouting. |
-| `crisis_chance_per_30s` | Probability of a crisis event firing in each 30-second window. |
-| `timeout_multiplier` | Multiplied against each command's base `timeout_ms`. < 1.0 tightens windows; > 1.0 loosens. |
+| `CRISIS_ALL` | All connected players must press crisis button |
+| `CRISIS_THRESHOLD` | At least N players must press crisis button (`required_count`: integer) |
+| `MULTI_ACTION` | Specific players do specific actions; rest press crisis button |
 
-#### Authoring Effort: Scaling Content Across 8 Paths
+**MULTI_ACTION example:**
 
-Branching doesn't mean writing 8 completely separate games. Content is layered:
+```json
+{
+  "id": "crisis_grav_surge",
+  "type": "MULTI_ACTION",
+  "label": "GRAVITY SURGE!",
+  "narrator_line": "GRAVITY SURGE! Helm — pull up! Engineer — cut power! Everyone else — HOLD ON!",
+  "actions": [
+    { "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": "specialty_a", "value": {"x":0,"y":100}, "tolerance": {"x":25,"y":20} },
+    { "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": "specialty_a", "value": 0, "tolerance": 10 },
+    { "rest": "CRISIS_BTN" }
+  ],
+  "timeout_ms": 7000,
+  "penalty": "health_major"
+}
+```
 
-| Content Layer | Shared or Per-Path | Count |
+### Phase Definitions
+
+The game progresses through a sequence of phases:
+
+```
+INTRO → PREFLIGHT → FRANTIC_1 → BRANCH_1 → FRANTIC_2 → BRANCH_2 → FRANTIC_3 → OUTCOME
+```
+
+#### Intro Phase
+
+```json
+{
+  "id": "intro",
+  "type": "NARRATION",
+  "duration_sec": 60,
+  "narrator_lines": [
+    "Attention, station crew. This is Mission Control.",
+    "A massive solar flare has struck the station."
+  ]
+}
+```
+
+#### Pre-Flight Phase
+
+A scripted initialization sequence that establishes known control state and serves as crew onboarding. Runs after the intro narration, before the first frantic phase.
+
+```json
+{
+  "id": "preflight",
+  "type": "PREFLIGHT",
+  "duration_sec": 45,
+  "narrator_intro": "All crew, pre-flight check. Report your stations.",
+  "init_commands": {
+    "NAVIGATOR": [
+      { "slot": "toggle_1", "action": "SET_TOGGLE", "value": true, "label": "Port thruster — ON!", "narrator_line": "Navigator, engage the port thruster." },
+      { "slot": "specialty_b", "action": "SET_SLIDER", "value": 50, "label": "Set thrust to fifty percent.", "narrator_line": "Navigator, set thrust to fifty percent." }
+    ],
+    "ENGINEER": [
+      { "slot": "toggle_1", "action": "SET_TOGGLE", "value": false, "label": "Reactor — OFF for now.", "narrator_line": "Engineer, confirm reactor is offline." },
+      { "slot": "specialty_a", "action": "SET_SLIDER", "value": 0, "label": "Power grid to zero.", "narrator_line": "Engineer, power grid to zero — standby." }
+    ]
+  },
+  "timeout_per_command_ms": 15000,
+  "encourage_line": "Look alive, {role}! We need you at your station."
+}
+```
+
+**Pre-flight behavior:**
+- Hub issues init commands one archetype at a time (or in small batches).
+- Tablets report their actual control state; Hub reconciles its state table.
+- If a player doesn't complete their pre-flight within the timeout, Hub plays the `encourage_line` but does **not** block other players from proceeding.
+- Serves as a tutorial for new players ("flip the bat switch" teaches them which switch is which).
+- Sets all stateful controls to a known starting position for the Hub's state tracker.
+
+#### Frantic Phase
+
+The core gameplay — commands fire at increasing pace:
+
+```json
+{
+  "id": "frantic_1",
+  "type": "FRANTIC",
+  "duration_sec": 240,
+  "difficulty": {
+    "commands_per_min": { "start": 3, "end": 5 },
+    "coop_ratio": 0.15,
+    "open_ratio": 0.05,
+    "crisis_chance_per_30s": 0.10,
+    "timeout_multiplier": 1.3
+  },
+  "pools": ["direct", "cooperative", "open"],
+  "crises": ["crisis_hull_breach", "crisis_solar_flare"],
+  "narrator_lines_ambient": [
+    "Focus on restoring core systems.",
+    "Station integrity is holding... for now."
+  ]
+}
+```
+
+New field: `open_ratio` — fraction of commands drawn from the OPEN pool. Combined with `coop_ratio`, the remainder is direct commands.
+
+#### Branch Phase
+
+Evaluates performance and chooses next path:
+
+```json
+{
+  "id": "branch_1",
+  "type": "BRANCH",
+  "evaluate": "frantic_1",
+  "threshold": 0.55,
+  "win": {
+    "narrator_lines": ["Impressive work. Core systems are back online."],
+    "next_phase": "frantic_2_W"
+  },
+  "lose": {
+    "narrator_lines": ["Systems are still critical."],
+    "next_phase": "frantic_2_L"
+  }
+}
+```
+
+The 3-branch structure creates 8 possible paths (WWW through LLL), each with its own frantic phase variant and outcome.
+
+### Outcome Branches
+
+```json
+"outcomes": {
+  "WWW": { "tier": "TRIUMPH",  "title": "Perfect Escape",   "narrator_lines": ["..."] },
+  "WWL": { "tier": "SUCCESS",  "title": "Narrow Escape",    "narrator_lines": ["..."] },
+  "WLW": { "tier": "SUCCESS",  "title": "Recovery Arc",     "narrator_lines": ["..."] },
+  "WLL": { "tier": "SURVIVE",  "title": "Limping Home",     "narrator_lines": ["..."] },
+  "LWW": { "tier": "SUCCESS",  "title": "Against the Odds", "narrator_lines": ["..."] },
+  "LWL": { "tier": "SURVIVE",  "title": "By the Skin",      "narrator_lines": ["..."] },
+  "LLW": { "tier": "SURVIVE",  "title": "Last Gasp",        "narrator_lines": ["..."] },
+  "LLL": { "tier": "FAILURE",  "title": "Station Lost",     "narrator_lines": ["..."] }
+}
+```
+
+**Outcome tiers (5 levels):**
+
+| Tier | Description | Path Example |
 |---|---|---|
-| Command pools (direct + cooperative) | **Shared** — all paths draw from the same pools | 1 set |
-| Crisis events | **Shared** — same crises, different probabilities per path | 1 set |
-| Difficulty tuning per frantic variant | **Per-path** — 1 + 2 + 4 = 7 total frantic phases | 7 |
-| Branch narrator lines (transitions) | **Per-branch** — 2 + 4 + 0 = 6 transition narrations | 6 |
-| Ending narrator lines | **Per-path** — 8 unique endings + 1 disaster | 9 |
-| Ambient narrator lines per frantic variant | **Per-path** — 2–4 lines each | ~20 lines |
+| `TRIUMPH` | Flawless victory — best possible ending | WWW |
+| `SUCCESS` | Solid win with some setbacks | WWL, WLW, LWW |
+| `SURVIVE` | Barely made it — bittersweet | WLL, LWL, LLW |
+| `FAILURE` | Mission failed — something was lost | LLL |
+| `DISASTER` | Catastrophic loss (reserved for extreme difficulty) | N/A normally |
 
-**Total unique narration per scenario:** ~9 endings + ~6 transitions + ~20 ambient lines = **~35 narration blocks**. The command/crisis content is fully shared, so the marginal cost of 8 paths vs. 4 is mostly narrator writing.
+#### Sub-Analysis
+
+Each outcome can include a `sub_analysis` block for finer grading within a tier:
+
+```json
+"WWW": {
+  "tier": "TRIUMPH",
+  "title": "Perfect Escape",
+  "sub_analysis": {
+    "health >= 80": { "badge": "FLAWLESS", "narrator_line": "Not a scratch on the hull." },
+    "health >= 50": { "badge": "SOLID",    "narrator_line": "Some dents, but she held." },
+    "default":      { "badge": "SCRAPPY",  "narrator_line": "We made it, barely." }
+  },
+  "narrator_lines": ["..."]
+}
+```
+
+### Narrator Script
+
+```json
+"narrator": {
+  "voice_id": "narrator_commander_01",
+  "intro_lines": ["..."],
+  "ambient_pool": ["..."],
+  "crisis_lines": { "crisis_id": "line" },
+  "outro_lines": { "TRIUMPH": ["..."], "FAILURE": ["..."] }
+}
+```
 
 ---
 
 ## Outcome & Branching System
 
-This is the heart of replayability beyond command randomization. Scenarios have **multiple endings** determined by how the crew performed across specific dimensions.
-
 ### Performance Metrics
 
-The Hub tracks these metrics in real time during the frantic phase. They are the raw inputs to outcome evaluation.
+The Hub continuously tracks during each frantic phase:
 
-| Metric | Key | How It's Tracked | Description |
-|---|---|---|---|
-| **Direct Execution Rate** | `direct_rate` | Successful direct commands / total direct commands issued | How well each player executed commands on their own device. |
-| **Cooperative Success Rate** | `coop_rate` | Successful coop commands / total coop commands issued | How well the team communicated across tablets. Measures shouting accuracy AND execution by the receiving player. |
-| **Timeout Rate** | `timeout_rate` | Expired commands / total commands issued | How many commands the crew simply ran out of time on. |
-| **Crisis Response Rate** | `crisis_rate` | Successful crisis responses / total crises | How reliably the crew hit the Crisis Button (or executed crisis actions) in time. |
-| **Average Response Time** | `avg_response_ms` | Mean time from command issue to successful execution | Overall speed. Faster = more skilled crew. |
-| **Ship Health** | `health` | Starts at 100, decreased by failed commands and crises | The "HP bar." Reaching 0 triggers immediate game-over. |
-
-#### Per-Player Tracking
-
-The Hub also tracks metrics **per player** for post-game scoring:
-
-| Per-Player Metric | Description |
-|---|---|
-| `commands_received` | Total commands dispatched to this player |
-| `commands_succeeded` | Commands executed correctly |
-| `commands_failed` | Commands executed incorrectly (wrong value) |
-| `commands_expired` | Commands that timed out |
-| `avg_response_ms` | This player's average response time |
-| `coop_sent` | Cooperative commands this player had to shout |
-| `coop_sent_success` | How many of those were successfully executed by the target |
-| `crises_responded` | Crisis events this player responded to in time |
+| Metric | Weight | Description |
+|---|---|---|
+| `cmd_success_rate` | 0.40 | Ratio of correctly completed commands |
+| `avg_response_ms` | 0.25 | Average time from command issue to correct response |
+| `crisis_survival_rate` | 0.20 | Crises survived vs. total crises encountered |
+| `health_retained` | 0.15 | Remaining health as fraction of starting health |
 
 ### Branch Conditions
 
-At each branch point, the Hub computes the `composite_score` for the frantic phase that just ended and compares it to the branch `threshold`. Score >= threshold = WIN, below = LOSE. This is simple and binary at each checkpoint — the nuanced diagnostic analysis (communication failure vs. execution failure vs. timeout failure) happens at the **final ending**, where the Hub has cumulative data from all three phases.
+At each branch point, the Hub computes a **weighted performance score** (0.0–1.0) for the preceding frantic phase. If the score meets or exceeds the **threshold**, the crew "wins" that branch.
 
-### Outcome Endings
+**Default thresholds by difficulty:**
 
-The `outcomes` section maps each of the 8 paths (plus the disaster bailout) to a unique set of narrator lines and a tier.
-
-```json
-"outcomes": {
-  "metrics_weights": {
-    "direct_rate":  0.30,
-    "coop_rate":    0.30,
-    "timeout_rate": 0.20,
-    "crisis_rate":  0.20
-  },
-  "disaster": {
-    "tier": "DISASTER",
-    "narrator_lines": [
-      "She's going down! Abandon ship!",
-      "The Crimson Galleon slips beneath the waves... along with your reputation."
-    ]
-  },
-  "endings": {
-    "WWW": {
-      "tier": "TRIUMPH",
-      "narrator_lines": [
-        "LEGENDARY!",
-        "The Crimson Galleon doesn't just escape — you turn and fire a broadside as you pass.",
-        "The Royal Navy retreats in shame. Songs will be written about this crew.",
-        "Now... who wants to count the treasure?"
-      ]
-    },
-    "WWL": {
-      "tier": "SUCCESS",
-      "narrator_lines": [
-        "So close to perfection!",
-        "You had them beat — then stumbled at the finish line.",
-        "The Galleon escapes into the fog, but that last round was rough.",
-        "A good crew. Almost a great one."
-      ]
-    },
-    "WLW": {
-      "tier": "SUCCESS",
-      "narrator_lines": [
-        "A rocky middle chapter, but you pulled it together!",
-        "The frigate had us for a moment there — then you found your rhythm again.",
-        "The Crimson Galleon sails free. Well recovered, crew."
-      ]
-    },
-    "WLL": {
-      "tier": "SURVIVE",
-      "sub_analysis": true,
-      "narrator_lines": [
-        "Started strong, then fell apart.",
-        "The Galleon limps into port with half the crew ready to mutiny.",
-        "You escaped... barely. Figure out what went wrong in those last two rounds."
-      ]
-    },
-    "LWW": {
-      "tier": "SUCCESS",
-      "narrator_lines": [
-        "The redemption arc!",
-        "A terrible start — but then something clicked.",
-        "You clawed your way back and outran the frigate through sheer determination.",
-        "That's the kind of crew stories are made of."
-      ]
-    },
-    "LWL": {
-      "tier": "SURVIVE",
-      "sub_analysis": true,
-      "narrator_lines": [
-        "Up and down like the waves themselves.",
-        "One good round sandwiched between two bad ones doesn't inspire confidence.",
-        "The Galleon escapes, but the crew needs consistency."
-      ]
-    },
-    "LLW": {
-      "tier": "SURVIVE",
-      "narrator_lines": [
-        "A last-second miracle!",
-        "Two rounds of chaos and then — somehow — you pulled it out of the fire.",
-        "Don't count on miracles next time. Start stronger."
-      ]
-    },
-    "LLL": {
-      "tier": "FAILURE",
-      "sub_analysis": true,
-      "narrator_lines": [
-        "Three rounds. Three failures.",
-        "The frigate catches The Crimson Galleon and boards her without resistance.",
-        "The crew is captured. The treasure is gone. The legend ends here."
-      ]
-    }
-  }
-}
-```
-
-#### Sub-Analysis (Diagnostic Endings)
-
-When `sub_analysis` is `true` on an ending, the Hub appends **diagnostic narrator lines** after the main ending based on which performance dimension was weakest. This tells the crew *why* they struggled:
-
-| Weakest Metric | Diagnostic Lines |
+| Difficulty | Threshold |
 |---|---|
-| `coop_rate` (< 0.40) | "The problem? Communication. You each worked your own controls fine, but nobody was relaying orders across the table." |
-| `direct_rate` (< 0.45) | "You were talking to each other — that's good. But half of you couldn't execute when it mattered. Know your controls." |
-| `timeout_rate` (> 0.40) | "Too slow. Orders expired while you were still fumbling. Speed comes with practice." |
-| `crisis_rate` (< 0.50) | "When the crises hit, nobody responded. Those crisis buttons exist for a reason." |
+| Easy | 0.45 |
+| Medium | 0.55 |
+| Hard | 0.60 |
+| Extreme | 0.65 |
 
-Only SURVIVE and FAILURE endings use sub-analysis. TRIUMPH and SUCCESS don't need diagnosis — they earned it. DISASTER speaks for itself (health hit 0).
-
-### Outcome Tiers
-
-Every ending maps to one of five tiers. The tier determines the ending's tone, the score screen presentation, and any unlock rewards.
-
-| Tier | Description | Score Multiplier |
-|---|---|---|
-| **DISASTER** | Ship health reached 0. Total failure. Game ended early. | 0.0× |
-| **FAILURE** | All three phases lost. Constructive diagnostic feedback. | 0.5× |
-| **SURVIVE** | Mixed results. Scraped through but needs improvement. | 1.0× |
-| **SUCCESS** | Solid performance across most phases. The crew worked well. | 1.5× |
-| **TRIUMPH** | All three phases won. Near-perfect coordination and speed. | 2.0× |
+Scenarios can override thresholds per branch point.
 
 ### How the Hub Evaluates Outcomes
 
-The evaluation flow across the whole game:
-
-1. **After each frantic phase:** Hub computes `composite_score` for that phase. Compares to branch `threshold`. Selects WIN or LOSE. Plays branch narrator lines. Advances to the appropriate next frantic phase.
-2. **Health check (continuous):** If `health` reaches 0 during any frantic phase, Hub immediately enters DISASTER ending — bypasses all remaining phases and branches.
-3. **After Branch 3:** Hub combines the three W/L results into a path key (e.g., `"WLW"`). Looks up the corresponding ending in `outcomes.endings`.
-4. **If `sub_analysis` is true:** Hub identifies the weakest cumulative metric across all three phases and appends diagnostic narrator lines.
-5. Hub sends `GAME_OVER` with outcome tier, path, and score to all tablets.
-6. Hub enters score phase: sends `SCORE_SUMMARY` with per-player stats.
-
-**Fallback:** If a path key doesn't exist in `outcomes.endings` (shouldn't happen), the Hub uses a generic "mission complete" message.
+1. **Frantic phase ends** (timer expires or health hits 0).
+2. Hub computes weighted score for that phase.
+3. Compares against threshold → **Win** or **Lose**.
+4. Appends `W` or `L` to the running path string (e.g., `"W"` → `"WL"` → `"WLW"`).
+5. After the third branch, the 3-letter path (e.g., `"WLW"`) selects the final outcome.
+6. Hub plays the matching outcome narration and sends scores.
 
 ---
 
@@ -802,340 +625,212 @@ The evaluation flow across the whole game:
 
 ### Difficulty Curves
 
-Each frantic phase defines a `commands_per_min` ramp (start → end) over its duration. Combined with the `timeout_multiplier`, this creates the escalating pressure curve. Because the game branches, the difficulty depends on which path the crew is on:
+Scenarios declare `meta.difficulty` (easy/medium/hard/extreme). All per-phase tuning resolves automatically from shared presets in `difficulty_presets.py`. Scenarios can override individual phase difficulty blocks if precise control is needed.
 
-```
-Commands/min
-     14 │                                  ╱── frantic_3_WW (dominant path)
-        │                            ╱────╱
-     12 │                      ╱────╱───── frantic_3_WL / frantic_3_LW
-        │                ╱────╱
-     10 │          ╱────╱
-        │    ╱────╱─────────── frantic_3_LL (survival path)
-      7 │───╱── frantic_2_W
-      6 │──── frantic_2_L
-      4 │── frantic_1
-        │
-        └─────────────────────────────────────→ Time
-         0     90    190                  280 sec
-```
+**Key parameters per frantic phase:**
 
-**Key insight:** The WIN path ramps harder (the crew proved they can handle it). The LOSE path avoids death-spiraling — difficulty stays high but doesn't punish as aggressively, giving the crew a chance to recover.
-
-The scenario also controls **coop_ratio** escalation — early phases favor direct commands (players learn their own controls), later phases increase cooperative commands (forces team communication as pressure mounts). Lose-path variants push coop_ratio higher earlier, because the most common failure mode is poor communication.
+| Parameter | Description |
+|---|---|
+| `commands_per_min` | `{start, end}` — ramps across the phase |
+| `coop_ratio` | Fraction of commands from co-op pool (0.0–1.0) |
+| `open_ratio` | Fraction of commands from OPEN pool (0.0–1.0) |
+| `crisis_chance_per_30s` | Probability of a crisis event per 30-second window |
+| `timeout_multiplier` | Multiplier on base command timeouts (>1.0 = more time) |
+| `duration_sec` | Phase length in seconds |
 
 ### Adaptive Pacing
 
-The Hub can optionally adjust pacing in real time based on crew performance. This is a **Hub firmware feature**, not a scenario field — but scenarios can enable/disable it.
+When `meta.adaptive_pacing` is true, the Hub dynamically adjusts:
+- If crew is struggling (low success rate) → slow command rate by up to 20%.
+- If crew is crushing it (high success rate, fast responses) → increase rate by up to 15%.
+- Never exceeds difficulty level bounds (easy never reaches medium's peak pace).
 
-```json
-"meta": {
-  "adaptive_pacing": true
-}
-```
+### Narrator-Driven Pacing
 
-When enabled:
-- If `timeout_rate` exceeds 50% over a 30-second window → Hub reduces `commands_per_min` by 20% and increases `timeout_multiplier` by 0.2.
-- If `timeout_rate` drops below 10% → Hub increases rate by 10% (up to phase max).
-- This prevents death spirals (team gets overwhelmed → more timeouts → worse score → less fun) and keeps skilled teams challenged.
-
-Adaptive pacing is recommended for family/casual packs and disabled for competitive/timed packs.
+- **Easy difficulty:** More narrator commands — the narrator explicitly tells players what to do and when. Frequent ambient lines provide breathing room. Narrative sections naturally slow the command rate.
+- **Medium difficulty:** Balanced. Narrator intros and outros, with moderate ambient lines during frantic phases.
+- **Hard/Extreme difficulty:** Minimal narrator interruption during frantic phases. Forces concurrent work + narrator listening. At extreme, commands may arrive during narrator lines — players must multitask.
 
 ---
 
 ## Replayability Mechanisms
 
-A single scenario file supports high replayability through multiple layers:
+Each game run is different because:
 
-| Layer | Mechanism | Impact |
-|---|---|---|
-| **Command randomization** | Hub randomly draws from pools each run. Order is never the same. | Every session has different command sequences. |
-| **Archetype composition** | Different player counts and archetype combinations change which commands are available. | A 4-player game feels different from an 8-player game with the same scenario. |
-| **Cooperative command routing** | Which player gets told to shout which command is randomized. | Communication patterns shift every run. |
-| **Crisis timing** | Crises fire probabilistically, not on fixed timers. | Crises hit at unpredictable moments. |
-| **8-path branching** | 3 branch points × WIN/LOSE = 8 narrative paths with unique endings. | Players get different story arcs — motivates replay to explore other paths and "get the TRIUMPH ending." |
-| **Adaptive difficulty** | Real-time pacing adjusts to crew skill. | Same scenario scales naturally from beginners to experts. |
-| **Per-player scoring** | Individual + team metrics on the score screen. | Players compete to improve personal stats even on repeat plays. |
-
-This means a $10 NFC card with 3–5 scenarios has dozens of meaningfully different play sessions in it.
+1. **Random pool draws.** The Hub randomly selects commands from the pools each time. Two runs of the same scenario at the same difficulty will issue different command sequences.
+2. **8 outcome paths.** The branching system means run outcomes depend on real-time performance.
+3. **Player count adaptation.** Commands scale to connected players. A 3-player run focuses commands on 3 archetypes; an 8-player run distributes across all.
+4. **OPEN command racing.** Two eligible archetypes race to complete OPEN commands — the winner is unpredictable.
+5. **Adaptive pacing.** The Hub adjusts to the crew's skill, so even repeated runs feel appropriately challenging.
 
 ---
 
 ## Mission Architect (Content Engine)
 
-The Mission Architect is the internal tool (structured LLM prompt system) that generates scenario files conforming to this schema.
+The Mission Architect is an LLM-powered pipeline that generates scenario JSON files from high-level creative briefs.
 
 ### Inputs
 
-| Input | Type | Description |
-|---|---|---|
-| `theme` | String | The narrative world (space, pirate, submarine, fantasy, etc.) |
-| `subject` | String | Optional educational subject (math, history, science) |
-| `age_rating` | String | Target age group (8+, 12+, 18+) |
-| `difficulty` | String | Base difficulty (easy, medium, hard) |
-| `pack_name` | String | Parent game pack identifier |
-| `scenario_count` | Integer | Number of scenarios to generate for this pack |
-| `archetype_focus` | List | Which archetypes to emphasize (or "all") |
-| `duration_target` | Integer | Target game duration in seconds |
+| Input | Description |
+|---|---|
+| Theme brief | "Space station rescue", "Pirate treasure hunt", "Dragon siege defense" |
+| Target difficulty | easy / medium / hard / extreme |
+| Player count range | e.g., 3–8, or 1–2 for duo scenarios |
+| Subject tags | "teamwork", "geography", "math", "history" |
+| Duration target | e.g., 15 minutes |
 
 ### Generation Pipeline
 
-```
-┌────────────────┐    ┌────────────────┐    ┌────────────────┐
-│  1. Theme &    │    │  2. Command    │    │  3. Phase &    │
-│  Role Mapping  │───►│  Pool Build    │───►│  Difficulty    │
-│                │    │                │    │  Curve Design  │
-└────────────────┘    └────────────────┘    └────────────────┘
-                                                    │
-┌────────────────┐    ┌────────────────┐            │
-│  5. Validation │◄───│  4. Outcome    │◄───────────┘
-│  & Output      │    │  Branch Author │
-└────────────────┘    └────────────────┘
-```
-
-1. **Theme & Role Mapping** — Generate `roles` and `oled_labels` based on theme and archetype list.
-2. **Command Pool Build** — Generate `direct` and `cooperative` command pools using the [capability matrix](#action-types-per-archetype). Each archetype gets a balanced mix of T1/T2/T3 commands. Cooperative commands are authored with cross-archetype pairings.
-3. **Phase & Difficulty Curve** — Design the phase sequence with ramping command rates, coop ratios, and crisis probabilities.
-4. **Outcome Branch Author** — Write branch transition narrator lines (6 transitions) and 8 unique path endings (WWW through LLL) plus the disaster bailout. Add `sub_analysis` diagnostic lines for SURVIVE and FAILURE endings.
-5. **Validation & Output** — Run the scenario through validation rules (see below), ensure payload sizes fit, output the final JSON.
+1. **Narrative scaffold:** Generate intro/outro/branch narration for the theme.
+2. **Role mapping:** Assign thematic role names to each archetype.
+3. **OLED labels:** Generate 9 labels per archetype, themed to scenario. Max 16 chars.
+4. **Command pools:** Generate direct, cooperative, and open commands covering all archetypes and tiers, respecting the capability matrix.
+5. **Crises:** Generate crisis events themed to the scenario.
+6. **Pre-flight:** Generate initialization commands for the pre-flight sequence.
+7. **Phase timing:** Set phase durations or rely on difficulty presets.
+8. **Outcomes:** Write 8 branched endings.
+9. **Validate:** Pass through `missions/validate/` pipeline.
+10. **Audio:** Generate narrator TTS audio for each line; store on SPI NAND.
 
 ### Validation Rules
 
-Every generated scenario must pass:
+The validation pipeline (`missions/validate/`) enforces:
 
-| Rule | Check |
-|---|---|
-| **Capability compliance** | Every command's `action` + `target_arch` + `slot` must exist in the [capability matrix](#action-types-per-archetype). No asking the Engineer to `SCAN_NFC`. |
-| **Pool coverage** | Every connected archetype must have at least 5 direct commands and 2 cooperative commands in the pools. No archetype sits idle. |
-| **Tier balance** | Each archetype's command pool must contain at least 40% T1, at least 20% T2, and at least 15% T3 commands. Prevents all-complex or all-trivial loadouts. |
-| **Coop pairing diversity** | Cooperative commands must use at least 3 different "shouter → executor" archetype pairs. No single pair dominates. |
-| **Timeout sanity** | T1 commands: 2000–5000ms. T2 commands: 3000–8000ms. T3 commands: 5000–12000ms. No absurd deadlines. |
-| **Crisis minimum** | At least 2 distinct crisis events per scenario. |
-| **Outcome coverage** | Scenario must define all 8 path endings (WWW through LLL) plus the disaster ending. Each ending must have a tier and at least 2 narrator lines. |
-| **Payload budget** | No single `COMMAND` message (including label and value) can exceed ~200 bytes when serialized to JSON (leaving headroom in the 250-byte ESP-NOW limit). |
-| **Duration feasibility** | Total phase durations must sum to within the `duration_sec` range defined in metadata. |
-| **Label length** | OLED labels max 16 characters. Screen labels max 40 characters. Narrator lines max 200 characters. |
-| **Unique IDs** | All command `id`s and crisis `id`s must be unique within the scenario. |
+1. **Capability compliance:** Every command's `action`+`slot` must match the target archetype's capability matrix entry.
+2. **Pool coverage:** Each archetype must have ≥5 direct commands and ≥2 cooperative commands.
+3. **Tier balance:** Each archetype's commands must span T1, T2, and T3 tiers.
+4. **Statefulness:** Binary stateful commands (toggles) must have both ON and OFF variants in the pool for each toggle slot.
+5. **OLED labels:** Exactly 9 labels per archetype, max 16 chars each.
+6. **Label lengths:** Command labels ≤40 chars, narrator lines ≤200 chars.
+7. **Unique IDs:** All command IDs, crisis IDs, and phase IDs must be unique.
+8. **Crisis requirements:** Minimum 2 crisis events per scenario. Valid types only.
+9. **Phase structure:** Must include intro, all 7 frantic phase IDs, all branch phases, and all 8 outcomes.
+10. **Outcome coverage:** All 8 paths (WWW–LLL) must have matching outcomes with valid tiers.
+11. **OPEN command validity:** OPEN commands must target specialty actions (present on exactly 2 archetypes). Universal actions are not valid OPEN targets.
+12. **Pre-flight coverage:** If a PREFLIGHT phase exists, it should include init commands for stateful controls.
 
 ---
 
 ## Example Scenario (Abridged)
 
-Below is a minimal but complete scenario demonstrating the 3-phase branching schema. Command pools and crises are shared across all paths — only `phases` and `outcomes` reflect the branching structure. A real scenario would have 50+ commands per pool.
-
 ```json
 {
   "schema_version": "1.0",
   "meta": {
-    "id": "PIRATE_HUNT_01",
-    "title": "The Crimson Galleon",
-    "pack": "PIRATE_ADVENTURES",
-    "theme": "pirate",
+    "id": "STATION_OMEGA_01",
+    "title": "Station Omega",
+    "pack": "DEEP_SPACE_COLLECTION",
+    "theme": "space",
     "subject": "teamwork",
     "age_rating": "8+",
     "difficulty": "medium",
-    "player_count": { "min": 2, "max": 8 },
-    "duration_sec": { "min": 180, "max": 420 },
+    "player_count": { "min": 3, "max": 8 },
+    "duration_sec": { "min": 840, "max": 900 },
     "adaptive_pacing": true,
     "version": "1.0.0",
     "author": "mission_architect"
   },
+
   "roles": {
-    "NAVIGATOR":  "Quartermaster",
-    "ENGINEER":   "Ship's Carpenter",
-    "OPERATOR":   "Signalman",
-    "SENTINEL":   "Master-at-Arms",
-    "MEDIC":      "Surgeon",
-    "ANALYST":    "Cartographer",
-    "SCOUT":      "Lookout",
-    "COMMANDER":  "Bosun"
+    "NAVIGATOR": "Helm Officer",
+    "ENGINEER": "Systems Engineer"
   },
+
   "oled_labels": {
-    "NAVIGATOR": ["Ship's Wheel", "Anchor Release", "Port Sail", "Starboard Sail", "Mark Position"],
-    "ENGINEER":  ["Sail Hoist", "Fire Cannons", "Bilge Pump", "Cargo Hatch", "Gunport Doors"],
-    "OPERATOR":  ["Signal Flags", "Emergency Flare", "Semaphore", "Hail Ship", "Send Warning"],
-    "SENTINEL":  ["Captain's Seal", "Brace for Impact", "Armor Plating", "Boarding Nets", "Ring Bell"],
-    "MEDIC":     ["Brew Tonic", "Apply Poultice", "Sickbay Lantern", "Check Pulse", "Call for Rum"],
-    "ANALYST":   ["Chart Course", "Decode Signal", "Compass Bearing", "Star Chart", "Log Entry"],
-    "SCOUT":     ["Spyglass Sweep", "Stealth Mode", "Port Watch", "Starboard Watch", "Crow's Nest"],
-    "COMMANDER": ["Fleet Formation", "Give the Order", "Flag Signals", "Bosun's Whistle", "Ship's Log"]
+    "NAVIGATOR": [
+      "Port Thruster", "Stbd Thruster", "Drift Brake",
+      "Mark Waypoint", "Flare Launch", "Sensor Ping", "Dock Clamp",
+      "Helm Control", "Thrust Lever"
+    ]
   },
+
   "command_pools": {
     "direct": [
-      { "id": "nav_hard_port",    "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Hard to port!",         "narrator_line": "Quartermaster! Hard to port — reef ahead!",       "value": {"x":-80,"y":0}, "tolerance":{"x":15,"y":20},  "timeout_ms": 8000 },
-      { "id": "nav_toggle_port",  "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Port sail — ON!",       "narrator_line": "Raise the port sail!",                           "value": true,                                           "timeout_ms": 3000 },
-      { "id": "nav_mark_pos",     "target_arch": "NAVIGATOR", "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Mark our position!",    "narrator_line": "Quartermaster! Mark position — NOW!",             "value": null,                                           "timeout_ms": 3000 },
-      { "id": "eng_full_sail",    "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Full sail!",            "narrator_line": "Carpenter! Hoist the mainsail — full speed!",     "value": 100, "tolerance": 10,                           "timeout_ms": 5000 },
-      { "id": "eng_fire",         "target_arch": "ENGINEER",  "action": "PRESS_BUTTON", "slot": 2, "tier": "T1", "label": "FIRE CANNONS!",         "narrator_line": "Carpenter — FIRE!",                              "value": null,                                           "timeout_ms": 3000 },
-      { "id": "eng_bilge",        "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Bilge pump — ON!",      "narrator_line": "Start that bilge pump!",                         "value": true,                                           "timeout_ms": 3000 },
-      { "id": "op_tune_47",       "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Tune to channel 47!",   "narrator_line": "Signalman! Channel 47 — there's a message!",      "value": 47,                                             "timeout_ms": 6000 },
-      { "id": "op_flare",         "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Emergency flare!",      "narrator_line": "Signalman! Fire the emergency flare!",            "value": true,                                           "timeout_ms": 3000 },
-      { "id": "sent_red_seal",    "target_arch": "SENTINEL",  "action": "SCAN_NFC",     "slot": 1, "tier": "T3", "label": "Scan the RED seal!",    "narrator_line": "Master-at-Arms! Crimson seal — NOW!",             "value": "RED_SEAL",                                     "timeout_ms": 10000 },
-      { "id": "sent_armor",       "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Armor plating — UP!",   "narrator_line": "Raise the armor plating!",                       "value": true,                                           "timeout_ms": 3000 },
-      { "id": "med_green_tonic",  "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": 1, "tier": "T3", "label": "Mix GREEN tonic!",      "narrator_line": "Surgeon! Green tonic for the first mate!",        "value": [0,200,50], "tolerance": 30,                    "timeout_ms": 8000 },
-      { "id": "med_administer",   "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Administer!",           "narrator_line": "Surgeon! Give him the medicine!",                 "value": true,                                           "timeout_ms": 3000 },
-      { "id": "ana_code_314",     "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": 1, "tier": "T3", "label": "Enter code 3-1-4!",     "narrator_line": "Cartographer! The map says 3-1-4!",               "value": "314",                                          "timeout_ms": 7000 },
-      { "id": "ana_decode",       "target_arch": "ANALYST",   "action": "PRESS_BUTTON", "slot": 2, "tier": "T1", "label": "Decode the signal!",    "narrator_line": "Cartographer! Decode that signal!",               "value": null,                                           "timeout_ms": 3000 },
-      { "id": "sco_sweep_180",    "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "tier": "T2", "label": "Sweep to 180!",         "narrator_line": "Lookout! Sweep the spyglass to 180!",             "value": 180,                                            "timeout_ms": 6000 },
-      { "id": "sco_stealth",      "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Stealth mode — ON!",    "narrator_line": "Lookout — go dark! Stealth mode!",                "value": true,                                           "timeout_ms": 3000 },
-      { "id": "cmd_battle",       "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "BATTLE STATIONS!",      "narrator_line": "Bosun! Set to battle stations — position 4!",     "value": 4,                                              "timeout_ms": 5000 },
-      { "id": "cmd_order",        "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": 2, "tier": "T1", "label": "Give the order!",       "narrator_line": "Bosun! Give the order!",                         "value": null,                                           "timeout_ms": 3000 }
+      {
+        "id": "nav_hard_port",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Hard to port — debris field!",
+        "narrator_line": "Helm! Hard to port — debris field dead ahead!",
+        "value": {"x": -80, "y": 0},
+        "tolerance": {"x": 15, "y": 20},
+        "timeout_ms": 8000
+      },
+      {
+        "id": "nav_port_on",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Port thruster — FIRE!",
+        "narrator_line": "Fire the port thruster!",
+        "value": true,
+        "timeout_ms": 3000
+      }
     ],
     "cooperative": [
-      { "id": "coop_nav_tell_eng",  "display_on": "NAVIGATOR", "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Tell Carpenter: half sail!",    "narrator_line": "Quartermaster! Tell the Carpenter — half sail!",   "value": 50, "tolerance": 10, "timeout_ms": 10000 },
-      { "id": "coop_med_tell_sent", "display_on": "MEDIC",     "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Tell Master-at-Arms: armor ON!", "narrator_line": "Surgeon! Shout — raise the armor plating!",       "value": true,                "timeout_ms": 6000 },
-      { "id": "coop_eng_tell_nav",  "display_on": "ENGINEER",  "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Tell Quartermaster: hard starboard!", "narrator_line": "Carpenter! Tell the helm — hard starboard!", "value": {"x":80,"y":0}, "tolerance":{"x":15,"y":20}, "timeout_ms": 12000 },
-      { "id": "coop_cmd_tell_op",   "display_on": "COMMANDER", "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Tell Signalman: channel 12!",   "narrator_line": "Bosun! Tell the Signalman — channel 12!",         "value": 12,                  "timeout_ms": 8000 },
-      { "id": "coop_sco_tell_ana",  "display_on": "SCOUT",     "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": 1, "tier": "T3", "label": "Tell Cartographer: code 2-4-1!", "narrator_line": "Lookout! Shout to the Cartographer — 2-4-1!",     "value": "241",               "timeout_ms": 10000 }
-    ]
-  },
-  "crises": [
-    { "id": "crisis_hull_breach", "type": "CRISIS_ALL",       "label": "HULL BREACH!",            "narrator_line": "HULL BREACH! ALL HANDS — BRACE!",                  "required_count": "all",  "timeout_ms": 5000, "penalty": "health_major" },
-    { "id": "crisis_fire_below",  "type": "CRISIS_THRESHOLD", "label": "FIRE BELOW DECKS!",       "narrator_line": "Fire in the hold! Three of you — SMASH IT!",        "required_count": 3,      "timeout_ms": 6000, "penalty": "health_minor" },
-    { "id": "crisis_rogue_wave",  "type": "MULTI_ACTION",       "label": "ROGUE WAVE!",             "narrator_line": "ROGUE WAVE! Navigator — starboard! Engineer — cut sails! BRACE!", "actions": [{"target_arch":"NAVIGATOR","action":"SET_JOYSTICK","slot":1,"value":{"x":100,"y":0},"tolerance":{"x":20,"y":30}},{"target_arch":"ENGINEER","action":"SET_SLIDER","slot":1,"value":0,"tolerance":10},{"rest":"CRISIS_BTN"}], "timeout_ms": 7000, "penalty": "health_major" }
-  ],
-  "phases": [
-    {
-      "id": "intro", "type": "NARRATION", "duration_sec": 30,
-      "narrator_lines": ["Welcome aboard The Crimson Galleon, you sorry lot!", "Royal Navy frigate on our tail. Stations, everyone."]
-    },
-    {
-      "id": "frantic_1", "type": "FRANTIC", "duration_sec": 90,
-      "difficulty": { "commands_per_min": {"start":4,"end":6}, "coop_ratio": 0.20, "crisis_chance_per_30s": 0.10, "timeout_multiplier": 1.2 },
-      "pools": ["direct","cooperative"], "crises": ["crisis_hull_breach"],
-      "narrator_lines_ambient": ["Show me what you've got!", "Come on, bilge rats!"]
-    },
-    {
-      "id": "branch_1", "type": "BRANCH", "evaluate": "frantic_1", "threshold": 0.55,
-      "win":  { "narrator_lines": ["Not bad! The Galleon pulls ahead!",                  "Keep this pace — we might actually make it."],    "next_phase": "frantic_2_W" },
-      "lose": { "narrator_lines": ["Pathetic! The frigate is GAINING!",                  "Get it together or we're done for!"],              "next_phase": "frantic_2_L" }
-    },
-    {
-      "id": "frantic_2_W", "type": "FRANTIC", "duration_sec": 100,
-      "difficulty": { "commands_per_min": {"start":7,"end":10}, "coop_ratio": 0.35, "crisis_chance_per_30s": 0.25, "timeout_multiplier": 1.0 },
-      "pools": ["direct","cooperative"], "crises": ["crisis_hull_breach","crisis_fire_below"],
-      "narrator_lines_ambient": ["Keep the pressure up!", "They're trying to flank — stay sharp!"]
-    },
-    {
-      "id": "frantic_2_L", "type": "FRANTIC", "duration_sec": 100,
-      "difficulty": { "commands_per_min": {"start":6,"end":9}, "coop_ratio": 0.40, "crisis_chance_per_30s": 0.30, "timeout_multiplier": 0.9 },
-      "pools": ["direct","cooperative"], "crises": ["crisis_hull_breach","crisis_fire_below","crisis_rogue_wave"],
-      "narrator_lines_ambient": ["We're taking on water!", "The frigate is alongside — MOVE!"]
-    },
-    {
-      "id": "branch_2", "type": "BRANCH", "evaluate": "current", "threshold": 0.55,
-      "condition_per_path": {
-        "W": {
-          "win":  { "narrator_lines": ["Outstanding! Two for two!",       "One final push and we're free!"],                    "next_phase": "frantic_3_WW" },
-          "lose": { "narrator_lines": ["We had the lead and you BLEW IT!", "One more chance. Don't waste it."],                 "next_phase": "frantic_3_WL" }
-        },
-        "L": {
-          "win":  { "narrator_lines": ["NOW you're awake!",               "Redemption is possible — finish strong!"],           "next_phase": "frantic_3_LW" },
-          "lose": { "narrator_lines": ["This is dire.",                    "Last chance. Everything you've got or we're done."], "next_phase": "frantic_3_LL" }
-        }
+      {
+        "id": "coop_cmd_tell_nav_port",
+        "display_on": "COMMANDER",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Tell Helm: hard to port!",
+        "narrator_line": "Commander! Tell the Helm Officer — hard to port!",
+        "value": {"x": -80, "y": 0},
+        "tolerance": {"x": 15, "y": 20},
+        "timeout_ms": 12000
       }
-    },
+    ],
+    "open": [
+      {
+        "id": "open_joystick_evade",
+        "target": "ANY",
+        "action": "SET_JOYSTICK",
+        "tier": "T3",
+        "label": "Someone — hard evasive left!",
+        "narrator_line": "Anyone with a flight stick — hard evasive left!",
+        "value": {"x": -80, "y": 0},
+        "tolerance": {"x": 15, "y": 20},
+        "timeout_ms": 8000
+      }
+    ]
+  },
+
+  "crises": [
     {
-      "id": "frantic_3_WW", "type": "FRANTIC", "duration_sec": 90,
-      "difficulty": { "commands_per_min": {"start":10,"end":14}, "coop_ratio": 0.45, "crisis_chance_per_30s": 0.35, "timeout_multiplier": 0.9 },
-      "pools": ["direct","cooperative"], "crises": ["crisis_hull_breach","crisis_fire_below","crisis_rogue_wave"],
-      "narrator_lines_ambient": ["Final stretch! Don't let up!", "Almost there!"]
-    },
-    {
-      "id": "frantic_3_WL", "type": "FRANTIC", "duration_sec": 90,
-      "difficulty": { "commands_per_min": {"start":9,"end":13}, "coop_ratio": 0.50, "crisis_chance_per_30s": 0.40, "timeout_multiplier": 0.85 },
-      "pools": ["direct","cooperative"], "crises": ["crisis_hull_breach","crisis_fire_below","crisis_rogue_wave"],
-      "narrator_lines_ambient": ["They're closing again!", "Prove that first round wasn't a fluke!"]
-    },
-    {
-      "id": "frantic_3_LW", "type": "FRANTIC", "duration_sec": 90,
-      "difficulty": { "commands_per_min": {"start":9,"end":13}, "coop_ratio": 0.50, "crisis_chance_per_30s": 0.35, "timeout_multiplier": 0.9 },
-      "pools": ["direct","cooperative"], "crises": ["crisis_hull_breach","crisis_fire_below","crisis_rogue_wave"],
-      "narrator_lines_ambient": ["Keep this momentum!", "Don't fall back now!"]
-    },
-    {
-      "id": "frantic_3_LL", "type": "FRANTIC", "duration_sec": 90,
-      "difficulty": { "commands_per_min": {"start":8,"end":12}, "coop_ratio": 0.50, "crisis_chance_per_30s": 0.45, "timeout_multiplier": 0.8 },
-      "pools": ["direct","cooperative"], "crises": ["crisis_hull_breach","crisis_fire_below","crisis_rogue_wave"],
-      "narrator_lines_ambient": ["We're sinking!", "This is it — do or die!"]
-    },
-    {
-      "id": "branch_3", "type": "BRANCH", "evaluate": "current", "threshold": 0.55
+      "id": "crisis_hull_breach",
+      "type": "CRISIS_ALL",
+      "label": "HULL BREACH!",
+      "narrator_line": "HULL BREACH! ALL HANDS — BRACE FOR DECOMPRESSION!",
+      "required_count": "all",
+      "timeout_ms": 5000,
+      "penalty": "health_major"
     }
   ],
+
+  "phases": [
+    { "id": "intro", "type": "NARRATION", "duration_sec": 60, "narrator_lines": ["..."] },
+    { "id": "preflight", "type": "PREFLIGHT", "duration_sec": 45, "narrator_intro": "All crew, systems check.", "init_commands": {} },
+    { "id": "frantic_1", "type": "FRANTIC", "pools": ["direct", "cooperative", "open"], "crises": ["crisis_hull_breach"] },
+    { "id": "branch_1", "type": "BRANCH", "evaluate": "frantic_1" },
+    { "id": "frantic_2_W", "type": "FRANTIC", "...": "..." },
+    { "id": "frantic_2_L", "type": "FRANTIC", "...": "..." },
+    { "id": "branch_2", "type": "BRANCH", "evaluate": "current" },
+    { "id": "frantic_3_WW", "type": "FRANTIC", "...": "..." },
+    { "id": "frantic_3_WL", "type": "FRANTIC", "...": "..." },
+    { "id": "frantic_3_LW", "type": "FRANTIC", "...": "..." },
+    { "id": "frantic_3_LL", "type": "FRANTIC", "...": "..." }
+  ],
+
   "outcomes": {
-    "metrics_weights": { "direct_rate": 0.30, "coop_rate": 0.30, "timeout_rate": 0.20, "crisis_rate": 0.20 },
-    "disaster": {
-      "tier": "DISASTER",
-      "narrator_lines": ["She's going down! Abandon ship!", "The Crimson Galleon slips beneath the waves... along with your reputation."]
-    },
-    "endings": {
-      "WWW": { "tier": "TRIUMPH",  "narrator_lines": ["LEGENDARY!", "You fire a broadside as you pass. Songs will be written about this crew.", "Now... who wants to count the treasure?"] },
-      "WWL": { "tier": "SUCCESS",  "narrator_lines": ["So close to perfection!", "The Galleon escapes into the fog, but that last round was rough.", "A good crew. Almost a great one."] },
-      "WLW": { "tier": "SUCCESS",  "narrator_lines": ["A rocky middle chapter, but you pulled it together!", "The Crimson Galleon sails free. Well recovered, crew."] },
-      "WLL": { "tier": "SURVIVE",  "sub_analysis": true, "narrator_lines": ["Started strong, then fell apart.", "The Galleon limps into port with half the crew ready to mutiny."] },
-      "LWW": { "tier": "SUCCESS",  "narrator_lines": ["The redemption arc!", "You clawed your way back. That's the kind of crew stories are made of."] },
-      "LWL": { "tier": "SURVIVE",  "sub_analysis": true, "narrator_lines": ["Up and down like the waves themselves.", "The Galleon escapes, but the crew needs consistency."] },
-      "LLW": { "tier": "SURVIVE",  "narrator_lines": ["A last-second miracle!", "Don't count on miracles next time. Start stronger."] },
-      "LLL": { "tier": "FAILURE",  "sub_analysis": true, "narrator_lines": ["Three rounds. Three failures.", "The crew is captured. The treasure is gone. The legend ends here."] }
-    }
-  },
-  "narrator": {
-    "voice": "pirate_captain",
-    "tts_engine": "local",
-    "between_commands_lines": [
-      "Keep it moving!",
-      "Faster, you dogs!",
-      "The sea waits for no one!",
-      "Eyes on your stations!"
-    ]
+    "WWW": { "tier": "TRIUMPH", "title": "Perfect Escape", "narrator_lines": ["..."] },
+    "LLL": { "tier": "FAILURE", "title": "Station Lost",   "narrator_lines": ["..."] }
   }
 }
 ```
 
----
-
-## Appendix: Scenario Size Budget
-
-Scenario data is split across two storage devices on the Hub:
-
-- **Scenario JSON** → ESP32-S3 internal flash (16MB total, ~12MB available after firmware + OTA)
-- **Narrator audio** → W25N01GV external SPI NAND flash (128MB, dedicated to audio)
-
-### Scenario JSON (Internal Flash)
-
-| Component | Approx. Size |
-|---|---|
-| Metadata + roles + labels | ~1 KB |
-| Command pools (50 direct + 20 coop) | ~8–12 KB |
-| Crises (3–5 events) | ~1 KB |
-| Phases (7 frantic + 3 branch + intro = 11 phases) | ~5 KB |
-| Outcomes (8 endings + disaster + sub-analysis) | ~4 KB |
-| Narrator line text (transitions + ambient + endings) | ~3 KB |
-| **Total JSON per scenario** | **~22–28 KB** |
-| **Per pack (3–5 scenarios)** | **~80–140 KB** |
-| **Internal flash capacity** | **~12 MB → 85–150 packs** |
-
-### Narrator Audio (External SPI NAND)
-
-~60 unique voice lines per scenario (see [Authoring Effort](#authoring-effort-scaling-content-across-8-paths)), ~3 seconds average per line.
-
-| Codec | Per Line | Per Scenario (60 lines) | Per Pack (5 scenarios) | Packs in 128MB |
-|---|---|---|---|---|
-| Opus 24kbps | ~9 KB | ~540 KB | ~2.7 MB | **~47** |
-| MP3 64kbps | ~24 KB | ~1.4 MB | ~7 MB | **~18** |
-| ADPCM 16kHz | ~24 KB | ~1.4 MB | ~7 MB | **~18** |
-
-Using Opus (recommended — best quality/size ratio, ESP32-S3 decodes it comfortably), the Hub permanently caches **~47 packs** of narrator audio — more than most customers will ever own.
-
-### Combined Capacity
-
-The bottleneck is audio, not JSON. With Opus encoding:
-
-| | JSON (internal) | Audio (SPI NAND) | Limiting Factor |
-|---|---|---|---|
-| Per pack | ~100 KB | ~2.7 MB | Audio |
-| Total capacity | ~85–150 packs | **~47 packs** | **Audio** |
-| Practical limit | — | **~47 packs** | More than enough |
-
-All content is **permanently cached** — downloaded once (over WiFi on first NFC tap or via companion app), never evicted. When flash is full, the companion app shows "Storage full — remove a pack to make room" (like Kindle). At 47 packs × 3–5 scenarios each, that's 140–235 scenarios before storage becomes a concern.
+This is an abridged example. A full scenario includes all 8 archetypes in `roles`, `oled_labels`, complete command pools, multiple crises, full phase definitions, and all 8 outcomes.

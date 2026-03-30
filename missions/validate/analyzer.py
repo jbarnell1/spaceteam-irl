@@ -6,7 +6,7 @@ path timing estimates, and a side-by-side difficulty preset comparison.
 """
 
 from .capability_matrix import (
-    ARCHETYPES, FRANTIC_PHASE_IDS, PATH_PHASES, get_tier,
+    ARCHETYPES, FRANTIC_PHASE_IDS, PATH_PHASES, ELEMENT_ARCHETYPES, get_tier,
 )
 from .difficulty_presets import (
     PRESETS, DIFFICULTY_LEVELS, resolve_phase_difficulty, estimate_total_commands,
@@ -18,6 +18,7 @@ def analyze(scenario):
     sections = [
         _header(scenario),
         _command_distribution(scenario),
+        _open_command_summary(scenario),
         _coop_network(scenario),
         _crisis_overview(scenario),
         _phase_difficulty_curves(scenario),
@@ -45,12 +46,15 @@ def _header(s):
 
 
 def _command_distribution(s):
-    direct = s.get("command_pools", {}).get("direct", [])
-    coop = s.get("command_pools", {}).get("cooperative", [])
+    pools = s.get("command_pools", {})
+    direct = pools.get("direct", [])
+    coop = pools.get("cooperative", [])
+    open_cmds = pools.get("open", [])
 
     lines = ["\n--- Command Distribution ---"]
     lines.append(f"Total: {len(direct)} direct + {len(coop)} cooperative "
-                 f"= {len(direct) + len(coop)} commands\n")
+                 f"+ {len(open_cmds)} open "
+                 f"= {len(direct) + len(coop) + len(open_cmds)} commands\n")
 
     header = (f"{'Archetype':<12} {'Direct':>6} "
               f"{'T1':>4} {'T2':>4} {'T3':>4} "
@@ -81,6 +85,29 @@ def _command_distribution(s):
     if total > 0:
         lines.append(f"\nTier mix: T1={t1_tot/total:.0%}  "
                      f"T2={t2_tot/total:.0%}  T3={t3_tot/total:.0%}")
+    return "\n".join(lines)
+
+
+def _open_command_summary(s):
+    open_cmds = s.get("command_pools", {}).get("open", [])
+    if not open_cmds:
+        return "\n--- Open Commands ---\n(none)"
+
+    lines = ["\n--- Open Commands ---", f"Total: {len(open_cmds)}\n"]
+
+    # Group by action type
+    by_action = {}
+    for cmd in open_cmds:
+        action = cmd.get("action", "???")
+        by_action.setdefault(action, []).append(cmd)
+
+    for action, cmds in sorted(by_action.items()):
+        archetypes = ELEMENT_ARCHETYPES.get(action, [])
+        tier = get_tier(action) or "?"
+        lines.append(f"  {action} ({tier}) — responders: {', '.join(archetypes)}")
+        for cmd in cmds:
+            lines.append(f"    {cmd.get('id', '???')}: {cmd.get('label', '???')}")
+
     return "\n".join(lines)
 
 
@@ -118,7 +145,7 @@ def _crisis_overview(s):
 def _phase_difficulty_curves(s):
     lines = ["\n--- Phase Difficulty Curves ---"]
     header = (f"{'Phase':<16} {'Dur':>4} {'Cmd/min':>10} "
-              f"{'Coop%':>6} {'Crisis%':>8} {'Timeout*':>9} {'#Crises':>8}")
+              f"{'Coop%':>6} {'Open%':>6} {'Crisis%':>8} {'Timeout*':>9} {'#Crises':>8}")
     lines.append(header)
     lines.append("-" * len(header))
 
@@ -139,12 +166,13 @@ def _phase_difficulty_curves(s):
         cpm = diff.get("commands_per_min", {})
         cpm_str = f"{cpm.get('start', '?')}->{cpm.get('end', '?')}"
         coop = diff.get("coop_ratio", 0)
+        open_r = diff.get("open_ratio", 0)
         crisis = diff.get("crisis_chance_per_30s", 0)
         tm = diff.get("timeout_multiplier", 1)
         n_crises = len(phase.get("crises", []))
 
         lines.append(f"{pid:<16} {dur:>4} {cpm_str:>10} "
-                     f"{coop:>5.0%} {crisis:>7.0%} "
+                     f"{coop:>5.0%} {open_r:>5.0%} {crisis:>7.0%} "
                      f"{tm:>9.2f} {n_crises:>8}")
     return "\n".join(lines)
 
@@ -202,6 +230,7 @@ def _difficulty_comparison(s):
                 f"    {pid:<16} {params.get('duration_sec', '?'):>4}s "
                 f"{cpm.get('start', '?')}->{cpm.get('end', '?')} cmd/min  "
                 f"coop={params.get('coop_ratio', 0):.0%}  "
+                f"open={params.get('open_ratio', 0):.0%}  "
                 f"crisis={params.get('crisis_chance_per_30s', 0):.0%}  "
                 f"timeout*{params.get('timeout_multiplier', 1):.2f}"
             )

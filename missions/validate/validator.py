@@ -8,9 +8,11 @@ from pathlib import Path
 
 from .capability_matrix import (
     ARCHETYPES, CAPABILITY_MATRIX, TIER_ACTIONS, TIER_TIMEOUT_RANGE,
-    ALL_ACTIONS, CRISIS_TYPES, CRISIS_PENALTIES, OUTCOME_TIERS,
+    ALL_ACTIONS, ALL_COMMANDABLE_SLOTS, ELEMENT_ARCHETYPES,
+    STATEFUL_ACTIONS, BINARY_STATEFUL_ACTIONS,
+    CRISIS_TYPES, CRISIS_PENALTIES, OUTCOME_TIERS,
     BRANCH_PATHS, FRANTIC_PHASE_IDS,
-    OLED_LABEL_MAX, SCREEN_LABEL_MAX, NARRATOR_LINE_MAX,
+    OLED_LABEL_COUNT, OLED_LABEL_MAX, SCREEN_LABEL_MAX, NARRATOR_LINE_MAX,
     MIN_DIRECT_PER_ARCH, MIN_COOP_PER_ARCH, MIN_CRISES,
     get_tier, is_valid_command,
 )
@@ -61,6 +63,8 @@ def validate(scenario):
     _check_oled_labels(scenario, r)
     _check_direct_commands(scenario, r)
     _check_coop_commands(scenario, r)
+    _check_open_commands(scenario, r)
+    _check_statefulness(scenario, r)
     _check_pool_coverage(scenario, r)
     _check_unique_ids(scenario, r)
     _check_crises(scenario, r)
@@ -126,12 +130,15 @@ def _check_oled_labels(s, r):
             r.error("OLED_LABELS", f"Missing OLED labels for {arch}")
             continue
         arch_labels = labels[arch]
-        if len(arch_labels) != 5:
-            r.error("OLED_LABELS", f"{arch} has {len(arch_labels)} labels, expected 5")
+        if len(arch_labels) != OLED_LABEL_COUNT:
+            r.error("OLED_LABELS",
+                    f"{arch} has {len(arch_labels)} labels, "
+                    f"expected {OLED_LABEL_COUNT}")
         for i, label in enumerate(arch_labels):
             if len(label) > OLED_LABEL_MAX:
+                slot = ALL_COMMANDABLE_SLOTS[i] if i < len(ALL_COMMANDABLE_SLOTS) else f"index_{i}"
                 r.error("OLED_LABELS",
-                        f"{arch} slot {i+1} label '{label}' "
+                        f"{arch} {slot} label '{label}' "
                         f"exceeds {OLED_LABEL_MAX} chars ({len(label)})")
 
 
@@ -151,12 +158,18 @@ def _check_direct_commands(s, r):
         if action not in ALL_ACTIONS:
             r.error("CAPABILITY", f"Direct cmd '{cid}': unknown action '{action}'")
             continue
+        # Slot exists
+        if slot not in ALL_COMMANDABLE_SLOTS:
+            r.error("CAPABILITY",
+                    f"Direct cmd '{cid}': unknown slot '{slot}' "
+                    f"(valid: {', '.join(ALL_COMMANDABLE_SLOTS)})")
+            continue
 
         # Capability matrix check
         if not is_valid_command(arch, action, slot):
             expected = CAPABILITY_MATRIX.get(arch, {}).get(slot, "NONE")
             r.error("CAPABILITY",
-                    f"Direct cmd '{cid}': {arch} slot {slot} expects "
+                    f"Direct cmd '{cid}': {arch} {slot} expects "
                     f"'{expected}', got '{action}'")
 
         # Tier correctness
@@ -176,12 +189,7 @@ def _check_direct_commands(s, r):
                         f"outside {tier} range [{lo}-{hi}]")
 
         # Label lengths
-        label = cmd.get("label", "")
-        if len(label) > SCREEN_LABEL_MAX:
-            r.error("LABEL", f"Direct cmd '{cid}': label exceeds {SCREEN_LABEL_MAX} chars")
-        nar = cmd.get("narrator_line", "")
-        if len(nar) > NARRATOR_LINE_MAX:
-            r.error("LABEL", f"Direct cmd '{cid}': narrator_line exceeds {NARRATOR_LINE_MAX} chars")
+        _check_label_lengths(cmd, cid, "Direct", r)
 
 
 def _check_coop_commands(s, r):
@@ -204,12 +212,17 @@ def _check_coop_commands(s, r):
         if action not in ALL_ACTIONS:
             r.error("CAPABILITY", f"Coop cmd '{cid}': unknown action '{action}'")
             continue
+        if slot not in ALL_COMMANDABLE_SLOTS:
+            r.error("CAPABILITY",
+                    f"Coop cmd '{cid}': unknown slot '{slot}' "
+                    f"(valid: {', '.join(ALL_COMMANDABLE_SLOTS)})")
+            continue
 
         # Executor capability check
         if not is_valid_command(target_arch, action, slot):
             expected = CAPABILITY_MATRIX.get(target_arch, {}).get(slot, "NONE")
             r.error("CAPABILITY",
-                    f"Coop cmd '{cid}': executor {target_arch} slot {slot} "
+                    f"Coop cmd '{cid}': executor {target_arch} {slot} "
                     f"expects '{expected}', got '{action}'")
 
         # Timeout check (coop gets +4000ms overhead for communication)
@@ -226,12 +239,7 @@ def _check_coop_commands(s, r):
         pairs.add((display_on, target_arch))
 
         # Label lengths
-        label = cmd.get("label", "")
-        if len(label) > SCREEN_LABEL_MAX:
-            r.error("LABEL", f"Coop cmd '{cid}': label exceeds {SCREEN_LABEL_MAX} chars")
-        nar = cmd.get("narrator_line", "")
-        if len(nar) > NARRATOR_LINE_MAX:
-            r.error("LABEL", f"Coop cmd '{cid}': narrator_line exceeds {NARRATOR_LINE_MAX} chars")
+        _check_label_lengths(cmd, cid, "Coop", r)
 
     if len(pairs) < 8:
         r.warn("COOP_DIVERSITY",
@@ -239,9 +247,84 @@ def _check_coop_commands(s, r):
                f"(recommend >= 8 for variety)")
 
 
-def _check_pool_coverage(s, r):
+def _check_open_commands(s, r):
+    """Validate OPEN command pool — specialty-only actions, target = ANY."""
+    open_cmds = s.get("command_pools", {}).get("open", [])
+
+    for cmd in open_cmds:
+        cid = cmd.get("id", "???")
+        target = cmd.get("target")
+        action = cmd.get("action")
+        tier = cmd.get("tier")
+
+        # Target must be "ANY"
+        if target != "ANY":
+            r.error("OPEN",
+                    f"Open cmd '{cid}': target must be 'ANY', got '{target}'")
+
+        # Action must be a specialty action (in ELEMENT_ARCHETYPES)
+        if action not in ELEMENT_ARCHETYPES:
+            r.error("OPEN",
+                    f"Open cmd '{cid}': action '{action}' is not a specialty "
+                    f"action. OPEN commands only target specialty elements "
+                    f"(shared across 2 archetypes).")
+            continue
+
+        # Tier correctness
+        expected_tier = get_tier(action)
+        if tier != expected_tier:
+            r.error("TIER",
+                    f"Open cmd '{cid}': action '{action}' should be "
+                    f"tier {expected_tier}, got {tier}")
+
+        # Timeout within tier range
+        timeout = cmd.get("timeout_ms", 0)
+        if tier and tier in TIER_TIMEOUT_RANGE:
+            lo, hi = TIER_TIMEOUT_RANGE[tier]
+            if not (lo <= timeout <= hi):
+                r.error("TIMEOUT",
+                        f"Open cmd '{cid}': timeout {timeout}ms "
+                        f"outside {tier} range [{lo}-{hi}]")
+
+        # Label lengths
+        _check_label_lengths(cmd, cid, "Open", r)
+
+
+def _check_statefulness(s, r):
+    """Validate that binary stateful commands have both ON and OFF variants."""
     direct = s.get("command_pools", {}).get("direct", [])
-    coop = s.get("command_pools", {}).get("cooperative", [])
+
+    # Track (arch, slot, value) for binary stateful actions
+    binary_values = {}  # (arch, slot) -> set of values
+    for cmd in direct:
+        action = cmd.get("action")
+        if action not in BINARY_STATEFUL_ACTIONS:
+            continue
+        arch = cmd.get("target_arch")
+        slot = cmd.get("slot")
+        value = cmd.get("value")
+        key = (arch, slot)
+        binary_values.setdefault(key, set())
+        if isinstance(value, bool):
+            binary_values[key].add(value)
+
+    # Each (arch, slot) that uses a binary stateful action must have both True and False
+    for (arch, slot), values in binary_values.items():
+        if True not in values:
+            r.error("STATEFULNESS",
+                    f"{arch} {slot}: missing value=true variant "
+                    f"(binary stateful actions need both ON and OFF)")
+        if False not in values:
+            r.error("STATEFULNESS",
+                    f"{arch} {slot}: missing value=false variant "
+                    f"(binary stateful actions need both ON and OFF)")
+
+
+def _check_pool_coverage(s, r):
+    pools = s.get("command_pools", {})
+    direct = pools.get("direct", [])
+    coop = pools.get("cooperative", [])
+    open_cmds = pools.get("open", [])
 
     direct_by_arch = {}
     for cmd in direct:
@@ -261,9 +344,9 @@ def _check_pool_coverage(s, r):
             r.error("POOL_COVERAGE",
                     f"{arch}: only {cc} coop as executor (need >= {MIN_COOP_PER_ARCH})")
 
-    # Overall tier balance (not per-archetype — some lack T2 slots entirely)
+    # Overall tier balance across direct + open pools
     tier_counts = {"T1": 0, "T2": 0, "T3": 0}
-    for cmd in direct:
+    for cmd in direct + open_cmds:
         t = cmd.get("tier")
         if t in tier_counts:
             tier_counts[t] += 1
@@ -294,6 +377,12 @@ def _check_unique_ids(s, r):
             r.error("UNIQUE_ID", f"Duplicate ID '{cid}' in coop (also in {seen[cid]})")
         else:
             seen[cid] = "coop"
+    for cmd in s.get("command_pools", {}).get("open", []):
+        cid = cmd.get("id")
+        if cid in seen:
+            r.error("UNIQUE_ID", f"Duplicate ID '{cid}' in open (also in {seen[cid]})")
+        else:
+            seen[cid] = "open"
     for crisis in s.get("crises", []):
         cid = crisis.get("id")
         if cid in seen:
@@ -332,7 +421,7 @@ def _check_crises(s, r):
                 if arch and action and slot:
                     if not is_valid_command(arch, action, slot):
                         r.error("CAPABILITY",
-                                f"Crisis '{cid}': {arch} slot {slot} can't do '{action}'")
+                                f"Crisis '{cid}': {arch} {slot} can't do '{action}'")
 
         timeout = crisis.get("timeout_ms", 0)
         if timeout < 3000 or timeout > 15000:
@@ -372,54 +461,102 @@ def _check_phases(s, r):
     difficulty = s.get("meta", {}).get("difficulty", "medium")
 
     for phase in phases:
-        if phase.get("type") != "FRANTIC":
-            continue
+        ptype = phase.get("type")
         pid = phase.get("id", "???")
 
-        # Check difficulty block
-        diff_block = phase.get("difficulty")
-        if diff_block is None:
-            preset = PRESETS.get(difficulty, {}).get(pid)
-            if preset is None:
+        if ptype == "FRANTIC":
+            _check_frantic_phase(phase, pid, difficulty, crisis_ids, r)
+        elif ptype == "PREFLIGHT":
+            _check_preflight_phase(phase, pid, s, r)
+        elif ptype == "BRANCH":
+            threshold = phase.get("threshold")
+            if threshold is not None and not (0 < threshold < 1):
                 r.error("PHASES",
-                        f"Phase '{pid}': no difficulty block and no preset "
-                        f"for difficulty='{difficulty}'")
+                        f"Branch '{pid}': threshold {threshold} should be in (0, 1)")
+
+
+def _check_frantic_phase(phase, pid, difficulty, crisis_ids, r):
+    """Validate a single FRANTIC phase."""
+    diff_block = phase.get("difficulty")
+    if diff_block is None:
+        preset = PRESETS.get(difficulty, {}).get(pid)
+        if preset is None:
+            r.error("PHASES",
+                    f"Phase '{pid}': no difficulty block and no preset "
+                    f"for difficulty='{difficulty}'")
+        return
+
+    # Validate difficulty block fields
+    cpm = diff_block.get("commands_per_min", {})
+    start = cpm.get("start")
+    end = cpm.get("end")
+    if not isinstance(start, (int, float)) or not isinstance(end, (int, float)):
+        r.error("PHASES", f"Phase '{pid}': commands_per_min needs numeric start and end")
+    elif start > end:
+        r.warn("PHASES", f"Phase '{pid}': commands_per_min.start > end (reverse ramp)")
+
+    coop = diff_block.get("coop_ratio", 0)
+    if not (0 <= coop <= 1):
+        r.error("PHASES", f"Phase '{pid}': coop_ratio {coop} out of [0, 1]")
+
+    open_ratio = diff_block.get("open_ratio", 0)
+    if not (0 <= open_ratio <= 1):
+        r.error("PHASES", f"Phase '{pid}': open_ratio {open_ratio} out of [0, 1]")
+
+    # coop_ratio + open_ratio should not exceed 1.0
+    if coop + open_ratio > 1.0:
+        r.error("PHASES",
+                f"Phase '{pid}': coop_ratio ({coop}) + open_ratio ({open_ratio}) "
+                f"exceeds 1.0 — no room for direct commands")
+
+    crisis = diff_block.get("crisis_chance_per_30s", 0)
+    if not (0 <= crisis <= 1):
+        r.error("PHASES", f"Phase '{pid}': crisis_chance_per_30s {crisis} out of [0, 1]")
+
+    tm = diff_block.get("timeout_multiplier", 1)
+    if tm < 0.5 or tm > 2.0:
+        r.warn("PHASES", f"Phase '{pid}': timeout_multiplier {tm} seems extreme (0.5-2.0)")
+
+    # Crisis references
+    for cref in phase.get("crises", []):
+        if cref not in crisis_ids:
+            r.error("PHASES", f"Phase '{pid}': references unknown crisis '{cref}'")
+
+
+def _check_preflight_phase(phase, pid, scenario, r):
+    """Validate a PREFLIGHT phase — init commands for stateful controls."""
+    init_commands = phase.get("init_commands")
+    if init_commands is None:
+        r.warn("PREFLIGHT", f"Phase '{pid}': PREFLIGHT has no init_commands")
+        return
+
+    if not isinstance(init_commands, dict):
+        r.error("PREFLIGHT", f"Phase '{pid}': init_commands must be a dict keyed by archetype")
+        return
+
+    for arch, cmds in init_commands.items():
+        if arch not in ARCHETYPES:
+            r.error("PREFLIGHT",
+                    f"Phase '{pid}': unknown archetype '{arch}' in init_commands")
             continue
-
-        # Validate difficulty block fields
-        cpm = diff_block.get("commands_per_min", {})
-        start = cpm.get("start")
-        end = cpm.get("end")
-        if not isinstance(start, (int, float)) or not isinstance(end, (int, float)):
-            r.error("PHASES", f"Phase '{pid}': commands_per_min needs numeric start and end")
-        elif start > end:
-            r.warn("PHASES", f"Phase '{pid}': commands_per_min.start > end (reverse ramp)")
-
-        coop = diff_block.get("coop_ratio", 0)
-        if not (0 <= coop <= 1):
-            r.error("PHASES", f"Phase '{pid}': coop_ratio {coop} out of [0, 1]")
-
-        crisis = diff_block.get("crisis_chance_per_30s", 0)
-        if not (0 <= crisis <= 1):
-            r.error("PHASES", f"Phase '{pid}': crisis_chance_per_30s {crisis} out of [0, 1]")
-
-        tm = diff_block.get("timeout_multiplier", 1)
-        if tm < 0.5 or tm > 2.0:
-            r.warn("PHASES", f"Phase '{pid}': timeout_multiplier {tm} seems extreme (0.5-2.0)")
-
-        # Crisis references
-        for cref in phase.get("crises", []):
-            if cref not in crisis_ids:
-                r.error("PHASES", f"Phase '{pid}': references unknown crisis '{cref}'")
-
-    # Validate branch phases
-    for phase in phases:
-        if phase.get("type") != "BRANCH":
+        if not isinstance(cmds, list):
+            r.error("PREFLIGHT",
+                    f"Phase '{pid}': init_commands[{arch}] must be a list")
             continue
-        pid = phase.get("id", "???")
-        threshold = phase.get("threshold")
-        if threshold is not None and not (0 < threshold < 1):
-            r.error("PHASES", f"Branch '{pid}': threshold {threshold} should be in (0, 1)")
+        for cmd in cmds:
+            slot = cmd.get("slot")
+            action = cmd.get("action")
+            if slot and action:
+                if not is_valid_command(arch, action, slot):
+                    expected = CAPABILITY_MATRIX.get(arch, {}).get(slot, "NONE")
+                    r.error("PREFLIGHT",
+                            f"Phase '{pid}': {arch} {slot} expects "
+                            f"'{expected}', got '{action}'")
+                if action not in STATEFUL_ACTIONS:
+                    r.warn("PREFLIGHT",
+                           f"Phase '{pid}': {arch} {slot} action '{action}' "
+                           f"is not stateful — pre-flight typically initializes "
+                           f"stateful controls only")
 
 
 def _check_outcomes(s, r):
@@ -428,35 +565,25 @@ def _check_outcomes(s, r):
         r.error("OUTCOMES", "Missing 'outcomes' section")
         return
 
-    if "disaster" not in outcomes:
-        r.error("OUTCOMES", "Missing 'disaster' ending")
-
-    endings = outcomes.get("endings", {})
     for path in BRANCH_PATHS:
-        if path not in endings:
-            r.error("OUTCOMES", f"Missing ending for path '{path}'")
+        if path not in outcomes:
+            r.error("OUTCOMES", f"Missing outcome for path '{path}'")
 
-    for path, ending in endings.items():
+    for path, ending in outcomes.items():
         if path not in BRANCH_PATHS:
             r.warn("OUTCOMES", f"Unexpected path key '{path}'")
+            continue
+        if not isinstance(ending, dict):
+            r.error("OUTCOMES", f"Outcome '{path}' must be a dict")
+            continue
         tier = ending.get("tier")
         if tier not in OUTCOME_TIERS:
-            r.error("OUTCOMES", f"Ending '{path}': unknown tier '{tier}'")
+            r.error("OUTCOMES", f"Outcome '{path}': unknown tier '{tier}'")
         for line in ending.get("narrator_lines", []):
             if len(line) > NARRATOR_LINE_MAX:
                 r.error("OUTCOMES",
-                        f"Ending '{path}': narrator_line exceeds "
+                        f"Outcome '{path}': narrator_line exceeds "
                         f"{NARRATOR_LINE_MAX} chars")
-
-    # Metrics weights should sum to ~1.0
-    weights = outcomes.get("metrics_weights", {})
-    expected_keys = {"direct_rate", "coop_rate", "timeout_rate", "crisis_rate"}
-    for key in expected_keys:
-        if key not in weights:
-            r.warn("OUTCOMES", f"Missing metrics_weight '{key}'")
-    total_weight = sum(weights.values())
-    if abs(total_weight - 1.0) > 0.01:
-        r.warn("OUTCOMES", f"Metrics weights sum to {total_weight:.2f} (expected ~1.0)")
 
 
 def _check_narrator(s, r):
@@ -471,3 +598,15 @@ def _check_narrator(s, r):
             r.error("NARRATOR",
                     f"Ambient line exceeds {NARRATOR_LINE_MAX} chars: "
                     f"'{line[:50]}...'")
+
+
+# ─── Internal Helpers ────────────────────────────────────────────────
+
+def _check_label_lengths(cmd, cid, pool_name, r):
+    """Check label and narrator_line lengths on a command."""
+    label = cmd.get("label", "")
+    if len(label) > SCREEN_LABEL_MAX:
+        r.error("LABEL", f"{pool_name} cmd '{cid}': label exceeds {SCREEN_LABEL_MAX} chars")
+    nar = cmd.get("narrator_line", "")
+    if len(nar) > NARRATOR_LINE_MAX:
+        r.error("LABEL", f"{pool_name} cmd '{cid}': narrator_line exceeds {NARRATOR_LINE_MAX} chars")

@@ -11,7 +11,7 @@
     "player_count": { "min": 3, "max": 8 },
     "duration_sec": { "min": 840, "max": 900 },
     "adaptive_pacing": true,
-    "version": "1.0.0",
+    "version": "2.0.0",
     "author": "mission_architect"
   },
 
@@ -27,123 +27,149 @@
   },
 
   "oled_labels": {
-    "NAVIGATOR": ["Helm Control",    "Thrust Lever",   "Port Thruster",  "Stbd Thruster",  "Mark Waypoint"],
-    "ENGINEER":  ["Power Grid",      "Emergency Vent",  "Reactor Toggle", "Coolant Valve",  "Fuel Dump"],
-    "OPERATOR":  ["Frequency Dial",  "Distress Beacon", "Short-Range",    "Hail Station",   "Alert Broadcast"],
-    "SENTINEL":  ["Access Badge",    "Alert Level",    "Bulkhead Lock",  "Airlock Ctrl",   "Alarm Bell"],
-    "MEDIC":     ["Med Synthesizer", "Dosage Dial",     "O2 Regulator",   "Pulse Check",    "Stim Inject"],
-    "ANALYST":   ["Trajectory Calc", "Signal Tuner",    "Gravity Sensor", "Star Chart",     "Log Entry"],
-    "SCOUT":     ["Sweep Sensors",   "Stealth Mode",    "Port Camera",    "Stbd Camera",    "Deep Scan"],
-    "COMMANDER": ["Station Mode",    "Confirm Order",   "Master Override", "Evac Horn",      "Captain's Log"]
+    "NAVIGATOR": ["Port Thruster",  "Stbd Thruster",  "Drift Brake",    "Mark Waypoint",  "Flare Launch",   "Sensor Ping",    "Dock Clamp",     "Helm Control",   "Thrust Lever"],
+    "ENGINEER":  ["Reactor Toggle", "Coolant Valve",  "Fuel Dump",      "Emergency Vent", "Purge Valves",   "Reboot Core",    "Aux Battery",    "Power Grid",     "Patch Bay"],
+    "OPERATOR":  ["Distress Beacon","Short-Range",    "Jamming Field",  "Hail Station",   "Alert Broadcast", "Ping Relay",    "Boost Signal",   "Frequency Dial", "Access Code"],
+    "SENTINEL":  ["Bulkhead Lock",  "Airlock Ctrl",   "Force Field",    "Alarm Bell",     "Taser Charge",   "Lockdown Horn",  "Riot Shield",    "Access Badge",   "Alert Level"],
+    "MEDIC":     ["O2 Regulator",   "Quarantine Seal","Cryo Valve",     "Pulse Check",    "Stim Inject",    "Adrenaline Shot","Trauma Kit",     "Med Synthesizer","Dosage Dial"],
+    "ANALYST":   ["Gravity Sensor", "Star Chart",     "Data Link",      "Log Entry",      "Run Analysis",   "Sync Clock",     "Dump Cache",     "Trajectory Calc","Signal Tuner"],
+    "SCOUT":     ["Stealth Mode",   "Port Camera",    "Stbd Camera",    "Deep Scan",      "Ping Buoy",      "Tail Check",     "Threat Tag",     "Scan Bearing",   "Spectrum Dial"],
+    "COMMANDER": ["Master Override","Lockdown Key",   "Self-Destruct",  "Confirm Order",  "Evac Horn",      "Captain's Log",  "All Hands",      "Patch Panel",    "Auth Scan"]
   },
 
   "command_pools": {
     "direct": [
 
-      { "id": "nav_hard_port",     "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Hard to port — debris field!",         "narrator_line": "Helm! Hard to port — debris field dead ahead!",        "value": {"x":-80,"y":0},  "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
-      { "id": "nav_hard_stbd",     "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Hard starboard — flare incoming!",      "narrator_line": "Helm Officer! Hard starboard — solar flare incoming!",  "value": {"x":80,"y":0},   "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
-      { "id": "nav_climb",         "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Pull up! Gravity surge!",               "narrator_line": "Helm! Pull up — gravity surge detected!",              "value": {"x":0,"y":80},   "tolerance": {"x":20,"y":15}, "timeout_ms": 8000 },
-      { "id": "nav_dive",          "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Dive! Under the debris!",               "narrator_line": "Helm! Take us down — under the debris cloud!",         "value": {"x":0,"y":-70},  "tolerance": {"x":20,"y":15}, "timeout_ms": 8000 },
-      { "id": "nav_dock_on",       "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": 2, "tier": "T2", "label": "Thrust to MAXIMUM!",                   "narrator_line": "Helm! Full thrust — everything we have!",                "value": 100,  "tolerance": 10,                         "timeout_ms": 5000 },
-      { "id": "nav_dock_off",      "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": 2, "tier": "T2", "label": "Cut thrust to ZERO!",                    "narrator_line": "Helm! Cut thrust — all stop!",                            "value": 0,    "tolerance": 10,                         "timeout_ms": 5000 },
-      { "id": "nav_thrust_70",     "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": 2, "tier": "T2", "label": "Set thrust to seventy!",                  "narrator_line": "Seventy percent thrust — hold it steady!",                "value": 70,   "tolerance": 10,                         "timeout_ms": 5000 },
-      { "id": "nav_port_on",       "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Port thruster — FIRE!",                 "narrator_line": "Fire the port thruster!",                              "value": true,                                            "timeout_ms": 3000 },
-      { "id": "nav_port_off",      "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Port thruster — OFF!",                  "narrator_line": "Cut the port thruster!",                               "value": false,                                           "timeout_ms": 3000 },
-      { "id": "nav_stbd_on",       "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Starboard thruster — ON!",              "narrator_line": "Starboard thruster — fire it up!",                     "value": true,                                            "timeout_ms": 3000 },
-      { "id": "nav_stbd_off",      "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Starboard thruster — OFF!",             "narrator_line": "Kill the starboard thruster!",                         "value": false,                                           "timeout_ms": 3000 },
-      { "id": "nav_mark",          "target_arch": "NAVIGATOR", "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Mark waypoint NOW!",                    "narrator_line": "Helm! Mark that waypoint — now!",                      "value": null,                                            "timeout_ms": 3000 },
+      { "id": "nav_hard_port",     "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Hard to port — debris field!",         "narrator_line": "Helm! Hard to port — debris field dead ahead!",            "value": {"x":-80,"y":0},  "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
+      { "id": "nav_hard_stbd",     "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Hard starboard — flare incoming!",      "narrator_line": "Helm Officer! Hard starboard — solar flare incoming!",     "value": {"x":80,"y":0},   "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
+      { "id": "nav_climb",         "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Pull up! Gravity surge!",               "narrator_line": "Helm! Pull up — gravity surge detected!",                  "value": {"x":0,"y":80},   "tolerance": {"x":20,"y":15}, "timeout_ms": 8000 },
+      { "id": "nav_dive",          "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Dive! Under the debris!",               "narrator_line": "Helm! Take us down — under the debris cloud!",             "value": {"x":0,"y":-70},  "tolerance": {"x":20,"y":15}, "timeout_ms": 8000 },
+      { "id": "nav_thrust_max",    "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": "specialty_b", "tier": "T2", "label": "Thrust to MAXIMUM!",                    "narrator_line": "Helm! Full thrust — everything we have!",                  "value": 100,  "tolerance": 10,                         "timeout_ms": 5000 },
+      { "id": "nav_thrust_off",    "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": "specialty_b", "tier": "T2", "label": "Cut thrust to ZERO!",                   "narrator_line": "Helm! Cut thrust — all stop!",                             "value": 0,    "tolerance": 10,                         "timeout_ms": 5000 },
+      { "id": "nav_thrust_70",     "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": "specialty_b", "tier": "T2", "label": "Set thrust to seventy!",                "narrator_line": "Seventy percent thrust — hold it steady!",                 "value": 70,   "tolerance": 10,                         "timeout_ms": 5000 },
+      { "id": "nav_port_on",       "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Port thruster — FIRE!",                 "narrator_line": "Fire the port thruster!",                                  "value": true,                                            "timeout_ms": 3000 },
+      { "id": "nav_port_off",      "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Port thruster — OFF!",                  "narrator_line": "Cut the port thruster!",                                   "value": false,                                           "timeout_ms": 3000 },
+      { "id": "nav_stbd_on",       "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Starboard thruster — ON!",              "narrator_line": "Starboard thruster — fire it up!",                         "value": true,                                            "timeout_ms": 3000 },
+      { "id": "nav_stbd_off",      "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Starboard thruster — OFF!",             "narrator_line": "Kill the starboard thruster!",                             "value": false,                                           "timeout_ms": 3000 },
+      { "id": "nav_mark",          "target_arch": "NAVIGATOR", "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "Mark waypoint NOW!",                    "narrator_line": "Helm! Mark that waypoint — now!",                          "value": null,                                            "timeout_ms": 3000 },
 
-      { "id": "eng_power_max",     "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Power grid to MAXIMUM!",                "narrator_line": "Engineer! Power grid to maximum — everything we've got!",     "value": 100, "tolerance": 10,                      "timeout_ms": 5000 },
-      { "id": "eng_power_70",      "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Power to seventy percent!",             "narrator_line": "Engineer! Set power grid to seventy percent!",                "value": 70,  "tolerance": 10,                      "timeout_ms": 5000 },
-      { "id": "eng_power_half",    "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Power to fifty percent!",               "narrator_line": "Reduce power to fifty — we're overloading!",                 "value": 50,  "tolerance": 10,                      "timeout_ms": 5000 },
-      { "id": "eng_power_min",     "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Reduce power to minimum!",              "narrator_line": "Power to minimum! Shut it all down!",                        "value": 20,  "tolerance": 10,                      "timeout_ms": 5000 },
-      { "id": "eng_vent",          "target_arch": "ENGINEER",  "action": "PRESS_BUTTON", "slot": 2, "tier": "T1", "label": "Emergency vent — NOW!",                 "narrator_line": "Engineer! Emergency vent — release the pressure!",            "value": null,                                      "timeout_ms": 3000 },
-      { "id": "eng_reactor_on",    "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Reactor online!",                       "narrator_line": "Bring the reactor online!",                                  "value": true,                                      "timeout_ms": 3000 },
-      { "id": "eng_reactor_off",   "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Shut the reactor down!",                "narrator_line": "Shut the reactor down — NOW!",                               "value": false,                                     "timeout_ms": 3000 },
-      { "id": "eng_coolant_on",    "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Open coolant valve!",                   "narrator_line": "Open the coolant valve — we're overheating!",                "value": true,                                      "timeout_ms": 3000 },
-      { "id": "eng_coolant_off",   "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Close coolant valve!",                  "narrator_line": "Close that coolant valve!",                                  "value": false,                                     "timeout_ms": 3000 },
-      { "id": "eng_fuel_dump",     "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 5, "tier": "T1", "label": "Dump excess fuel!",                     "narrator_line": "Engineer! Dump the excess fuel — we're too heavy!",           "value": true,                                      "timeout_ms": 3000 },
+      { "id": "eng_power_max",     "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": "specialty_a", "tier": "T2", "label": "Power grid to MAXIMUM!",                "narrator_line": "Engineer! Power grid to maximum — everything we've got!",   "value": 100, "tolerance": 10,                      "timeout_ms": 5000 },
+      { "id": "eng_power_70",      "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": "specialty_a", "tier": "T2", "label": "Power to seventy percent!",             "narrator_line": "Engineer! Set power grid to seventy percent!",              "value": 70,  "tolerance": 10,                      "timeout_ms": 5000 },
+      { "id": "eng_power_half",    "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": "specialty_a", "tier": "T2", "label": "Power to fifty percent!",               "narrator_line": "Reduce power to fifty — we're overloading!",               "value": 50,  "tolerance": 10,                      "timeout_ms": 5000 },
+      { "id": "eng_power_min",     "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": "specialty_a", "tier": "T2", "label": "Reduce power to minimum!",              "narrator_line": "Power to minimum! Shut it all down!",                      "value": 20,  "tolerance": 10,                      "timeout_ms": 5000 },
+      { "id": "eng_vent",          "target_arch": "ENGINEER",  "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "Emergency vent — NOW!",                 "narrator_line": "Engineer! Emergency vent — release the pressure!",          "value": null,                                      "timeout_ms": 3000 },
+      { "id": "eng_reactor_on",    "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Reactor online!",                       "narrator_line": "Bring the reactor online!",                                "value": true,                                      "timeout_ms": 3000 },
+      { "id": "eng_reactor_off",   "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Shut the reactor down!",                "narrator_line": "Shut the reactor down — NOW!",                             "value": false,                                     "timeout_ms": 3000 },
+      { "id": "eng_coolant_on",    "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Open coolant valve!",                   "narrator_line": "Open the coolant valve — we're overheating!",              "value": true,                                      "timeout_ms": 3000 },
+      { "id": "eng_coolant_off",   "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Close coolant valve!",                  "narrator_line": "Close that coolant valve!",                                "value": false,                                     "timeout_ms": 3000 },
+      { "id": "eng_fuel_on",       "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": "toggle_3",    "tier": "T1", "label": "Dump excess fuel!",                     "narrator_line": "Engineer! Dump the excess fuel — we're too heavy!",         "value": true,                                      "timeout_ms": 3000 },
+      { "id": "eng_fuel_off",      "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": "toggle_3",    "tier": "T1", "label": "Close fuel dump!",                      "narrator_line": "Close the fuel dump — conserve reserves!",                 "value": false,                                     "timeout_ms": 3000 },
+      { "id": "eng_patch_main",    "target_arch": "ENGINEER",  "action": "PLUG_JACK",    "slot": "specialty_b", "tier": "T2", "label": "Patch: main power routing!",             "narrator_line": "Engineer! Patch bay — main power routing!",                "value": {"A":"1","B":"2","C":"3"},                 "timeout_ms": 6000 },
+      { "id": "eng_patch_backup",  "target_arch": "ENGINEER",  "action": "PLUG_JACK",    "slot": "specialty_b", "tier": "T2", "label": "Patch: backup power link!",              "narrator_line": "Patch bay to backup config — swap those leads!",           "value": {"A":"2","B":"3","C":"1"},                 "timeout_ms": 6000 },
+      { "id": "eng_patch_bypass",  "target_arch": "ENGINEER",  "action": "PLUG_JACK",    "slot": "specialty_b", "tier": "T2", "label": "Patch: emergency bypass!",               "narrator_line": "Emergency bypass — reroute the patch bay NOW!",            "value": {"A":"3","B":"1","C":"2"},                 "timeout_ms": 6000 },
 
-      { "id": "op_freq_88",        "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Tune to frequency 88!",                 "narrator_line": "Comms! Tune to frequency 88 — incoming signal!",             "value": 88,                                        "timeout_ms": 6000 },
-      { "id": "op_freq_42",        "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Switch to channel 42!",                 "narrator_line": "Comms Officer! Channel 42 — emergency band!",                "value": 42,                                        "timeout_ms": 6000 },
-      { "id": "op_freq_117",       "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Emergency frequency 117!",              "narrator_line": "Comms! Emergency frequency one-seventeen!",                  "value": 117,                                       "timeout_ms": 6000 },
-      { "id": "op_freq_200",       "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Tune to frequency 200!",                "narrator_line": "Switch to long-range — frequency two hundred!",              "value": 200,                                       "timeout_ms": 6000 },
-      { "id": "op_distress_on",    "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Activate distress beacon!",             "narrator_line": "Activate the distress beacon!",                              "value": true,                                      "timeout_ms": 3000 },
-      { "id": "op_distress_off",   "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Kill the distress beacon!",             "narrator_line": "Kill the distress beacon — it's drawing attention!",          "value": false,                                     "timeout_ms": 3000 },
-      { "id": "op_comms_on",       "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Short-range comms — ON!",               "narrator_line": "Short-range comms online — now!",                            "value": true,                                      "timeout_ms": 3000 },
-      { "id": "op_comms_off",      "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Short-range comms — OFF!",              "narrator_line": "Kill short-range comms — interference!",                     "value": false,                                     "timeout_ms": 3000 },
-      { "id": "op_hail",           "target_arch": "OPERATOR",  "action": "PRESS_BUTTON", "slot": 4, "tier": "T1", "label": "Hail nearby vessels!",                  "narrator_line": "Comms! Hail any nearby vessels!",                            "value": null,                                      "timeout_ms": 3000 },
-      { "id": "op_alert",          "target_arch": "OPERATOR",  "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Broadcast station alert!",              "narrator_line": "Broadcast a station-wide alert!",                            "value": null,                                      "timeout_ms": 3000 },
+      { "id": "op_freq_88",        "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": "specialty_a", "tier": "T2", "label": "Tune to frequency 88!",                 "narrator_line": "Comms! Tune to frequency 88 — incoming signal!",           "value": 88,                                        "timeout_ms": 6000 },
+      { "id": "op_freq_42",        "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": "specialty_a", "tier": "T2", "label": "Switch to channel 42!",                 "narrator_line": "Comms Officer! Channel 42 — emergency band!",              "value": 42,                                        "timeout_ms": 6000 },
+      { "id": "op_freq_117",       "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": "specialty_a", "tier": "T2", "label": "Emergency frequency 117!",              "narrator_line": "Comms! Emergency frequency one-seventeen!",                "value": 117,                                       "timeout_ms": 6000 },
+      { "id": "op_freq_200",       "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": "specialty_a", "tier": "T2", "label": "Tune to frequency 200!",                "narrator_line": "Switch to long-range — frequency two hundred!",            "value": 200,                                       "timeout_ms": 6000 },
+      { "id": "op_distress_on",    "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Activate distress beacon!",             "narrator_line": "Activate the distress beacon!",                            "value": true,                                      "timeout_ms": 3000 },
+      { "id": "op_distress_off",   "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Kill the distress beacon!",             "narrator_line": "Kill the distress beacon — it's drawing attention!",        "value": false,                                     "timeout_ms": 3000 },
+      { "id": "op_comms_on",       "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Short-range comms — ON!",               "narrator_line": "Short-range comms online — now!",                          "value": true,                                      "timeout_ms": 3000 },
+      { "id": "op_comms_off",      "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Short-range comms — OFF!",              "narrator_line": "Kill short-range comms — interference!",                   "value": false,                                     "timeout_ms": 3000 },
+      { "id": "op_hail",           "target_arch": "OPERATOR",  "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "Hail nearby vessels!",                  "narrator_line": "Comms! Hail any nearby vessels!",                          "value": null,                                      "timeout_ms": 3000 },
+      { "id": "op_alert",          "target_arch": "OPERATOR",  "action": "PRESS_BUTTON", "slot": "button_2",    "tier": "T1", "label": "Broadcast station alert!",              "narrator_line": "Broadcast a station-wide alert!",                          "value": null,                                      "timeout_ms": 3000 },
+      { "id": "op_code_1234",      "target_arch": "OPERATOR",  "action": "ENTER_CODE",   "slot": "specialty_b", "tier": "T3", "label": "Enter override code 1-2-3-4!",          "narrator_line": "Comms! Override code one-two-three-four — now!",            "value": "1234",                                    "timeout_ms": 8000 },
+      { "id": "op_code_777",       "target_arch": "OPERATOR",  "action": "ENTER_CODE",   "slot": "specialty_b", "tier": "T3", "label": "Emergency code: 7-7-7!",                "narrator_line": "Comms Officer! Emergency code — triple seven!",             "value": "777",                                     "timeout_ms": 7000 },
+      { "id": "op_code_9021",      "target_arch": "OPERATOR",  "action": "ENTER_CODE",   "slot": "specialty_b", "tier": "T3", "label": "Comms auth code: 9-0-2-1!",             "narrator_line": "Enter comms auth code nine-zero-two-one!",                 "value": "9021",                                    "timeout_ms": 8000 },
 
-      { "id": "sent_alpha",        "target_arch": "SENTINEL",  "action": "SCAN_NFC",     "slot": 1, "tier": "T3", "label": "Scan the ALPHA badge!",                 "narrator_line": "Security! Scan the ALPHA security badge — now!",             "value": "ALPHA_KEY",                               "timeout_ms": 10000 },
-      { "id": "sent_omega",        "target_arch": "SENTINEL",  "action": "SCAN_NFC",     "slot": 1, "tier": "T3", "label": "Scan the OMEGA badge!",                 "narrator_line": "Security Chief! The OMEGA badge — scan it!",                 "value": "OMEGA_KEY",                               "timeout_ms": 10000 },
-      { "id": "sent_mode_safe",     "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": 2, "tier": "T2", "label": "Alert level to SAFE!",                  "narrator_line": "Security! Alert level to safe — position one!",            "value": 1,                                        "timeout_ms": 5000 },
-      { "id": "sent_mode_caution",  "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": 2, "tier": "T2", "label": "Alert level — CAUTION!",                 "narrator_line": "Security Chief! Set to caution — position two!",           "value": 2,                                        "timeout_ms": 5000 },
-      { "id": "sent_mode_lockdown", "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": 2, "tier": "T2", "label": "LOCKDOWN — position three!",              "narrator_line": "LOCKDOWN! Set alert to position three — NOW!",             "value": 3,                                        "timeout_ms": 5000 },
-      { "id": "sent_bulk_on",      "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Lock the bulkhead!",                    "narrator_line": "Lock the bulkhead — section is venting!",                    "value": true,                                      "timeout_ms": 3000 },
-      { "id": "sent_bulk_off",     "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Unlock the bulkhead!",                  "narrator_line": "Unlock the bulkhead — crew needs access!",                   "value": false,                                     "timeout_ms": 3000 },
-      { "id": "sent_airlock_on",   "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Seal the airlock!",                     "narrator_line": "Seal that airlock immediately!",                             "value": true,                                      "timeout_ms": 3000 },
-      { "id": "sent_airlock_off",  "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Open the airlock!",                     "narrator_line": "Open the airlock — rescue team incoming!",                   "value": false,                                     "timeout_ms": 3000 },
-      { "id": "sent_alarm",        "target_arch": "SENTINEL",  "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Sound the alarm!",                      "narrator_line": "Sound the alarm! All hands!",                                "value": null,                                      "timeout_ms": 3000 },
+      { "id": "sent_alpha",        "target_arch": "SENTINEL",  "action": "SCAN_NFC",     "slot": "specialty_a", "tier": "T3", "label": "Scan the ALPHA badge!",                 "narrator_line": "Security! Scan the ALPHA security badge — now!",           "value": "ALPHA_KEY",                               "timeout_ms": 10000 },
+      { "id": "sent_omega",        "target_arch": "SENTINEL",  "action": "SCAN_NFC",     "slot": "specialty_a", "tier": "T3", "label": "Scan the OMEGA badge!",                 "narrator_line": "Security Chief! The OMEGA badge — scan it!",               "value": "OMEGA_KEY",                               "timeout_ms": 10000 },
+      { "id": "sent_mode_safe",    "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "Alert level to SAFE!",                  "narrator_line": "Security! Alert level to safe — position one!",            "value": 1,                                         "timeout_ms": 5000 },
+      { "id": "sent_mode_caution", "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "Alert level — CAUTION!",                "narrator_line": "Security Chief! Set to caution — position two!",           "value": 2,                                         "timeout_ms": 5000 },
+      { "id": "sent_mode_lockdown","target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "LOCKDOWN — position three!",             "narrator_line": "LOCKDOWN! Set alert to position three — NOW!",             "value": 3,                                         "timeout_ms": 5000 },
+      { "id": "sent_bulk_on",      "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Lock the bulkhead!",                    "narrator_line": "Lock the bulkhead — section is venting!",                  "value": true,                                      "timeout_ms": 3000 },
+      { "id": "sent_bulk_off",     "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Unlock the bulkhead!",                  "narrator_line": "Unlock the bulkhead — crew needs access!",                 "value": false,                                     "timeout_ms": 3000 },
+      { "id": "sent_airlock_on",   "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Seal the airlock!",                     "narrator_line": "Seal that airlock immediately!",                           "value": true,                                      "timeout_ms": 3000 },
+      { "id": "sent_airlock_off",  "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Open the airlock!",                     "narrator_line": "Open the airlock — rescue team incoming!",                 "value": false,                                     "timeout_ms": 3000 },
+      { "id": "sent_alarm",        "target_arch": "SENTINEL",  "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "Sound the alarm!",                      "narrator_line": "Sound the alarm! All hands!",                              "value": null,                                      "timeout_ms": 3000 },
 
-      { "id": "med_blue",          "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": 1, "tier": "T3", "label": "Mix BLUE stabilizer!",                  "narrator_line": "Medical Officer! Mix the blue stabilizer — crew needs it!",  "value": [0,80,200],   "tolerance": 30,              "timeout_ms": 8000 },
-      { "id": "med_red",           "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": 1, "tier": "T3", "label": "Mix RED antidote!",                     "narrator_line": "Medic! Red antidote — radiation exposure!",                  "value": [200,30,30],  "tolerance": 30,              "timeout_ms": 8000 },
-      { "id": "med_green",         "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": 1, "tier": "T3", "label": "Mix GREEN regenerator!",                "narrator_line": "Medical! Green regenerator compound — hurry!",               "value": [30,200,50],  "tolerance": 30,              "timeout_ms": 8000 },
-      { "id": "med_life_on",       "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": 2, "tier": "T2", "label": "Dosage to 150 — stat!",                  "narrator_line": "Medical Officer! Set dosage to one-fifty — stat!",          "value": 150,                                      "timeout_ms": 6000 },
-      { "id": "med_life_off",      "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": 2, "tier": "T2", "label": "Dial dosage to 80!",                     "narrator_line": "Medic! Dosage to eighty — lower the output!",              "value": 80,                                       "timeout_ms": 6000 },
-      { "id": "med_dose_250",      "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": 2, "tier": "T2", "label": "Emergency dose — 250!",                  "narrator_line": "Emergency dosage — crank it to two-fifty!",                 "value": 250,                                      "timeout_ms": 6000 },
-      { "id": "med_o2_on",         "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "O2 regulator — OPEN!",                  "narrator_line": "Open the O2 regulator!",                                     "value": true,                                      "timeout_ms": 3000 },
-      { "id": "med_o2_off",        "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "O2 regulator — CLOSE!",                 "narrator_line": "Close the O2 regulator — conserve supply!",                  "value": false,                                     "timeout_ms": 3000 },
-      { "id": "med_pulse",         "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": 4, "tier": "T1", "label": "Check crew pulse readings!",            "narrator_line": "Medic! Check the crew's vitals!",                            "value": null,                                      "timeout_ms": 3000 },
-      { "id": "med_stim",          "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Administer stim injections!",           "narrator_line": "Stim injections — the crew needs to stay sharp!",            "value": null,                                      "timeout_ms": 3000 },
+      { "id": "med_blue",          "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": "specialty_a", "tier": "T3", "label": "Mix BLUE stabilizer!",                  "narrator_line": "Medical Officer! Mix the blue stabilizer — crew needs it!","value": [0,80,200],   "tolerance": 30,               "timeout_ms": 8000 },
+      { "id": "med_red",           "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": "specialty_a", "tier": "T3", "label": "Mix RED antidote!",                     "narrator_line": "Medic! Red antidote — radiation exposure!",                "value": [200,30,30],  "tolerance": 30,               "timeout_ms": 8000 },
+      { "id": "med_green",         "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": "specialty_a", "tier": "T3", "label": "Mix GREEN regenerator!",                "narrator_line": "Medical! Green regenerator compound — hurry!",             "value": [30,200,50],  "tolerance": 30,               "timeout_ms": 8000 },
+      { "id": "med_dose_150",      "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": "specialty_b", "tier": "T2", "label": "Dosage to 150 — stat!",                 "narrator_line": "Medical Officer! Set dosage to one-fifty — stat!",         "value": 150,                                       "timeout_ms": 6000 },
+      { "id": "med_dose_80",       "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": "specialty_b", "tier": "T2", "label": "Dial dosage to 80!",                    "narrator_line": "Medic! Dosage to eighty — lower the output!",              "value": 80,                                        "timeout_ms": 6000 },
+      { "id": "med_dose_250",      "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": "specialty_b", "tier": "T2", "label": "Emergency dose — 250!",                 "narrator_line": "Emergency dosage — crank it to two-fifty!",                "value": 250,                                       "timeout_ms": 6000 },
+      { "id": "med_o2_on",         "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "O2 regulator — OPEN!",                  "narrator_line": "Open the O2 regulator!",                                   "value": true,                                      "timeout_ms": 3000 },
+      { "id": "med_o2_off",        "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "O2 regulator — CLOSE!",                 "narrator_line": "Close the O2 regulator — conserve supply!",                "value": false,                                     "timeout_ms": 3000 },
+      { "id": "med_pulse",         "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "Check crew pulse readings!",            "narrator_line": "Medic! Check the crew's vitals!",                          "value": null,                                      "timeout_ms": 3000 },
+      { "id": "med_stim",          "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": "button_2",    "tier": "T1", "label": "Administer stim injections!",           "narrator_line": "Stim injections — the crew needs to stay sharp!",          "value": null,                                      "timeout_ms": 3000 },
 
-      { "id": "ana_code_721",      "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": 1, "tier": "T3", "label": "Enter override code 7-2-1!",            "narrator_line": "Science Officer! Override code seven-two-one!",              "value": "721",                                     "timeout_ms": 7000 },
-      { "id": "ana_code_4519",     "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": 1, "tier": "T3", "label": "Trajectory code: 4-5-1-9!",             "narrator_line": "Science! Trajectory code: four-five-one-nine!",              "value": "4519",                                    "timeout_ms": 8000 },
-      { "id": "ana_code_308",      "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": 1, "tier": "T3", "label": "Enter code 3-0-8!",                     "narrator_line": "Science Officer! Enter code three-zero-eight!",              "value": "308",                                     "timeout_ms": 7000 },
-      { "id": "ana_confirm",       "target_arch": "ANALYST",   "action": "MATCH_WAVE",   "slot": 2, "tier": "T2", "label": "Tune signal to 140!",                    "narrator_line": "Science! Tune the signal to one-forty!",                    "value": 140, "tolerance": 15,                     "timeout_ms": 6000 },
-      { "id": "ana_wave_80",       "target_arch": "ANALYST",   "action": "MATCH_WAVE",   "slot": 2, "tier": "T2", "label": "Match waveform to 80!",                   "narrator_line": "Science Officer! Waveform to eighty — now!",                "value": 80,  "tolerance": 15,                     "timeout_ms": 6000 },
-      { "id": "ana_wave_210",      "target_arch": "ANALYST",   "action": "MATCH_WAVE",   "slot": 2, "tier": "T2", "label": "Signal to 210 — match it!",               "narrator_line": "Tune that signal to two-ten — lock it in!",                 "value": 210, "tolerance": 15,                     "timeout_ms": 6000 },
-      { "id": "ana_grav_on",       "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Gravity sensor — ACTIVE!",              "narrator_line": "Activate the gravity sensor!",                               "value": true,                                      "timeout_ms": 3000 },
-      { "id": "ana_grav_off",      "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Gravity sensor — OFF!",                 "narrator_line": "Gravity sensor offline — power reroute!",                    "value": false,                                     "timeout_ms": 3000 },
-      { "id": "ana_chart",         "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Pull up the star chart!",               "narrator_line": "Star chart — we need a visual on the debris field!",         "value": true,                                      "timeout_ms": 3000 },
-      { "id": "ana_log",           "target_arch": "ANALYST",   "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Log the telemetry data!",               "narrator_line": "Log that telemetry — we need a record!",                     "value": null,                                      "timeout_ms": 3000 },
+      { "id": "ana_code_721",      "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": "specialty_a", "tier": "T3", "label": "Enter override code 7-2-1!",            "narrator_line": "Science Officer! Override code seven-two-one!",            "value": "721",                                     "timeout_ms": 7000 },
+      { "id": "ana_code_4519",     "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": "specialty_a", "tier": "T3", "label": "Trajectory code: 4-5-1-9!",             "narrator_line": "Science! Trajectory code: four-five-one-nine!",            "value": "4519",                                    "timeout_ms": 8000 },
+      { "id": "ana_code_308",      "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": "specialty_a", "tier": "T3", "label": "Enter code 3-0-8!",                     "narrator_line": "Science Officer! Enter code three-zero-eight!",            "value": "308",                                     "timeout_ms": 7000 },
+      { "id": "ana_tuner_4",       "target_arch": "ANALYST",   "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "Signal tuner to FOUR!",                 "narrator_line": "Science! Set the signal tuner to position four!",          "value": 4,                                         "timeout_ms": 5000 },
+      { "id": "ana_tuner_2",       "target_arch": "ANALYST",   "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "Signal tuner — TWO!",                   "narrator_line": "Science Officer! Tuner to position two — now!",            "value": 2,                                         "timeout_ms": 5000 },
+      { "id": "ana_tuner_5",       "target_arch": "ANALYST",   "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "Signal tuner to FIVE!",                 "narrator_line": "Tuner to position five — lock that signal in!",            "value": 5,                                         "timeout_ms": 5000 },
+      { "id": "ana_grav_on",       "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Gravity sensor — ACTIVE!",              "narrator_line": "Activate the gravity sensor!",                             "value": true,                                      "timeout_ms": 3000 },
+      { "id": "ana_grav_off",      "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Gravity sensor — OFF!",                 "narrator_line": "Gravity sensor offline — power reroute!",                  "value": false,                                     "timeout_ms": 3000 },
+      { "id": "ana_chart_on",      "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Pull up the star chart!",               "narrator_line": "Star chart — we need a visual on the debris field!",       "value": true,                                      "timeout_ms": 3000 },
+      { "id": "ana_chart_off",     "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Close the star chart!",                 "narrator_line": "Close that star chart — focus on the readings!",           "value": false,                                     "timeout_ms": 3000 },
+      { "id": "ana_log",           "target_arch": "ANALYST",   "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "Log the telemetry data!",               "narrator_line": "Log that telemetry — we need a record!",                   "value": null,                                      "timeout_ms": 3000 },
 
-      { "id": "sco_sweep_120",     "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "tier": "T2", "label": "Sweep sensors to 120!",                 "narrator_line": "Recon! Sensor sweep to one-twenty!",                         "value": 120, "tolerance": 15,                      "timeout_ms": 6000 },
-      { "id": "sco_sweep_200",     "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "tier": "T2", "label": "Sensor sweep — 200!",                   "narrator_line": "Recon Officer! Sweep to two hundred!",                       "value": 200, "tolerance": 15,                      "timeout_ms": 6000 },
-      { "id": "sco_sweep_60",      "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "tier": "T2", "label": "Sweep to 60 — check the flank!",        "narrator_line": "Sweep to sixty — something on our flank!",                   "value": 60,  "tolerance": 15,                      "timeout_ms": 6000 },
-      { "id": "sco_stealth_on",    "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Stealth mode — ENGAGE!",                "narrator_line": "Go dark! Stealth mode — engage!",                            "value": true,                                      "timeout_ms": 3000 },
-      { "id": "sco_stealth_off",   "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Drop stealth mode!",                    "narrator_line": "Drop stealth — we need active sensors!",                     "value": false,                                     "timeout_ms": 3000 },
-      { "id": "sco_port_cam",      "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Port camera — ON!",                     "narrator_line": "Port camera online — check the hull!",                       "value": true,                                      "timeout_ms": 3000 },
-      { "id": "sco_stbd_cam",      "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Starboard camera — ON!",                "narrator_line": "Starboard camera — we need eyes on that side!",              "value": true,                                      "timeout_ms": 3000 },
-      { "id": "sco_deep_scan",     "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 5, "tier": "T1", "label": "Initiate deep scan!",                   "narrator_line": "Deep scan — give me a full readout!",                        "value": true,                                      "timeout_ms": 3000 },
+      { "id": "sco_scan_right",    "target_arch": "SCOUT",     "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Scan bearing — hard RIGHT!",             "narrator_line": "Recon! Sweep the scanner hard right!",                     "value": {"x":80,"y":0},   "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
+      { "id": "sco_scan_left",     "target_arch": "SCOUT",     "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Scan bearing — hard LEFT!",              "narrator_line": "Recon Officer! Scan bearing left — check the flank!",      "value": {"x":-80,"y":0},  "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
+      { "id": "sco_scan_up",       "target_arch": "SCOUT",     "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Scan bearing — sweep UP!",               "narrator_line": "Sweep upward — something on long-range!",                  "value": {"x":0,"y":80},   "tolerance": {"x":20,"y":15}, "timeout_ms": 8000 },
+      { "id": "sco_scan_down",     "target_arch": "SCOUT",     "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Scan bearing — DOWN!",                   "narrator_line": "Recon! Sweep down — check below the station!",             "value": {"x":0,"y":-70},  "tolerance": {"x":20,"y":15}, "timeout_ms": 8000 },
+      { "id": "sco_stealth_on",    "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Stealth mode — ENGAGE!",                "narrator_line": "Go dark! Stealth mode — engage!",                          "value": true,                                      "timeout_ms": 3000 },
+      { "id": "sco_stealth_off",   "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Drop stealth mode!",                    "narrator_line": "Drop stealth — we need active sensors!",                   "value": false,                                     "timeout_ms": 3000 },
+      { "id": "sco_port_cam_on",   "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Port camera — ON!",                     "narrator_line": "Port camera online — check the hull!",                     "value": true,                                      "timeout_ms": 3000 },
+      { "id": "sco_port_cam_off",  "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Port camera — OFF!",                    "narrator_line": "Cut the port camera — save the bandwidth!",                "value": false,                                     "timeout_ms": 3000 },
+      { "id": "sco_stbd_cam_on",   "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": "toggle_3",    "tier": "T1", "label": "Starboard camera — ON!",                "narrator_line": "Starboard camera — we need eyes on that side!",            "value": true,                                      "timeout_ms": 3000 },
+      { "id": "sco_stbd_cam_off",  "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": "toggle_3",    "tier": "T1", "label": "Starboard camera — OFF!",               "narrator_line": "Kill the starboard camera — reroute power!",               "value": false,                                     "timeout_ms": 3000 },
+      { "id": "sco_deep_scan",     "target_arch": "SCOUT",     "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "Initiate deep scan!",                   "narrator_line": "Deep scan — give me a full readout!",                      "value": null,                                      "timeout_ms": 3000 },
+      { "id": "sco_color_red",     "target_arch": "SCOUT",     "action": "MATCH_COLOR",  "slot": "specialty_b", "tier": "T3", "label": "Match RED threat marker!",               "narrator_line": "Recon! Dial the spectrum to red — hostile contact!",        "value": [200,30,30],  "tolerance": 30,               "timeout_ms": 8000 },
+      { "id": "sco_color_blue",    "target_arch": "SCOUT",     "action": "MATCH_COLOR",  "slot": "specialty_b", "tier": "T3", "label": "Match BLUE contact ID!",                "narrator_line": "Spectrum dial to blue — friendly IFF marker!",             "value": [30,60,200],  "tolerance": 30,               "timeout_ms": 8000 },
+      { "id": "sco_color_green",   "target_arch": "SCOUT",     "action": "MATCH_COLOR",  "slot": "specialty_b", "tier": "T3", "label": "Match GREEN all-clear!",                "narrator_line": "Green spectrum — confirm all-clear signal!",               "value": [30,200,50],  "tolerance": 30,               "timeout_ms": 8000 },
 
-      { "id": "cmd_evac",          "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Set to EVACUATION!",                    "narrator_line": "Commander! Station mode to evacuation — position one!",      "value": 1,                                         "timeout_ms": 5000 },
-      { "id": "cmd_lockdown",      "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Set to LOCKDOWN!",                      "narrator_line": "Commander! Lockdown — position two!",                        "value": 2,                                         "timeout_ms": 5000 },
-      { "id": "cmd_normal",        "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Reset to NORMAL operations!",            "narrator_line": "Commander! Reset to normal operations — position three!",    "value": 3,                                         "timeout_ms": 5000 },
-      { "id": "cmd_combat",        "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "COMBAT STATIONS!",                      "narrator_line": "Combat stations — position four! Move it!",                  "value": 4,                                         "timeout_ms": 5000 },
-      { "id": "cmd_confirm",       "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": 2, "tier": "T1", "label": "Confirm the order!",                    "narrator_line": "Commander! Confirm that order!",                             "value": null,                                      "timeout_ms": 3000 },
-      { "id": "cmd_override",      "target_arch": "COMMANDER", "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Master override — ACTIVATE!",           "narrator_line": "Master override — do it now!",                               "value": true,                                      "timeout_ms": 3000 },
-      { "id": "cmd_horn",          "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": 4, "tier": "T1", "label": "Sound the evac horn!",                  "narrator_line": "Sound the evacuation horn!",                                 "value": null,                                      "timeout_ms": 3000 },
-      { "id": "cmd_log",           "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Update captain's log!",                 "narrator_line": "Log it! Update the captain's log!",                          "value": null,                                      "timeout_ms": 3000 }
+      { "id": "cmd_patch_evac",    "target_arch": "COMMANDER", "action": "PLUG_JACK",    "slot": "specialty_a", "tier": "T2", "label": "Patch: EVACUATION routing!",             "narrator_line": "Commander! Patch panel to evacuation routing!",             "value": {"A":"1","B":"3","C":"2"},                 "timeout_ms": 6000 },
+      { "id": "cmd_patch_lockdown","target_arch": "COMMANDER", "action": "PLUG_JACK",    "slot": "specialty_a", "tier": "T2", "label": "Patch: LOCKDOWN routing!",               "narrator_line": "Commander! Lockdown config — reroute the leads!",          "value": {"A":"2","B":"1","C":"3"},                 "timeout_ms": 6000 },
+      { "id": "cmd_patch_normal",  "target_arch": "COMMANDER", "action": "PLUG_JACK",    "slot": "specialty_a", "tier": "T2", "label": "Patch: NORMAL routing!",                 "narrator_line": "Commander! Reset patch panel to normal operations!",       "value": {"A":"1","B":"2","C":"3"},                 "timeout_ms": 6000 },
+      { "id": "cmd_patch_combat",  "target_arch": "COMMANDER", "action": "PLUG_JACK",    "slot": "specialty_a", "tier": "T2", "label": "Patch: COMBAT routing!",                 "narrator_line": "Combat stations — patch bay to combat config!",            "value": {"A":"3","B":"2","C":"1"},                 "timeout_ms": 6000 },
+      { "id": "cmd_confirm",       "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "Confirm the order!",                    "narrator_line": "Commander! Confirm that order!",                           "value": null,                                      "timeout_ms": 3000 },
+      { "id": "cmd_override_on",   "target_arch": "COMMANDER", "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Master override — ACTIVATE!",           "narrator_line": "Master override — do it now!",                             "value": true,                                      "timeout_ms": 3000 },
+      { "id": "cmd_override_off",  "target_arch": "COMMANDER", "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Master override — DEACTIVATE!",         "narrator_line": "Kill the master override — we're back to standard!",       "value": false,                                     "timeout_ms": 3000 },
+      { "id": "cmd_horn",          "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": "button_2",    "tier": "T1", "label": "Sound the evac horn!",                  "narrator_line": "Sound the evacuation horn!",                               "value": null,                                      "timeout_ms": 3000 },
+      { "id": "cmd_log",           "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": "button_3",    "tier": "T1", "label": "Update captain's log!",                 "narrator_line": "Log it! Update the captain's log!",                        "value": null,                                      "timeout_ms": 3000 },
+      { "id": "cmd_auth_alpha",    "target_arch": "COMMANDER", "action": "SCAN_NFC",     "slot": "specialty_b", "tier": "T3", "label": "Scan ALPHA auth card!",                  "narrator_line": "Commander! Scan the ALPHA authorization card!",            "value": "CMD_ALPHA",                               "timeout_ms": 10000 },
+      { "id": "cmd_auth_omega",    "target_arch": "COMMANDER", "action": "SCAN_NFC",     "slot": "specialty_b", "tier": "T3", "label": "Scan OMEGA auth card!",                  "narrator_line": "Commander! The OMEGA card — scan it NOW!",                 "value": "CMD_OMEGA",                               "timeout_ms": 10000 }
     ],
 
     "cooperative": [
-      { "id": "coop_cmd_tell_nav_port",    "display_on": "COMMANDER", "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Tell Helm: hard to port!",             "narrator_line": "Commander! Tell the Helm Officer — hard to port!",        "value": {"x":-80,"y":0}, "tolerance": {"x":15,"y":20}, "timeout_ms": 12000 },
-      { "id": "coop_eng_tell_nav_climb",   "display_on": "ENGINEER",  "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Tell Helm: pull up NOW!",              "narrator_line": "Engineer! Shout to the Helm — pull up!",                 "value": {"x":0,"y":80},  "tolerance": {"x":20,"y":15}, "timeout_ms": 12000 },
-      { "id": "coop_ana_tell_eng_max",     "display_on": "ANALYST",   "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Tell Engineer: power to max!",         "narrator_line": "Science Officer! Tell the Engineer — max power!",        "value": 100, "tolerance": 10,                           "timeout_ms": 10000 },
-      { "id": "coop_cmd_tell_eng_half",    "display_on": "COMMANDER", "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Tell Engineer: power to fifty!",       "narrator_line": "Commander! Tell the Engineer — fifty percent!",          "value": 50,  "tolerance": 10,                           "timeout_ms": 10000 },
-      { "id": "coop_nav_tell_op_88",       "display_on": "NAVIGATOR", "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Tell Comms: frequency 88!",            "narrator_line": "Helm! Tell the Comms Officer — frequency eighty-eight!", "value": 88,                                             "timeout_ms": 10000 },
-      { "id": "coop_sco_tell_op_42",       "display_on": "SCOUT",     "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Tell Comms: channel 42!",              "narrator_line": "Recon! Shout to Comms — channel forty-two!",             "value": 42,                                             "timeout_ms": 10000 },
-      { "id": "coop_med_tell_sent_bulk",   "display_on": "MEDIC",     "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Tell Security: lock bulkhead!",        "narrator_line": "Medic! Shout to Security — lock that bulkhead!",         "value": true,                                           "timeout_ms": 6000 },
-      { "id": "coop_op_tell_sent_alarm",   "display_on": "OPERATOR",  "target_arch": "SENTINEL",  "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Tell Security: sound alarm!",          "narrator_line": "Comms! Tell Security to sound the alarm!",               "value": null,                                           "timeout_ms": 6000 },
-      { "id": "coop_eng_tell_med_o2",      "display_on": "ENGINEER",  "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Tell Medic: open O2!",                 "narrator_line": "Engineer! Tell the Medic — open the O2 regulator!",      "value": true,                                           "timeout_ms": 6000 },
-      { "id": "coop_sent_tell_med_stim",   "display_on": "SENTINEL",  "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Tell Medic: administer stims!",        "narrator_line": "Security! Shout to the Medic — stim injections!",        "value": null,                                           "timeout_ms": 6000 },
-      { "id": "coop_nav_tell_ana_code",    "display_on": "NAVIGATOR", "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": 1, "tier": "T3", "label": "Tell Science: code 3-0-8!",            "narrator_line": "Helm! Tell the Science Officer — code three-zero-eight!","value": "308",                                          "timeout_ms": 12000 },
-      { "id": "coop_cmd_tell_ana_confirm", "display_on": "COMMANDER", "target_arch": "ANALYST",   "action": "MATCH_WAVE",   "slot": 2, "tier": "T2", "label": "Tell Science: tune signal 160!",       "narrator_line": "Commander! Tell Science — tune to one-sixty!",           "value": 160, "tolerance": 15,                           "timeout_ms": 10000 },
-      { "id": "coop_ana_tell_sco_sweep",   "display_on": "ANALYST",   "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "tier": "T2", "label": "Tell Recon: sweep to 120!",            "narrator_line": "Science! Tell Recon — sensor sweep to one-twenty!",      "value": 120, "tolerance": 15,                           "timeout_ms": 10000 },
-      { "id": "coop_op_tell_sco_stealth",  "display_on": "OPERATOR",  "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Tell Recon: stealth ON!",              "narrator_line": "Comms! Tell Recon to go dark — stealth mode!",           "value": true,                                           "timeout_ms": 6000 },
-      { "id": "coop_sco_tell_cmd_evac",    "display_on": "SCOUT",     "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Tell Commander: set evacuation!",       "narrator_line": "Recon! Tell the Commander — switch to evacuation!",      "value": 1,                                              "timeout_ms": 8000 },
-      { "id": "coop_med_tell_cmd_override","display_on": "MEDIC",     "target_arch": "COMMANDER", "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Tell Commander: master override!",     "narrator_line": "Medic! Shout to the Commander — master override!",       "value": true,                                           "timeout_ms": 6000 }
+      { "id": "coop_cmd_tell_nav_port",    "display_on": "COMMANDER", "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Tell Helm: hard to port!",             "narrator_line": "Commander! Tell the Helm Officer — hard to port!",          "value": {"x":-80,"y":0}, "tolerance": {"x":15,"y":20}, "timeout_ms": 12000 },
+      { "id": "coop_eng_tell_nav_climb",   "display_on": "ENGINEER",  "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Tell Helm: pull up NOW!",              "narrator_line": "Engineer! Shout to the Helm — pull up!",                   "value": {"x":0,"y":80},  "tolerance": {"x":20,"y":15}, "timeout_ms": 12000 },
+      { "id": "coop_ana_tell_eng_max",     "display_on": "ANALYST",   "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": "specialty_a", "tier": "T2", "label": "Tell Engineer: power to max!",         "narrator_line": "Science Officer! Tell the Engineer — max power!",          "value": 100, "tolerance": 10,                           "timeout_ms": 8000 },
+      { "id": "coop_cmd_tell_eng_half",    "display_on": "COMMANDER", "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": "specialty_a", "tier": "T2", "label": "Tell Engineer: power to fifty!",       "narrator_line": "Commander! Tell the Engineer — fifty percent!",            "value": 50,  "tolerance": 10,                           "timeout_ms": 8000 },
+      { "id": "coop_nav_tell_op_88",       "display_on": "NAVIGATOR", "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": "specialty_a", "tier": "T2", "label": "Tell Comms: frequency 88!",            "narrator_line": "Helm! Tell the Comms Officer — frequency eighty-eight!",   "value": 88,                                             "timeout_ms": 8000 },
+      { "id": "coop_sco_tell_op_42",       "display_on": "SCOUT",     "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": "specialty_a", "tier": "T2", "label": "Tell Comms: channel 42!",              "narrator_line": "Recon! Shout to Comms — channel forty-two!",               "value": 42,                                             "timeout_ms": 8000 },
+      { "id": "coop_med_tell_sent_bulk",   "display_on": "MEDIC",     "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Tell Security: lock bulkhead!",        "narrator_line": "Medic! Shout to Security — lock that bulkhead!",           "value": true,                                           "timeout_ms": 5000 },
+      { "id": "coop_op_tell_sent_alarm",   "display_on": "OPERATOR",  "target_arch": "SENTINEL",  "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "Tell Security: sound alarm!",          "narrator_line": "Comms! Tell Security to sound the alarm!",                 "value": null,                                           "timeout_ms": 5000 },
+      { "id": "coop_eng_tell_med_o2",      "display_on": "ENGINEER",  "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Tell Medic: open O2!",                 "narrator_line": "Engineer! Tell the Medic — open the O2 regulator!",        "value": true,                                           "timeout_ms": 5000 },
+      { "id": "coop_sent_tell_med_stim",   "display_on": "SENTINEL",  "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": "button_2",    "tier": "T1", "label": "Tell Medic: administer stims!",        "narrator_line": "Security! Shout to the Medic — stim injections!",          "value": null,                                           "timeout_ms": 5000 },
+      { "id": "coop_nav_tell_ana_code",    "display_on": "NAVIGATOR", "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": "specialty_a", "tier": "T3", "label": "Tell Science: code 3-0-8!",            "narrator_line": "Helm! Tell the Science Officer — code three-zero-eight!",  "value": "308",                                          "timeout_ms": 12000 },
+      { "id": "coop_cmd_tell_ana_tuner",   "display_on": "COMMANDER", "target_arch": "ANALYST",   "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "Tell Science: tuner to four!",          "narrator_line": "Commander! Tell Science — tuner to position four!",        "value": 4,                                              "timeout_ms": 8000 },
+      { "id": "coop_ana_tell_sco_scan",    "display_on": "ANALYST",   "target_arch": "SCOUT",     "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Tell Recon: scan bearing right!",       "narrator_line": "Science! Tell Recon — sweep the scanner right!",           "value": {"x":80,"y":0},  "tolerance": {"x":15,"y":20}, "timeout_ms": 12000 },
+      { "id": "coop_op_tell_sco_stealth",  "display_on": "OPERATOR",  "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Tell Recon: stealth ON!",              "narrator_line": "Comms! Tell Recon to go dark — stealth mode!",             "value": true,                                           "timeout_ms": 5000 },
+      { "id": "coop_sco_tell_cmd_patch",   "display_on": "SCOUT",     "target_arch": "COMMANDER", "action": "PLUG_JACK",    "slot": "specialty_a", "tier": "T2", "label": "Tell Commander: patch evac routing!",   "narrator_line": "Recon! Tell the Commander — evacuation routing!",          "value": {"A":"1","B":"3","C":"2"},                      "timeout_ms": 8000 },
+      { "id": "coop_med_tell_cmd_override","display_on": "MEDIC",     "target_arch": "COMMANDER", "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Tell Commander: master override!",     "narrator_line": "Medic! Shout to the Commander — master override!",         "value": true,                                           "timeout_ms": 5000 }
+    ],
+
+    "open": [
+      { "id": "open_joystick_evade",    "target": "ANY", "action": "SET_JOYSTICK",  "tier": "T3", "label": "Someone — hard evasive LEFT!",     "narrator_line": "Anyone with a flight stick — hard evasive left!",              "value": {"x":-80,"y":0},  "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
+      { "id": "open_slider_full",       "target": "ANY", "action": "SET_SLIDER",    "tier": "T2", "label": "Anyone — power to MAXIMUM!",       "narrator_line": "Whoever has a slider — full power NOW!",                       "value": 100, "tolerance": 10,                            "timeout_ms": 5000 },
+      { "id": "open_encoder_99",        "target": "ANY", "action": "SET_ENCODER",   "tier": "T2", "label": "Quick — tune to 99!",              "narrator_line": "Any dial operator — tune to ninety-nine!",                     "value": 99,                                              "timeout_ms": 6000 },
+      { "id": "open_color_yellow",      "target": "ANY", "action": "MATCH_COLOR",   "tier": "T3", "label": "Someone — match YELLOW!",          "narrator_line": "Anyone with a color dial — match yellow NOW!",                 "value": [200,200,30], "tolerance": 30,                    "timeout_ms": 8000 },
+      { "id": "open_rotary_pos_3",      "target": "ANY", "action": "SET_ROTARY_SW", "tier": "T2", "label": "Anyone — dial to position 3!",     "narrator_line": "Whoever has a selector — position three!",                     "value": 3,                                               "timeout_ms": 5000 },
+      { "id": "open_code_911",          "target": "ANY", "action": "ENTER_CODE",    "tier": "T3", "label": "Someone — enter code 9-1-1!",      "narrator_line": "Anyone with a keypad — emergency code nine-one-one!",          "value": "911",                                           "timeout_ms": 7000 }
     ]
   },
 
@@ -172,8 +198,8 @@
       "label": "GRAVITY SURGE!",
       "narrator_line": "GRAVITY SURGE! Helm — pull up! Engineer — cut power! Everyone else — HOLD ON!",
       "actions": [
-        { "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "value": {"x":0,"y":100}, "tolerance": {"x":25,"y":20} },
-        { "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "value": 0,               "tolerance": 10 },
+        { "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": "specialty_a", "value": {"x":0,"y":100}, "tolerance": {"x":25,"y":20} },
+        { "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": "specialty_a", "value": 0, "tolerance": 10 },
         { "rest": "CRISIS_BTN" }
       ],
       "timeout_ms": 7000,
@@ -183,10 +209,10 @@
       "id": "crisis_power_surge",
       "type": "MULTI_ACTION",
       "label": "POWER SURGE!",
-      "narrator_line": "POWER SURGE! Engineer — kill the grid! Science — tune the bypass signal! BRACE!",
+      "narrator_line": "POWER SURGE! Engineer — kill the grid! Science — set the bypass! BRACE!",
       "actions": [
-        { "target_arch": "ENGINEER", "action": "SET_SLIDER",   "slot": 1, "value": 0,    "tolerance": 10 },
-        { "target_arch": "ANALYST",  "action": "MATCH_WAVE",   "slot": 2, "value": 100,  "tolerance": 15 },
+        { "target_arch": "ENGINEER", "action": "SET_SLIDER",    "slot": "specialty_a", "value": 0, "tolerance": 10 },
+        { "target_arch": "ANALYST",  "action": "SET_ROTARY_SW", "slot": "specialty_b", "value": 3 },
         { "rest": "CRISIS_BTN" }
       ],
       "timeout_ms": 7000,
@@ -208,16 +234,55 @@
     },
 
     {
+      "id": "preflight",
+      "type": "PREFLIGHT",
+      "duration_sec": 45,
+      "narrator_intro": "All crew, set your stations to starting positions. Confirm each control when your display lights green.",
+      "init_commands": {
+        "NAVIGATOR": [
+          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false },
+          { "slot": "toggle_2",    "action": "SET_TOGGLE", "value": false },
+          { "slot": "specialty_b", "action": "SET_SLIDER",  "value": 0 }
+        ],
+        "ENGINEER": [
+          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false },
+          { "slot": "toggle_2",    "action": "SET_TOGGLE", "value": false },
+          { "slot": "toggle_3",    "action": "SET_TOGGLE", "value": false },
+          { "slot": "specialty_a", "action": "SET_SLIDER",  "value": 0 }
+        ],
+        "OPERATOR": [
+          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false },
+          { "slot": "toggle_2",    "action": "SET_TOGGLE", "value": false }
+        ],
+        "SENTINEL": [
+          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false },
+          { "slot": "toggle_2",    "action": "SET_TOGGLE", "value": false },
+          { "slot": "specialty_b", "action": "SET_ROTARY_SW", "value": 1 }
+        ],
+        "MEDIC": [
+          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false }
+        ],
+        "ANALYST": [
+          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false },
+          { "slot": "toggle_2",    "action": "SET_TOGGLE", "value": false },
+          { "slot": "specialty_b", "action": "SET_ROTARY_SW", "value": 1 }
+        ],
+        "SCOUT": [
+          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false },
+          { "slot": "toggle_2",    "action": "SET_TOGGLE", "value": false },
+          { "slot": "toggle_3",    "action": "SET_TOGGLE", "value": false }
+        ],
+        "COMMANDER": [
+          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false }
+        ]
+      }
+    },
+
+    {
       "id": "frantic_1",
       "type": "FRANTIC",
       "duration_sec": 240,
-      "difficulty": {
-        "commands_per_min": { "start": 3, "end": 5 },
-        "coop_ratio": 0.15,
-        "crisis_chance_per_30s": 0.10,
-        "timeout_multiplier": 1.3
-      },
-      "pools": ["direct", "cooperative"],
+      "pools": ["direct", "cooperative", "open"],
       "crises": ["crisis_hull_breach", "crisis_solar_flare"],
       "narrator_lines_ambient": [
         "Focus on restoring core systems.",
@@ -252,13 +317,7 @@
       "id": "frantic_2_W",
       "type": "FRANTIC",
       "duration_sec": 270,
-      "difficulty": {
-        "commands_per_min": { "start": 5, "end": 8 },
-        "coop_ratio": 0.30,
-        "crisis_chance_per_30s": 0.20,
-        "timeout_multiplier": 1.1
-      },
-      "pools": ["direct", "cooperative"],
+      "pools": ["direct", "cooperative", "open"],
       "crises": ["crisis_hull_breach", "crisis_solar_flare", "crisis_grav_surge"],
       "narrator_lines_ambient": [
         "Trajectory calculations underway — keep the station stable!",
@@ -272,13 +331,7 @@
       "id": "frantic_2_L",
       "type": "FRANTIC",
       "duration_sec": 250,
-      "difficulty": {
-        "commands_per_min": { "start": 5, "end": 7 },
-        "coop_ratio": 0.35,
-        "crisis_chance_per_30s": 0.25,
-        "timeout_multiplier": 1.0
-      },
-      "pools": ["direct", "cooperative"],
+      "pools": ["direct", "cooperative", "open"],
       "crises": ["crisis_hull_breach", "crisis_solar_flare", "crisis_grav_surge", "crisis_power_surge"],
       "narrator_lines_ambient": [
         "Warning: hull temperature rising.",
@@ -333,13 +386,7 @@
       "id": "frantic_3_WW",
       "type": "FRANTIC",
       "duration_sec": 270,
-      "difficulty": {
-        "commands_per_min": { "start": 8, "end": 12 },
-        "coop_ratio": 0.40,
-        "crisis_chance_per_30s": 0.30,
-        "timeout_multiplier": 0.95
-      },
-      "pools": ["direct", "cooperative"],
+      "pools": ["direct", "cooperative", "open"],
       "crises": ["crisis_hull_breach", "crisis_solar_flare", "crisis_grav_surge", "crisis_power_surge"],
       "narrator_lines_ambient": [
         "Engines firing! Keep the burn steady!",
@@ -353,13 +400,7 @@
       "id": "frantic_3_WL",
       "type": "FRANTIC",
       "duration_sec": 250,
-      "difficulty": {
-        "commands_per_min": { "start": 7, "end": 11 },
-        "coop_ratio": 0.45,
-        "crisis_chance_per_30s": 0.35,
-        "timeout_multiplier": 0.90
-      },
-      "pools": ["direct", "cooperative"],
+      "pools": ["direct", "cooperative", "open"],
       "crises": ["crisis_hull_breach", "crisis_solar_flare", "crisis_grav_surge", "crisis_power_surge"],
       "narrator_lines_ambient": [
         "Backup ignition is sluggish — keep trying!",
@@ -373,13 +414,7 @@
       "id": "frantic_3_LW",
       "type": "FRANTIC",
       "duration_sec": 250,
-      "difficulty": {
-        "commands_per_min": { "start": 7, "end": 11 },
-        "coop_ratio": 0.45,
-        "crisis_chance_per_30s": 0.30,
-        "timeout_multiplier": 0.95
-      },
-      "pools": ["direct", "cooperative"],
+      "pools": ["direct", "cooperative", "open"],
       "crises": ["crisis_hull_breach", "crisis_solar_flare", "crisis_grav_surge", "crisis_power_surge"],
       "narrator_lines_ambient": [
         "This is your shot — do not waste it!",
@@ -393,13 +428,7 @@
       "id": "frantic_3_LL",
       "type": "FRANTIC",
       "duration_sec": 240,
-      "difficulty": {
-        "commands_per_min": { "start": 6, "end": 10 },
-        "coop_ratio": 0.50,
-        "crisis_chance_per_30s": 0.40,
-        "timeout_multiplier": 0.85
-      },
-      "pools": ["direct", "cooperative"],
+      "pools": ["direct", "cooperative", "open"],
       "crises": ["crisis_hull_breach", "crisis_solar_flare", "crisis_grav_surge", "crisis_power_surge"],
       "narrator_lines_ambient": [
         "Warning: structural collapse imminent!",
@@ -418,89 +447,81 @@
   ],
 
   "outcomes": {
-    "metrics_weights": {
-      "direct_rate":  0.30,
-      "coop_rate":    0.30,
-      "timeout_rate": 0.20,
-      "crisis_rate":  0.20
+    "WWW": {
+      "tier": "TRIUMPH",
+      "title": "Textbook Escape",
+      "narrator_lines": [
+        "Station Omega breaks free. Engines at full burn. The star recedes behind you.",
+        "That was textbook emergency response. Every order executed. Every crisis handled.",
+        "Mission Control is recommending this entire crew for commendation.",
+        "Well done, Station Omega. Well done."
+      ]
     },
-    "disaster": {
-      "tier": "DISASTER",
+    "WWL": {
+      "tier": "SUCCESS",
+      "title": "Rough Exit",
+      "narrator_lines": [
+        "The escape burn fires, but it's rough. The engine stuttered at the worst moment.",
+        "Station Omega pulls free. You're alive and heading home.",
+        "That last phase cost you a perfect run. But alive beats perfect every time."
+      ]
+    },
+    "WLW": {
+      "tier": "SUCCESS",
+      "title": "Hard Recovery",
+      "narrator_lines": [
+        "After a shaky middle phase, you pulled it together when it counted.",
+        "The escape burn is clean. Station Omega is clear.",
+        "Lost a chunk of the station in the process, but the crew is intact. Well recovered."
+      ]
+    },
+    "WLL": {
+      "tier": "SURVIVE",
+      "title": "Limping Home",
+      "sub_analysis": true,
+      "narrator_lines": [
+        "Station Omega tears free of the gravity well, but pieces of the hull are peeling off.",
+        "Life support is failing. Emergency pods are prepped.",
+        "You're alive. Barely. That started so well. What happened?"
+      ]
+    },
+    "LWW": {
+      "tier": "SUCCESS",
+      "title": "Comeback Crew",
+      "narrator_lines": [
+        "What a comeback. A terrible start — but the crew found its rhythm.",
+        "The escape burn is strong. Station Omega is heading home.",
+        "That first phase had us worried. Glad you proved us wrong."
+      ]
+    },
+    "LWL": {
+      "tier": "SURVIVE",
+      "title": "Pyrrhic Escape",
+      "sub_analysis": true,
+      "narrator_lines": [
+        "The station limps to safe distance. Half the compartments are venting atmosphere.",
+        "Escape pods are on standby. It's not pretty, but you survived.",
+        "Inconsistency almost killed you today."
+      ]
+    },
+    "LLW": {
+      "tier": "SURVIVE",
+      "title": "Eleventh Hour",
+      "narrator_lines": [
+        "A miracle at the eleventh hour.",
+        "The station was minutes from breaking apart and somehow you fired the engines.",
+        "Station Omega is clear. Barely. Do not count on miracles twice."
+      ]
+    },
+    "LLL": {
+      "tier": "FAILURE",
+      "title": "Station Lost",
+      "sub_analysis": true,
       "narrator_lines": [
         "Critical failure. Station Omega has lost all structural integrity.",
         "The emergency beacon fires one last signal into the void.",
         "Station Omega falls into the star. All hands lost."
       ]
-    },
-    "endings": {
-      "WWW": {
-        "tier": "TRIUMPH",
-        "narrator_lines": [
-          "Station Omega breaks free. Engines at full burn. The star recedes behind you.",
-          "That was textbook emergency response. Every order executed. Every crisis handled.",
-          "Mission Control is recommending this entire crew for commendation.",
-          "Well done, Station Omega. Well done."
-        ]
-      },
-      "WWL": {
-        "tier": "SUCCESS",
-        "narrator_lines": [
-          "The escape burn fires, but it's rough. The engine stuttered at the worst moment.",
-          "Station Omega pulls free. You're alive and heading home.",
-          "That last phase cost you a perfect run. But alive beats perfect every time."
-        ]
-      },
-      "WLW": {
-        "tier": "SUCCESS",
-        "narrator_lines": [
-          "After a shaky middle phase, you pulled it together when it counted.",
-          "The escape burn is clean. Station Omega is clear.",
-          "Lost a chunk of the station in the process, but the crew is intact. Well recovered."
-        ]
-      },
-      "WLL": {
-        "tier": "SURVIVE",
-        "sub_analysis": true,
-        "narrator_lines": [
-          "Station Omega tears free of the gravity well, but pieces of the hull are peeling off.",
-          "Life support is failing. Emergency pods are prepped.",
-          "You're alive. Barely. That started so well. What happened?"
-        ]
-      },
-      "LWW": {
-        "tier": "SUCCESS",
-        "narrator_lines": [
-          "What a comeback. A terrible start — but the crew found its rhythm.",
-          "The escape burn is strong. Station Omega is heading home.",
-          "That first phase had us worried. Glad you proved us wrong."
-        ]
-      },
-      "LWL": {
-        "tier": "SURVIVE",
-        "sub_analysis": true,
-        "narrator_lines": [
-          "The station limps to safe distance. Half the compartments are venting atmosphere.",
-          "Escape pods are on standby. It's not pretty, but you survived.",
-          "Inconsistency almost killed you today."
-        ]
-      },
-      "LLW": {
-        "tier": "SURVIVE",
-        "narrator_lines": [
-          "A miracle at the eleventh hour.",
-          "The station was minutes from breaking apart and somehow you fired the engines.",
-          "Station Omega is clear. Barely. Do not count on miracles twice."
-        ]
-      },
-      "LLL": {
-        "tier": "FAILURE",
-        "sub_analysis": true,
-        "narrator_lines": [
-          "Station Omega's orbit collapses. The hull buckles under gravitational stress.",
-          "The emergency beacon fires one last time. No one is close enough to respond.",
-          "Mission Control watches the telemetry go silent. Station Omega is gone."
-        ]
-      }
     }
   },
 

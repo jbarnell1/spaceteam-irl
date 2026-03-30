@@ -8,145 +8,1561 @@
     "subject": "teamwork",
     "age_rating": "8+",
     "difficulty": "medium",
-    "player_count": { "min": 3, "max": 8 },
-    "duration_sec": { "min": 840, "max": 900 },
+    "player_count": {
+      "min": 3,
+      "max": 8
+    },
+    "duration_sec": {
+      "min": 840,
+      "max": 900
+    },
     "adaptive_pacing": true,
-    "version": "1.0.0",
+    "version": "2.0.0",
     "author": "mission_architect",
     "historical_note": "Inspired by the true events of Soviet submarine B-59 during the Cuban Missile Crisis, October 27, 1962. USS Beale and the carrier group of USS Randolph hunted B-59 near the Sargasso Sea. Crew endured 50°C+ temperatures, failing batteries, and days without contact from Moscow."
   },
-
   "roles": {
-    "NAVIGATOR":  "Helmsman",
-    "ENGINEER":   "Chief Engineer",
-    "OPERATOR":   "Radio Operator",
-    "SENTINEL":   "Weapons Officer",
-    "MEDIC":      "Ship's Doctor",
-    "ANALYST":    "Navigation Officer",
-    "SCOUT":      "Sonar Operator",
-    "COMMANDER":  "Executive Officer"
+    "NAVIGATOR": "Helmsman",
+    "ENGINEER": "Chief Engineer",
+    "OPERATOR": "Radio Operator",
+    "SENTINEL": "Weapons Officer",
+    "MEDIC": "Ship's Doctor",
+    "ANALYST": "Navigation Officer",
+    "SCOUT": "Sonar Operator",
+    "COMMANDER": "Executive Officer"
   },
-
   "oled_labels": {
-    "NAVIGATOR": ["Dive Planes",    "Trim Ballast",   "Port Engine",    "Stbd Engine",    "Emrg Blow"],
-    "ENGINEER":  ["Power Output",   "Seal Valve",      "Reactor Cool",   "Battery Bank",   "Bilge Pump"],
-    "OPERATOR":  ["Radio Freq",     "Antenna Mast",    "Cipher Mode",    "Signal Burst",   "Static Clear"],
-    "SENTINEL":  ["Torpedo Key",    "Launch Mode",     "Tube 2 Lock",    "Tube 3 Lock",    "Flood Tubes"],
-    "MEDIC":     ["O2 Mix",         "CO2 Scrubber",    "Pressure Seal",  "Check Vitals",   "Adrenaline"],
-    "ANALYST":   ["Plot Course",    "Depth Bearing",   "Current Calc",   "Fix Position",   "Mark Contact"],
-    "SCOUT":     ["Sonar Sweep",    "Passive Mode",    "Bow Array",      "Stern Array",    "Hull Creak"],
-    "COMMANDER": ["Conn Orders",    "Confirm Order",   "Captain Key",    "All Stations",   "Deck Log"]
-  },
-
-  "command_pools": {
-    "direct": [
-
-      { "id": "nav_dive_deep",     "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Emergency dive! Take her down!",          "narrator_line": "Helmsman! Emergency dive — take her deep!",                 "value": {"x":0,"y":-80},  "tolerance": {"x":20,"y":15}, "timeout_ms": 8000 },
-      { "id": "nav_surface",       "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Blow ballast — SURFACE!",                 "narrator_line": "Helmsman! Blow main ballast — take her up!",                "value": {"x":0,"y":80},   "tolerance": {"x":20,"y":15}, "timeout_ms": 8000 },
-      { "id": "nav_hard_port",     "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Hard to port! Evade!",                    "narrator_line": "Hard to port! Evasive maneuver — NOW!",                     "value": {"x":-80,"y":0},  "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
-      { "id": "nav_hard_stbd",     "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Hard starboard! Torpedo wake!",           "narrator_line": "Hard starboard — torpedo wake in the water!",               "value": {"x":80,"y":0},   "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
-      { "id": "nav_trim_full",     "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": 2, "tier": "T2", "label": "Full forward ballast!",                   "narrator_line": "Helmsman! Full forward trim — nose her down!",              "value": 100,  "tolerance": 10,                         "timeout_ms": 5000 },
-      { "id": "nav_trim_half",     "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": 2, "tier": "T2", "label": "Trim ballast to half!",                   "narrator_line": "Trim ballast to fifty percent — level her out!",            "value": 50,   "tolerance": 10,                         "timeout_ms": 5000 },
-      { "id": "nav_trim_aft",      "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": 2, "tier": "T2", "label": "Ballast full aft!",                       "narrator_line": "Full aft trim! Get the bow up!",                            "value": 0,    "tolerance": 10,                         "timeout_ms": 5000 },
-      { "id": "nav_port_on",       "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Port engine — AHEAD!",                    "narrator_line": "Port engine ahead! Give me turns!",                         "value": true,                                            "timeout_ms": 3000 },
-      { "id": "nav_port_off",      "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Port engine — ALL STOP!",                 "narrator_line": "Port engine all stop!",                                     "value": false,                                           "timeout_ms": 3000 },
-      { "id": "nav_stbd_on",       "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Starboard engine — AHEAD!",               "narrator_line": "Starboard engine ahead!",                                   "value": true,                                            "timeout_ms": 3000 },
-      { "id": "nav_stbd_off",      "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Starboard engine — STOP!",                "narrator_line": "Starboard engine all stop — quiet in the boat!",            "value": false,                                           "timeout_ms": 3000 },
-      { "id": "nav_emrg_blow",     "target_arch": "NAVIGATOR", "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Emergency blow NOW!",                     "narrator_line": "Emergency blow! All hands — emergency surface!",            "value": null,                                            "timeout_ms": 3000 },
-
-      { "id": "eng_power_max",     "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Power output to maximum!",                "narrator_line": "Chief! Power to maximum — everything she's got!",           "value": 100, "tolerance": 10,                      "timeout_ms": 5000 },
-      { "id": "eng_power_half",    "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Reduce power to half!",                   "narrator_line": "Reduce power to fifty percent — conserve batteries!",       "value": 50,  "tolerance": 10,                      "timeout_ms": 5000 },
-      { "id": "eng_power_quarter", "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Power to quarter — conserve!",            "narrator_line": "Quarter power only! We're draining the batteries!",         "value": 25,  "tolerance": 10,                      "timeout_ms": 5000 },
-      { "id": "eng_power_off",     "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Cut main power!",                         "narrator_line": "Chief! Cut main power — silent running!",                   "value": 0,   "tolerance": 10,                      "timeout_ms": 5000 },
-      { "id": "eng_seal",          "target_arch": "ENGINEER",  "action": "PRESS_BUTTON", "slot": 2, "tier": "T1", "label": "Seal the main valve!",                    "narrator_line": "Chief Engineer! Seal the main valve — we're leaking!",      "value": null,                                      "timeout_ms": 3000 },
-      { "id": "eng_cool_on",       "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Reactor cooling — ON!",                   "narrator_line": "Reactor cooling on! Temperatures are climbing!",            "value": true,                                      "timeout_ms": 3000 },
-      { "id": "eng_cool_off",      "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Reactor cooling — SECURE!",               "narrator_line": "Secure cooling — the Americans will hear the pumps!",       "value": false,                                     "timeout_ms": 3000 },
-      { "id": "eng_battery_on",    "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Switch to battery power!",                "narrator_line": "Battery power! Switch now — go electric!",                  "value": true,                                      "timeout_ms": 3000 },
-      { "id": "eng_bilge_on",      "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": 5, "tier": "T1", "label": "Bilge pump — ACTIVATE!",                  "narrator_line": "Bilge pump on! We've got water in the engine room!",        "value": true,                                      "timeout_ms": 3000 },
-
-      { "id": "op_freq_142",       "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Radio to frequency 142!",                 "narrator_line": "Radio Operator! Tune to one-four-two — Moscow relay!",      "value": 142,                                       "timeout_ms": 6000 },
-      { "id": "op_freq_77",        "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Tune to frequency 77!",                   "narrator_line": "Frequency seventy-seven — fleet emergency band!",           "value": 77,                                        "timeout_ms": 6000 },
-      { "id": "op_freq_200",       "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Emergency frequency 200!",                "narrator_line": "Emergency frequency two hundred — distress call!",          "value": 200,                                       "timeout_ms": 6000 },
-      { "id": "op_freq_50",        "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Moscow relay — frequency 50!",            "narrator_line": "Try frequency fifty — maybe Moscow is still there!",        "value": 50,                                        "timeout_ms": 6000 },
-      { "id": "op_mast_up",        "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Raise the antenna mast!",                 "narrator_line": "Raise the antenna mast — we need to listen!",               "value": true,                                      "timeout_ms": 3000 },
-      { "id": "op_mast_down",      "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Retract antenna — NOW!",                  "narrator_line": "Retract the mast! They'll spot it on radar!",               "value": false,                                     "timeout_ms": 3000 },
-      { "id": "op_cipher_on",      "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Engage cipher mode!",                     "narrator_line": "Engage cipher — encrypt all transmissions!",                "value": true,                                      "timeout_ms": 3000 },
-      { "id": "op_cipher_off",     "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Disengage cipher!",                       "narrator_line": "Drop cipher — we need speed over secrecy!",                 "value": false,                                     "timeout_ms": 3000 },
-      { "id": "op_burst",          "target_arch": "OPERATOR",  "action": "PRESS_BUTTON", "slot": 4, "tier": "T1", "label": "Send the signal burst!",                  "narrator_line": "Compressed burst — transmit NOW!",                          "value": null,                                      "timeout_ms": 3000 },
-      { "id": "op_static",         "target_arch": "OPERATOR",  "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Clear the static!",                       "narrator_line": "Clear that static — I can't hear a thing!",                 "value": null,                                      "timeout_ms": 3000 },
-
-      { "id": "sent_torpedo_auth", "target_arch": "SENTINEL",  "action": "SCAN_NFC",     "slot": 1, "tier": "T3", "label": "Authenticate TORPEDO KEY!",               "narrator_line": "Weapons Officer! Authenticate the torpedo key — now!",      "value": "TORPEDO_AUTH",                             "timeout_ms": 10000 },
-      { "id": "sent_captains_safe","target_arch": "SENTINEL",  "action": "SCAN_NFC",     "slot": 1, "tier": "T3", "label": "Unlock the CAPTAIN'S SAFE!",              "narrator_line": "Open the Captain's safe! We need the sealed orders!",       "value": "CAPTAINS_SAFE",                            "timeout_ms": 10000 },
-      { "id": "sent_mode_standby", "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": 2, "tier": "T2", "label": "Launch mode — STANDBY!",                  "narrator_line": "Weapons Officer! Set launch mode to standby!",              "value": 1,                                         "timeout_ms": 5000 },
-      { "id": "sent_mode_armed",   "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": 2, "tier": "T2", "label": "Launch mode — ARMED!",                    "narrator_line": "Arm the tubes! Launch mode to armed — position two!",       "value": 2,                                         "timeout_ms": 5000 },
-      { "id": "sent_mode_safe",    "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": 2, "tier": "T2", "label": "Launch mode — SAFE!",                     "narrator_line": "Safe the weapons! Launch mode to safe — position three!",   "value": 3,                                         "timeout_ms": 5000 },
-      { "id": "sent_tube2_lock",   "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Lock torpedo tube 2!",                    "narrator_line": "Lock tube two! Secure it!",                                 "value": true,                                      "timeout_ms": 3000 },
-      { "id": "sent_tube2_unlock", "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Unlock torpedo tube 2!",                  "narrator_line": "Unlock tube two — make ready!",                             "value": false,                                     "timeout_ms": 3000 },
-      { "id": "sent_tube3_lock",   "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Lock torpedo tube 3!",                    "narrator_line": "Lock tube three!",                                          "value": true,                                      "timeout_ms": 3000 },
-      { "id": "sent_tube3_unlock", "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Unlock tube 3!",                          "narrator_line": "Unlock tube three — prepare to fire!",                      "value": false,                                     "timeout_ms": 3000 },
-      { "id": "sent_flood",        "target_arch": "SENTINEL",  "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Flood torpedo tubes!",                    "narrator_line": "Flood all tubes! Stand by!",                                "value": null,                                      "timeout_ms": 3000 },
-
-      { "id": "med_o2_blue",       "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": 1, "tier": "T3", "label": "O2 mix to BLUE zone!",                    "narrator_line": "Doctor! O2 mix to blue — standard breathing atmosphere!",   "value": [0,80,200],   "tolerance": 30,              "timeout_ms": 8000 },
-      { "id": "med_o2_green",      "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": 1, "tier": "T3", "label": "O2 mix to GREEN — standard!",             "narrator_line": "Green zone O2 — enriched mix for the crew!",               "value": [30,200,50],  "tolerance": 30,              "timeout_ms": 8000 },
-      { "id": "med_o2_red",        "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": 1, "tier": "T3", "label": "O2 mix to RED — emergency!",              "narrator_line": "Doctor! Red zone — emergency oxygen levels! Move!",         "value": [200,30,30],  "tolerance": 30,              "timeout_ms": 8000 },
-      { "id": "med_co2_150",       "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": 2, "tier": "T2", "label": "CO2 scrubber to 150!",                    "narrator_line": "Scrubber to one-fifty! The air is getting thick!",          "value": 150,                                       "timeout_ms": 6000 },
-      { "id": "med_co2_80",        "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": 2, "tier": "T2", "label": "Reduce scrubber to 80!",                  "narrator_line": "Ease the scrubber to eighty — save the filters!",          "value": 80,                                        "timeout_ms": 6000 },
-      { "id": "med_co2_250",       "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": 2, "tier": "T2", "label": "Scrubber to 250 — MAX!",                  "narrator_line": "Maximum scrubbing! Two-fifty — men are passing out!",      "value": 250,                                       "timeout_ms": 6000 },
-      { "id": "med_seal_on",       "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Seal the pressure lock!",                 "narrator_line": "Seal the compartment! Pressure lock — now!",               "value": true,                                      "timeout_ms": 3000 },
-      { "id": "med_seal_off",      "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Release pressure lock!",                  "narrator_line": "Release the pressure lock — let them through!",            "value": false,                                     "timeout_ms": 3000 },
-      { "id": "med_vitals",        "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": 4, "tier": "T1", "label": "Check crew vitals!",                      "narrator_line": "Doctor! Check the crew — anyone showing symptoms?",        "value": null,                                      "timeout_ms": 3000 },
-      { "id": "med_adrenaline",    "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Adrenaline — revive him!",                "narrator_line": "Adrenaline shot! That man collapsed — revive him!",        "value": null,                                      "timeout_ms": 3000 },
-
-      { "id": "ana_course_270",    "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": 1, "tier": "T3", "label": "Plot course: 2-7-0!",                     "narrator_line": "Navigation Officer! Plot course two-seven-zero — west!",   "value": "270",                                     "timeout_ms": 7000 },
-      { "id": "ana_course_1835",   "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": 1, "tier": "T3", "label": "Enter coordinates: 1-8-3-5!",             "narrator_line": "Coordinates one-eight-three-five — deep water trench!",    "value": "1835",                                    "timeout_ms": 8000 },
-      { "id": "ana_course_090",    "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": 1, "tier": "T3", "label": "Bearing: 0-9-0 — due east!",              "narrator_line": "Navigation! Bearing zero-nine-zero — due east!",           "value": "090",                                     "timeout_ms": 7000 },
-      { "id": "ana_depth_120",     "target_arch": "ANALYST",   "action": "MATCH_WAVE",   "slot": 2, "tier": "T2", "label": "Depth bearing to 120!",                   "narrator_line": "Depth chart — mark bearing one-twenty!",                   "value": 120, "tolerance": 15,                      "timeout_ms": 6000 },
-      { "id": "ana_depth_200",     "target_arch": "ANALYST",   "action": "MATCH_WAVE",   "slot": 2, "tier": "T2", "label": "Check depth — bearing 200!",              "narrator_line": "Bearing two hundred — check the depth chart! Shoals?",     "value": 200, "tolerance": 15,                      "timeout_ms": 6000 },
-      { "id": "ana_depth_60",      "target_arch": "ANALYST",   "action": "MATCH_WAVE",   "slot": 2, "tier": "T2", "label": "Depth chart to 60!",                      "narrator_line": "Bearing sixty — how deep is it? Check the chart!",         "value": 60,  "tolerance": 15,                      "timeout_ms": 6000 },
-      { "id": "ana_current_on",    "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Calculate drift current!",                "narrator_line": "Calculate the current — we're drifting off course!",       "value": true,                                      "timeout_ms": 3000 },
-      { "id": "ana_current_off",   "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Stow current tables!",                    "narrator_line": "Stow the tables — we have what we need!",                  "value": false,                                     "timeout_ms": 3000 },
-      { "id": "ana_fix",           "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Fix our position!",                       "narrator_line": "Fix our position! Where are we?",                          "value": true,                                      "timeout_ms": 3000 },
-      { "id": "ana_contact",       "target_arch": "ANALYST",   "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Mark the contact!",                       "narrator_line": "Mark that contact on the plot — bearing and range!",       "value": null,                                      "timeout_ms": 3000 },
-
-      { "id": "sco_sweep_140",     "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "tier": "T2", "label": "Sonar sweep bearing 140!",                "narrator_line": "Sonar! Sweep bearing one-four-zero!",                      "value": 140, "tolerance": 15,                      "timeout_ms": 6000 },
-      { "id": "sco_sweep_220",     "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "tier": "T2", "label": "Sweep to bearing 220!",                   "narrator_line": "Two-two-zero — I heard something. Sweep it!",              "value": 220, "tolerance": 15,                      "timeout_ms": 6000 },
-      { "id": "sco_sweep_60",      "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "tier": "T2", "label": "Sonar to bearing 60!",                    "narrator_line": "Bearing sixty — new contact? Sweep it now!",               "value": 60,  "tolerance": 15,                      "timeout_ms": 6000 },
-      { "id": "sco_passive_on",    "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Switch to passive sonar!",                "narrator_line": "Passive sonar only! They'll hear us pinging!",             "value": true,                                      "timeout_ms": 3000 },
-      { "id": "sco_passive_off",   "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Active sonar — PING!",                    "narrator_line": "One active ping — just one! I need a range!",              "value": false,                                     "timeout_ms": 3000 },
-      { "id": "sco_bow_on",        "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Bow array — LISTEN!",                     "narrator_line": "Bow array active — listen forward!",                       "value": true,                                      "timeout_ms": 3000 },
-      { "id": "sco_stern_on",      "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 4, "tier": "T1", "label": "Stern array — activate!",                 "narrator_line": "Stern array! What's behind us?",                           "value": true,                                      "timeout_ms": 3000 },
-      { "id": "sco_hull_stress",   "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 5, "tier": "T1", "label": "Report hull stress!",                     "narrator_line": "Report hull stress levels — are we holding?",              "value": true,                                      "timeout_ms": 3000 },
-
-      { "id": "cmd_silent",        "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Orders: SILENT RUNNING!",                 "narrator_line": "Executive Officer! Silent running — position one!",        "value": 1,                                         "timeout_ms": 5000 },
-      { "id": "cmd_evade",         "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Orders: EVASIVE ACTION!",                 "narrator_line": "Evasive action! Set orders to position two!",              "value": 2,                                         "timeout_ms": 5000 },
-      { "id": "cmd_flank",         "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Orders: FLANK SPEED!",                    "narrator_line": "Flank speed — position three! Everything she's got!",      "value": 3,                                         "timeout_ms": 5000 },
-      { "id": "cmd_surface_ord",   "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Orders: PREPARE TO SURFACE!",             "narrator_line": "Prepare to surface! Set orders — position four!",          "value": 4,                                         "timeout_ms": 5000 },
-      { "id": "cmd_confirm",       "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": 2, "tier": "T1", "label": "Confirm that order!",                     "narrator_line": "Confirm the order! Repeat it back!",                       "value": null,                                      "timeout_ms": 3000 },
-      { "id": "cmd_key",           "target_arch": "COMMANDER", "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Captain's key — TURN IT!",                "narrator_line": "Turn the Captain's key! Authorization required!",          "value": true,                                      "timeout_ms": 3000 },
-      { "id": "cmd_stations",      "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": 4, "tier": "T1", "label": "ALL STATIONS REPORT!",                    "narrator_line": "All stations — REPORT! Status from every compartment!",    "value": null,                                      "timeout_ms": 3000 },
-      { "id": "cmd_log",           "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Update the deck log!",                    "narrator_line": "Log it! Time, depth, heading — in the record!",            "value": null,                                      "timeout_ms": 3000 }
+    "NAVIGATOR": [
+      "Port Engine",
+      "Stbd Engine",
+      "Scope Depth",
+      "Emrg Blow",
+      "Mark Depth",
+      "Signal Flare",
+      "Dead Slow",
+      "Dive Planes",
+      "Trim Ballast"
     ],
-
-    "cooperative": [
-      { "id": "coop_cmd_tell_nav_dive",    "display_on": "COMMANDER", "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": 1, "tier": "T3", "label": "Tell Helm: emergency dive!",           "narrator_line": "XO! Tell the Helmsman — emergency dive!",                  "value": {"x":0,"y":-80}, "tolerance": {"x":20,"y":15}, "timeout_ms": 12000 },
-      { "id": "coop_eng_tell_nav_trim",    "display_on": "ENGINEER",  "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": 2, "tier": "T2", "label": "Tell Helm: full ballast!",             "narrator_line": "Chief! Shout to the Helmsman — full forward ballast!",     "value": 100, "tolerance": 10,                           "timeout_ms": 10000 },
-      { "id": "coop_ana_tell_eng_max",     "display_on": "ANALYST",   "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Tell Engine: power max!",              "narrator_line": "Navigation! Tell the Chief — power to maximum!",           "value": 100, "tolerance": 10,                           "timeout_ms": 10000 },
-      { "id": "coop_cmd_tell_eng_half",    "display_on": "COMMANDER", "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "tier": "T2", "label": "Tell Engine: half power!",             "narrator_line": "XO! Tell the Chief — half power only!",                    "value": 50,  "tolerance": 10,                           "timeout_ms": 10000 },
-      { "id": "coop_nav_tell_op_142",      "display_on": "NAVIGATOR", "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Tell Radio: frequency 142!",           "narrator_line": "Helmsman! Tell Radio — tune to one-four-two!",             "value": 142,                                            "timeout_ms": 10000 },
-      { "id": "coop_sco_tell_op_77",       "display_on": "SCOUT",     "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": 1, "tier": "T2", "label": "Tell Radio: frequency 77!",            "narrator_line": "Sonar! Shout to Radio — frequency seventy-seven!",         "value": 77,                                             "timeout_ms": 10000 },
-      { "id": "coop_op_tell_sent_flood",   "display_on": "OPERATOR",  "target_arch": "SENTINEL",  "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Tell Weapons: flood tubes!",           "narrator_line": "Radio! Tell the Weapons Officer — flood all tubes!",       "value": null,                                           "timeout_ms": 6000 },
-      { "id": "coop_med_tell_sent_lock",   "display_on": "MEDIC",     "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Tell Weapons: lock tube 2!",           "narrator_line": "Doctor! Tell Weapons — lock torpedo tube two!",            "value": true,                                           "timeout_ms": 6000 },
-      { "id": "coop_eng_tell_med_seal",    "display_on": "ENGINEER",  "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Tell Doctor: seal pressure!",          "narrator_line": "Chief! Shout to the Doctor — seal that compartment!",      "value": true,                                           "timeout_ms": 6000 },
-      { "id": "coop_sent_tell_med_adr",    "display_on": "SENTINEL",  "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": 5, "tier": "T1", "label": "Tell Doctor: adrenaline!",             "narrator_line": "Weapons! Tell the Doctor — adrenaline, man down!",         "value": null,                                           "timeout_ms": 6000 },
-      { "id": "coop_nav_tell_ana_270",     "display_on": "NAVIGATOR", "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": 1, "tier": "T3", "label": "Tell Nav: course 2-7-0!",              "narrator_line": "Helmsman! Tell Navigation — course two-seven-zero!",       "value": "270",                                          "timeout_ms": 12000 },
-      { "id": "coop_sent_tell_ana_brg",    "display_on": "SENTINEL",  "target_arch": "ANALYST",   "action": "MATCH_WAVE",   "slot": 2, "tier": "T2", "label": "Tell Nav: bearing 160!",               "narrator_line": "Weapons! Shout to Navigation — bearing one-sixty!",        "value": 160, "tolerance": 15,                           "timeout_ms": 10000 },
-      { "id": "coop_ana_tell_sco_140",     "display_on": "ANALYST",   "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "tier": "T2", "label": "Tell Sonar: sweep 140!",               "narrator_line": "Navigation! Tell Sonar — sweep bearing one-forty!",        "value": 140, "tolerance": 15,                           "timeout_ms": 10000 },
-      { "id": "coop_op_tell_sco_passive",  "display_on": "OPERATOR",  "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": 2, "tier": "T1", "label": "Tell Sonar: go passive!",              "narrator_line": "Radio! Tell Sonar — switch to passive! Quiet!",            "value": true,                                           "timeout_ms": 6000 },
-      { "id": "coop_sco_tell_cmd_silent",  "display_on": "SCOUT",     "target_arch": "COMMANDER", "action": "SET_ROTARY_SW","slot": 1, "tier": "T2", "label": "Tell XO: silent running!",             "narrator_line": "Sonar! Tell the XO — switch to silent running!",           "value": 1,                                              "timeout_ms": 8000 },
-      { "id": "coop_med_tell_cmd_key",     "display_on": "MEDIC",     "target_arch": "COMMANDER", "action": "SET_TOGGLE",   "slot": 3, "tier": "T1", "label": "Tell XO: turn captain key!",           "narrator_line": "Doctor! Shout to the XO — turn the Captain's key!",        "value": true,                                           "timeout_ms": 6000 }
+    "ENGINEER": [
+      "Reactor Cool",
+      "Battery Bank",
+      "Bilge Pump",
+      "Seal Valve",
+      "Purge Steam",
+      "Reset Breaker",
+      "Vent Pressure",
+      "Power Output",
+      "Patch Bay"
+    ],
+    "OPERATOR": [
+      "Antenna Mast",
+      "Cipher Mode",
+      "Depth Relay",
+      "Signal Burst",
+      "Static Clear",
+      "Ping Relay",
+      "K-Band Switch",
+      "Radio Freq",
+      "Access Code"
+    ],
+    "SENTINEL": [
+      "Tube 2 Lock",
+      "Tube 3 Lock",
+      "Arm Charges",
+      "Flood Tubes",
+      "Decon Alert",
+      "Fire Control",
+      "Countermeasure",
+      "Torpedo Key",
+      "Launch Mode"
+    ],
+    "MEDIC": [
+      "Pressure Seal",
+      "Air Purify",
+      "Quarantine",
+      "Check Vitals",
+      "Adrenaline",
+      "Morphine Shot",
+      "Trauma Kit",
+      "O2 Mix",
+      "CO2 Scrubber"
+    ],
+    "ANALYST": [
+      "Current Calc",
+      "Fix Position",
+      "Chart Table",
+      "Mark Contact",
+      "Plot Fix",
+      "Erase Track",
+      "Dead Reckon",
+      "Plot Course",
+      "Depth Bearing"
+    ],
+    "SCOUT": [
+      "Passive Mode",
+      "Bow Array",
+      "Stern Array",
+      "Hull Creak",
+      "Ping Range",
+      "Log Contact",
+      "Noise Maker",
+      "Sonar Sweep",
+      "Spectrum Dial"
+    ],
+    "COMMANDER": [
+      "Captain Key",
+      "Battle Lamps",
+      "Watertight",
+      "Confirm Order",
+      "All Stations",
+      "Deck Log",
+      "Klaxon",
+      "Conn Orders",
+      "Auth Scan"
     ]
   },
-
+  "command_pools": {
+    "direct": [
+      {
+        "id": "nav_dive_deep",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Emergency dive! Take her down!",
+        "narrator_line": "Helmsman! Emergency dive — take her deep!",
+        "value": {
+          "x": 0,
+          "y": -80
+        },
+        "tolerance": {
+          "x": 20,
+          "y": 15
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "nav_surface",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Blow ballast — SURFACE!",
+        "narrator_line": "Helmsman! Blow main ballast — take her up!",
+        "value": {
+          "x": 0,
+          "y": 80
+        },
+        "tolerance": {
+          "x": 20,
+          "y": 15
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "nav_hard_port",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Hard to port! Evade!",
+        "narrator_line": "Hard to port! Evasive maneuver — NOW!",
+        "value": {
+          "x": -80,
+          "y": 0
+        },
+        "tolerance": {
+          "x": 15,
+          "y": 20
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "nav_hard_stbd",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Hard starboard! Torpedo wake!",
+        "narrator_line": "Hard starboard — torpedo wake in the water!",
+        "value": {
+          "x": 80,
+          "y": 0
+        },
+        "tolerance": {
+          "x": 15,
+          "y": 20
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "nav_trim_full",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_SLIDER",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Full forward ballast!",
+        "narrator_line": "Helmsman! Full forward trim — nose her down!",
+        "value": 100,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "nav_trim_half",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_SLIDER",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Trim ballast to half!",
+        "narrator_line": "Trim ballast to fifty percent — level her out!",
+        "value": 50,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "nav_trim_aft",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_SLIDER",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Ballast full aft!",
+        "narrator_line": "Full aft trim! Get the bow up!",
+        "value": 0,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "nav_port_on",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Port engine — AHEAD!",
+        "narrator_line": "Port engine ahead! Give me turns!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "nav_port_off",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Port engine — ALL STOP!",
+        "narrator_line": "Port engine all stop!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "nav_stbd_on",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Starboard engine — AHEAD!",
+        "narrator_line": "Starboard engine ahead!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "nav_stbd_off",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Starboard engine — STOP!",
+        "narrator_line": "Starboard engine all stop — quiet in the boat!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "nav_emrg_blow",
+        "target_arch": "NAVIGATOR",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "Emergency blow NOW!",
+        "narrator_line": "Emergency blow! All hands — emergency surface!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_power_max",
+        "target_arch": "ENGINEER",
+        "action": "SET_SLIDER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Power output to maximum!",
+        "narrator_line": "Chief! Power to maximum — everything she's got!",
+        "value": 100,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "eng_power_half",
+        "target_arch": "ENGINEER",
+        "action": "SET_SLIDER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Reduce power to half!",
+        "narrator_line": "Reduce power to fifty percent — conserve batteries!",
+        "value": 50,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "eng_power_quarter",
+        "target_arch": "ENGINEER",
+        "action": "SET_SLIDER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Power to quarter — conserve!",
+        "narrator_line": "Quarter power only! We're draining the batteries!",
+        "value": 25,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "eng_power_off",
+        "target_arch": "ENGINEER",
+        "action": "SET_SLIDER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Cut main power!",
+        "narrator_line": "Chief! Cut main power — silent running!",
+        "value": 0,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "eng_seal",
+        "target_arch": "ENGINEER",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "Seal the main valve!",
+        "narrator_line": "Chief Engineer! Seal the main valve — we're leaking!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_cool_on",
+        "target_arch": "ENGINEER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Reactor cooling — ON!",
+        "narrator_line": "Reactor cooling on! Temperatures are climbing!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_cool_off",
+        "target_arch": "ENGINEER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Reactor cooling — SECURE!",
+        "narrator_line": "Secure cooling — the Americans will hear the pumps!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_battery_on",
+        "target_arch": "ENGINEER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Switch to battery power!",
+        "narrator_line": "Battery power! Switch now — go electric!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_battery_off",
+        "target_arch": "ENGINEER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Battery power — OFF!",
+        "narrator_line": "Cut battery power — back to reactor!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_bilge_on",
+        "target_arch": "ENGINEER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_3",
+        "tier": "T1",
+        "label": "Bilge pump — ACTIVATE!",
+        "narrator_line": "Bilge pump on! We've got water in the engine room!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_bilge_off",
+        "target_arch": "ENGINEER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_3",
+        "tier": "T1",
+        "label": "Bilge pump — OFF!",
+        "narrator_line": "Secure the bilge pump — water's under control!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_patch_main",
+        "target_arch": "ENGINEER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Patch: main power routing!",
+        "narrator_line": "Chief! Patch bay — main power routing!",
+        "value": {
+          "A": "1",
+          "B": "2",
+          "C": "3"
+        },
+        "timeout_ms": 6000
+      },
+      {
+        "id": "eng_patch_backup",
+        "target_arch": "ENGINEER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Patch: backup power link!",
+        "narrator_line": "Patch bay to backup config — swap those leads!",
+        "value": {
+          "A": "2",
+          "B": "3",
+          "C": "1"
+        },
+        "timeout_ms": 6000
+      },
+      {
+        "id": "eng_patch_bypass",
+        "target_arch": "ENGINEER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Patch: emergency bypass!",
+        "narrator_line": "Emergency bypass — reroute the patch bay NOW!",
+        "value": {
+          "A": "3",
+          "B": "1",
+          "C": "2"
+        },
+        "timeout_ms": 6000
+      },
+      {
+        "id": "op_freq_142",
+        "target_arch": "OPERATOR",
+        "action": "SET_ENCODER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Radio to frequency 142!",
+        "narrator_line": "Radio Operator! Tune to one-four-two — Moscow relay!",
+        "value": 142,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "op_freq_77",
+        "target_arch": "OPERATOR",
+        "action": "SET_ENCODER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Tune to frequency 77!",
+        "narrator_line": "Frequency seventy-seven — fleet emergency band!",
+        "value": 77,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "op_freq_200",
+        "target_arch": "OPERATOR",
+        "action": "SET_ENCODER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Emergency frequency 200!",
+        "narrator_line": "Emergency frequency two hundred — distress call!",
+        "value": 200,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "op_freq_50",
+        "target_arch": "OPERATOR",
+        "action": "SET_ENCODER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Moscow relay — frequency 50!",
+        "narrator_line": "Try frequency fifty — maybe Moscow is still there!",
+        "value": 50,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "op_mast_up",
+        "target_arch": "OPERATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Raise the antenna mast!",
+        "narrator_line": "Raise the antenna mast — we need to listen!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "op_mast_down",
+        "target_arch": "OPERATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Retract antenna — NOW!",
+        "narrator_line": "Retract the mast! They'll spot it on radar!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "op_cipher_on",
+        "target_arch": "OPERATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Engage cipher mode!",
+        "narrator_line": "Engage cipher — encrypt all transmissions!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "op_cipher_off",
+        "target_arch": "OPERATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Disengage cipher!",
+        "narrator_line": "Drop cipher — we need speed over secrecy!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "op_burst",
+        "target_arch": "OPERATOR",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "Send the signal burst!",
+        "narrator_line": "Compressed burst — transmit NOW!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "op_static",
+        "target_arch": "OPERATOR",
+        "action": "PRESS_BUTTON",
+        "slot": "button_2",
+        "tier": "T1",
+        "label": "Clear the static!",
+        "narrator_line": "Clear that static — I can't hear a thing!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "op_code_1962",
+        "target_arch": "OPERATOR",
+        "action": "ENTER_CODE",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Enter cipher code 1-9-6-2!",
+        "narrator_line": "Radio! Cipher code one-nine-six-two — authenticate!",
+        "value": "1962",
+        "timeout_ms": 8000
+      },
+      {
+        "id": "op_code_559",
+        "target_arch": "OPERATOR",
+        "action": "ENTER_CODE",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Enter code 5-5-9!",
+        "narrator_line": "B-fifty-nine auth code — five-five-nine!",
+        "value": "559",
+        "timeout_ms": 7000
+      },
+      {
+        "id": "op_code_307",
+        "target_arch": "OPERATOR",
+        "action": "ENTER_CODE",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Emergency code 3-0-7!",
+        "narrator_line": "Emergency override — three-zero-seven!",
+        "value": "307",
+        "timeout_ms": 7000
+      },
+      {
+        "id": "sent_torpedo_auth",
+        "target_arch": "SENTINEL",
+        "action": "SCAN_NFC",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Authenticate TORPEDO KEY!",
+        "narrator_line": "Weapons Officer! Authenticate the torpedo key — now!",
+        "value": "TORPEDO_AUTH",
+        "timeout_ms": 10000
+      },
+      {
+        "id": "sent_captains_safe",
+        "target_arch": "SENTINEL",
+        "action": "SCAN_NFC",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Unlock the CAPTAIN'S SAFE!",
+        "narrator_line": "Open the Captain's safe! We need the sealed orders!",
+        "value": "CAPTAINS_SAFE",
+        "timeout_ms": 10000
+      },
+      {
+        "id": "sent_mode_standby",
+        "target_arch": "SENTINEL",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Launch mode — STANDBY!",
+        "narrator_line": "Weapons Officer! Set launch mode to standby!",
+        "value": 1,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "sent_mode_armed",
+        "target_arch": "SENTINEL",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Launch mode — ARMED!",
+        "narrator_line": "Arm the tubes! Launch mode to armed — position two!",
+        "value": 2,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "sent_mode_safe",
+        "target_arch": "SENTINEL",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Launch mode — SAFE!",
+        "narrator_line": "Safe the weapons! Launch mode to safe — position three!",
+        "value": 3,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "sent_tube2_lock",
+        "target_arch": "SENTINEL",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Lock torpedo tube 2!",
+        "narrator_line": "Lock tube two! Secure it!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sent_tube2_unlock",
+        "target_arch": "SENTINEL",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Unlock torpedo tube 2!",
+        "narrator_line": "Unlock tube two — make ready!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sent_tube3_lock",
+        "target_arch": "SENTINEL",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Lock torpedo tube 3!",
+        "narrator_line": "Lock tube three!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sent_tube3_unlock",
+        "target_arch": "SENTINEL",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Unlock tube 3!",
+        "narrator_line": "Unlock tube three — prepare to fire!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sent_flood",
+        "target_arch": "SENTINEL",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "Flood torpedo tubes!",
+        "narrator_line": "Flood all tubes! Stand by!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "med_o2_blue",
+        "target_arch": "MEDIC",
+        "action": "MATCH_COLOR",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "O2 mix to BLUE zone!",
+        "narrator_line": "Doctor! O2 mix to blue — standard breathing atmosphere!",
+        "value": [
+          0,
+          80,
+          200
+        ],
+        "tolerance": 30,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "med_o2_green",
+        "target_arch": "MEDIC",
+        "action": "MATCH_COLOR",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "O2 mix to GREEN — standard!",
+        "narrator_line": "Green zone O2 — enriched mix for the crew!",
+        "value": [
+          30,
+          200,
+          50
+        ],
+        "tolerance": 30,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "med_o2_red",
+        "target_arch": "MEDIC",
+        "action": "MATCH_COLOR",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "O2 mix to RED — emergency!",
+        "narrator_line": "Doctor! Red zone — emergency oxygen levels! Move!",
+        "value": [
+          200,
+          30,
+          30
+        ],
+        "tolerance": 30,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "med_co2_150",
+        "target_arch": "MEDIC",
+        "action": "SET_ENCODER",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "CO2 scrubber to 150!",
+        "narrator_line": "Scrubber to one-fifty! The air is getting thick!",
+        "value": 150,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "med_co2_80",
+        "target_arch": "MEDIC",
+        "action": "SET_ENCODER",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Reduce scrubber to 80!",
+        "narrator_line": "Ease the scrubber to eighty — save the filters!",
+        "value": 80,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "med_co2_250",
+        "target_arch": "MEDIC",
+        "action": "SET_ENCODER",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Scrubber to 250 — MAX!",
+        "narrator_line": "Maximum scrubbing! Two-fifty — men are passing out!",
+        "value": 250,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "med_seal_on",
+        "target_arch": "MEDIC",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Seal the pressure lock!",
+        "narrator_line": "Seal the compartment! Pressure lock — now!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "med_seal_off",
+        "target_arch": "MEDIC",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Release pressure lock!",
+        "narrator_line": "Release the pressure lock — let them through!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "med_vitals",
+        "target_arch": "MEDIC",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "Check crew vitals!",
+        "narrator_line": "Doctor! Check the crew — anyone showing symptoms?",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "med_adrenaline",
+        "target_arch": "MEDIC",
+        "action": "PRESS_BUTTON",
+        "slot": "button_2",
+        "tier": "T1",
+        "label": "Adrenaline — revive him!",
+        "narrator_line": "Adrenaline shot! That man collapsed — revive him!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "ana_course_270",
+        "target_arch": "ANALYST",
+        "action": "ENTER_CODE",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Plot course: 2-7-0!",
+        "narrator_line": "Navigation Officer! Plot course two-seven-zero — west!",
+        "value": "270",
+        "timeout_ms": 7000
+      },
+      {
+        "id": "ana_course_1835",
+        "target_arch": "ANALYST",
+        "action": "ENTER_CODE",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Enter coordinates: 1-8-3-5!",
+        "narrator_line": "Coordinates one-eight-three-five — deep water trench!",
+        "value": "1835",
+        "timeout_ms": 8000
+      },
+      {
+        "id": "ana_course_090",
+        "target_arch": "ANALYST",
+        "action": "ENTER_CODE",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Bearing: 0-9-0 — due east!",
+        "narrator_line": "Navigation! Bearing zero-nine-zero — due east!",
+        "value": "090",
+        "timeout_ms": 7000
+      },
+      {
+        "id": "ana_depth_3",
+        "target_arch": "ANALYST",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Depth bearing — position THREE!",
+        "narrator_line": "Depth chart — mark position three!",
+        "value": 3,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "ana_depth_5",
+        "target_arch": "ANALYST",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Depth bearing — position FIVE!",
+        "narrator_line": "Position five on the depth chart — deep water!",
+        "value": 5,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "ana_depth_1",
+        "target_arch": "ANALYST",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Depth bearing — position ONE!",
+        "narrator_line": "Position one — shallow water! Check the chart!",
+        "value": 1,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "ana_current_on",
+        "target_arch": "ANALYST",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Calculate drift current!",
+        "narrator_line": "Calculate the current — we're drifting off course!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "ana_current_off",
+        "target_arch": "ANALYST",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Stow current tables!",
+        "narrator_line": "Stow the tables — we have what we need!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "ana_fix",
+        "target_arch": "ANALYST",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Fix our position!",
+        "narrator_line": "Fix our position! Where are we?",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "ana_fix_off",
+        "target_arch": "ANALYST",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Stow position fix!",
+        "narrator_line": "Position fix noted — stow the instruments!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "ana_contact",
+        "target_arch": "ANALYST",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "Mark the contact!",
+        "narrator_line": "Mark that contact on the plot — bearing and range!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_scan_se",
+        "target_arch": "SCOUT",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Sonar sweep — SOUTHEAST!",
+        "narrator_line": "Sonar! Sweep southeast — bearing one-four-zero!",
+        "value": {
+          "x": 60,
+          "y": -60
+        },
+        "tolerance": {
+          "x": 20,
+          "y": 20
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "sco_scan_sw",
+        "target_arch": "SCOUT",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Sonar sweep — SOUTHWEST!",
+        "narrator_line": "Two-two-zero — I heard something. Sweep southwest!",
+        "value": {
+          "x": -60,
+          "y": -60
+        },
+        "tolerance": {
+          "x": 20,
+          "y": 20
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "sco_scan_ne",
+        "target_arch": "SCOUT",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Sonar sweep — NORTHEAST!",
+        "narrator_line": "Bearing sixty — new contact? Sweep northeast!",
+        "value": {
+          "x": 60,
+          "y": 60
+        },
+        "tolerance": {
+          "x": 20,
+          "y": 20
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "sco_passive_on",
+        "target_arch": "SCOUT",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Switch to passive sonar!",
+        "narrator_line": "Passive sonar only! They'll hear us pinging!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_passive_off",
+        "target_arch": "SCOUT",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Active sonar — PING!",
+        "narrator_line": "One active ping — just one! I need a range!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_bow_on",
+        "target_arch": "SCOUT",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Bow array — LISTEN!",
+        "narrator_line": "Bow array active — listen forward!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_bow_off",
+        "target_arch": "SCOUT",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Bow array — OFF!",
+        "narrator_line": "Cut the bow array — reduce our noise!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_stern_on",
+        "target_arch": "SCOUT",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_3",
+        "tier": "T1",
+        "label": "Stern array — activate!",
+        "narrator_line": "Stern array! What's behind us?",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_stern_off",
+        "target_arch": "SCOUT",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_3",
+        "tier": "T1",
+        "label": "Stern array — OFF!",
+        "narrator_line": "Stern array off — too much noise aft!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_hull_stress",
+        "target_arch": "SCOUT",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "Report hull stress!",
+        "narrator_line": "Report hull stress levels — are we holding?",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_color_red",
+        "target_arch": "SCOUT",
+        "action": "MATCH_COLOR",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Match RED — hostile contact!",
+        "narrator_line": "Sonar! Spectrum to red — hostile contact!",
+        "value": [
+          200,
+          30,
+          30
+        ],
+        "tolerance": 30,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "sco_color_blue",
+        "target_arch": "SCOUT",
+        "action": "MATCH_COLOR",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Match BLUE — friendly signal!",
+        "narrator_line": "Blue spectrum — friendly vessel signature!",
+        "value": [
+          30,
+          60,
+          200
+        ],
+        "tolerance": 30,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "sco_color_green",
+        "target_arch": "SCOUT",
+        "action": "MATCH_COLOR",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Match GREEN — all clear!",
+        "narrator_line": "Green spectrum — confirm all clear!",
+        "value": [
+          30,
+          200,
+          50
+        ],
+        "tolerance": 30,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "cmd_patch_silent",
+        "target_arch": "COMMANDER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Patch: SILENT RUNNING!",
+        "narrator_line": "Executive Officer! Patch panel — silent running config!",
+        "value": {
+          "A": "1",
+          "B": "2",
+          "C": "3"
+        },
+        "timeout_ms": 6000
+      },
+      {
+        "id": "cmd_patch_evade",
+        "target_arch": "COMMANDER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Patch: EVASIVE ACTION!",
+        "narrator_line": "Evasive action! Patch panel to evasive routing!",
+        "value": {
+          "A": "2",
+          "B": "3",
+          "C": "1"
+        },
+        "timeout_ms": 6000
+      },
+      {
+        "id": "cmd_patch_flank",
+        "target_arch": "COMMANDER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Patch: FLANK SPEED!",
+        "narrator_line": "Flank speed — patch it through! Everything she's got!",
+        "value": {
+          "A": "3",
+          "B": "1",
+          "C": "2"
+        },
+        "timeout_ms": 6000
+      },
+      {
+        "id": "cmd_patch_surface",
+        "target_arch": "COMMANDER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Patch: PREPARE TO SURFACE!",
+        "narrator_line": "Prepare to surface! Patch to surfacing config!",
+        "value": {
+          "A": "1",
+          "B": "3",
+          "C": "2"
+        },
+        "timeout_ms": 6000
+      },
+      {
+        "id": "cmd_confirm",
+        "target_arch": "COMMANDER",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "Confirm that order!",
+        "narrator_line": "Confirm the order! Repeat it back!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "cmd_key_on",
+        "target_arch": "COMMANDER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Captain's key — TURN IT!",
+        "narrator_line": "Turn the Captain's key! Authorization required!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "cmd_key_off",
+        "target_arch": "COMMANDER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Captain's key — REMOVE!",
+        "narrator_line": "Remove the Captain's key — stand down!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "cmd_stations",
+        "target_arch": "COMMANDER",
+        "action": "PRESS_BUTTON",
+        "slot": "button_2",
+        "tier": "T1",
+        "label": "ALL STATIONS REPORT!",
+        "narrator_line": "All stations — REPORT! Status from every compartment!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "cmd_log",
+        "target_arch": "COMMANDER",
+        "action": "PRESS_BUTTON",
+        "slot": "button_3",
+        "tier": "T1",
+        "label": "Update the deck log!",
+        "narrator_line": "Log it! Time, depth, heading — in the record!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "cmd_auth_captain",
+        "target_arch": "COMMANDER",
+        "action": "SCAN_NFC",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Scan CAPTAIN'S authorization!",
+        "narrator_line": "XO! Scan the Captain's authorization card — now!",
+        "value": "CAPTAIN_AUTH",
+        "timeout_ms": 10000
+      },
+      {
+        "id": "cmd_auth_nuclear",
+        "target_arch": "COMMANDER",
+        "action": "SCAN_NFC",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Scan NUCLEAR launch card!",
+        "narrator_line": "Nuclear authorization — scan the launch card!",
+        "value": "NUCLEAR_AUTH",
+        "timeout_ms": 10000
+      }
+    ],
+    "cooperative": [
+      {
+        "id": "coop_cmd_tell_nav_dive",
+        "display_on": "COMMANDER",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Tell Helm: emergency dive!",
+        "narrator_line": "XO! Tell the Helmsman — emergency dive!",
+        "value": {
+          "x": 0,
+          "y": -80
+        },
+        "tolerance": {
+          "x": 20,
+          "y": 15
+        },
+        "timeout_ms": 12000
+      },
+      {
+        "id": "coop_eng_tell_nav_trim",
+        "display_on": "ENGINEER",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_SLIDER",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Tell Helm: full ballast!",
+        "narrator_line": "Chief! Shout to the Helmsman — full forward ballast!",
+        "value": 100,
+        "tolerance": 10,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "coop_ana_tell_eng_max",
+        "display_on": "ANALYST",
+        "target_arch": "ENGINEER",
+        "action": "SET_SLIDER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Tell Engine: power max!",
+        "narrator_line": "Navigation! Tell the Chief — power to maximum!",
+        "value": 100,
+        "tolerance": 10,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "coop_cmd_tell_eng_half",
+        "display_on": "COMMANDER",
+        "target_arch": "ENGINEER",
+        "action": "SET_SLIDER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Tell Engine: half power!",
+        "narrator_line": "XO! Tell the Chief — half power only!",
+        "value": 50,
+        "tolerance": 10,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "coop_nav_tell_op_142",
+        "display_on": "NAVIGATOR",
+        "target_arch": "OPERATOR",
+        "action": "SET_ENCODER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Tell Radio: frequency 142!",
+        "narrator_line": "Helmsman! Tell Radio — tune to one-four-two!",
+        "value": 142,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "coop_sco_tell_op_77",
+        "display_on": "SCOUT",
+        "target_arch": "OPERATOR",
+        "action": "SET_ENCODER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Tell Radio: frequency 77!",
+        "narrator_line": "Sonar! Shout to Radio — frequency seventy-seven!",
+        "value": 77,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "coop_op_tell_sent_flood",
+        "display_on": "OPERATOR",
+        "target_arch": "SENTINEL",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "Tell Weapons: flood tubes!",
+        "narrator_line": "Radio! Tell the Weapons Officer — flood all tubes!",
+        "value": null,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "coop_med_tell_sent_lock",
+        "display_on": "MEDIC",
+        "target_arch": "SENTINEL",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Tell Weapons: lock tube 2!",
+        "narrator_line": "Doctor! Tell Weapons — lock torpedo tube two!",
+        "value": true,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "coop_eng_tell_med_seal",
+        "display_on": "ENGINEER",
+        "target_arch": "MEDIC",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Tell Doctor: seal pressure!",
+        "narrator_line": "Chief! Shout to the Doctor — seal that compartment!",
+        "value": true,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "coop_sent_tell_med_adr",
+        "display_on": "SENTINEL",
+        "target_arch": "MEDIC",
+        "action": "PRESS_BUTTON",
+        "slot": "button_2",
+        "tier": "T1",
+        "label": "Tell Doctor: adrenaline!",
+        "narrator_line": "Weapons! Tell the Doctor — adrenaline, man down!",
+        "value": null,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "coop_nav_tell_ana_270",
+        "display_on": "NAVIGATOR",
+        "target_arch": "ANALYST",
+        "action": "ENTER_CODE",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Tell Nav: course 2-7-0!",
+        "narrator_line": "Helmsman! Tell Navigation — course two-seven-zero!",
+        "value": "270",
+        "timeout_ms": 12000
+      },
+      {
+        "id": "coop_sent_tell_ana_brg",
+        "display_on": "SENTINEL",
+        "target_arch": "ANALYST",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Tell Nav: depth chart — FOUR!",
+        "narrator_line": "Weapons! Tell Navigation — depth chart position four!",
+        "value": 4,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "coop_ana_tell_sco_scan",
+        "display_on": "ANALYST",
+        "target_arch": "SCOUT",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Tell Sonar: sweep southeast!",
+        "narrator_line": "Navigation! Tell Sonar — sweep southeast!",
+        "value": {
+          "x": 60,
+          "y": -60
+        },
+        "tolerance": {
+          "x": 20,
+          "y": 20
+        },
+        "timeout_ms": 12000
+      },
+      {
+        "id": "coop_op_tell_sco_passive",
+        "display_on": "OPERATOR",
+        "target_arch": "SCOUT",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Tell Sonar: go passive!",
+        "narrator_line": "Radio! Tell Sonar — switch to passive! Quiet!",
+        "value": true,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "coop_sco_tell_cmd_patch",
+        "display_on": "SCOUT",
+        "target_arch": "COMMANDER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Tell XO: patch silent running!",
+        "narrator_line": "Sonar! Tell the XO — patch panel to silent running!",
+        "value": {
+          "A": "1",
+          "B": "2",
+          "C": "3"
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "coop_med_tell_cmd_key",
+        "display_on": "MEDIC",
+        "target_arch": "COMMANDER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Tell XO: turn captain key!",
+        "narrator_line": "Doctor! Shout to the XO — turn the Captain's key!",
+        "value": true,
+        "timeout_ms": 5000
+      }
+    ],
+    "open": [
+      {
+        "id": "open_joystick_dive",
+        "target": "ANY",
+        "action": "SET_JOYSTICK",
+        "tier": "T3",
+        "label": "Someone — emergency dive!",
+        "narrator_line": "Anyone with a helm stick — dive NOW!",
+        "value": {
+          "x": 0,
+          "y": -80
+        },
+        "tolerance": {
+          "x": 20,
+          "y": 15
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "open_slider_full",
+        "target": "ANY",
+        "action": "SET_SLIDER",
+        "tier": "T2",
+        "label": "Anyone — power to MAXIMUM!",
+        "narrator_line": "Whoever has a fader — full power NOW!",
+        "value": 100,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "open_encoder_142",
+        "target": "ANY",
+        "action": "SET_ENCODER",
+        "tier": "T2",
+        "label": "Quick — tune to 142!",
+        "narrator_line": "Any dial operator — tune to one-four-two!",
+        "value": 142,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "open_color_yellow",
+        "target": "ANY",
+        "action": "MATCH_COLOR",
+        "tier": "T3",
+        "label": "Someone — match YELLOW!",
+        "narrator_line": "Anyone with a color dial — match yellow NOW!",
+        "value": [
+          200,
+          200,
+          30
+        ],
+        "tolerance": 30,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "open_rotary_pos_2",
+        "target": "ANY",
+        "action": "SET_ROTARY_SW",
+        "tier": "T2",
+        "label": "Anyone — dial to position 2!",
+        "narrator_line": "Whoever has a selector — position two!",
+        "value": 2,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "open_code_559",
+        "target": "ANY",
+        "action": "ENTER_CODE",
+        "tier": "T3",
+        "label": "Someone — enter code 5-5-9!",
+        "narrator_line": "Anyone with a keypad — code five-five-nine!",
+        "value": "559",
+        "timeout_ms": 7000
+      }
+    ]
+  },
   "crises": [
     {
       "id": "crisis_depth_charge",
@@ -172,9 +1588,29 @@
       "label": "REACTOR SCRAM!",
       "narrator_line": "REACTOR SCRAM! Chief — restore power! Sonar — keep listening! Everyone else — emergency stations!",
       "actions": [
-        { "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": 1, "value": 100,  "tolerance": 10 },
-        { "target_arch": "SCOUT",     "action": "MATCH_WAVE",   "slot": 1, "value": 140,  "tolerance": 15 },
-        { "rest": "CRISIS_BTN" }
+        {
+          "target_arch": "ENGINEER",
+          "action": "SET_SLIDER",
+          "slot": "specialty_a",
+          "value": 100,
+          "tolerance": 10
+        },
+        {
+          "target_arch": "SCOUT",
+          "action": "SET_JOYSTICK",
+          "slot": "specialty_a",
+          "value": {
+            "x": 60,
+            "y": -60
+          },
+          "tolerance": {
+            "x": 20,
+            "y": 20
+          }
+        },
+        {
+          "rest": "CRISIS_BTN"
+        }
       ],
       "timeout_ms": 7000,
       "penalty": "health_major"
@@ -185,15 +1621,26 @@
       "label": "BATTERY FIRE!",
       "narrator_line": "FIRE IN THE BATTERY COMPARTMENT! Doctor — seal it! Radio — kill the cipher! Everyone — MOVE!",
       "actions": [
-        { "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": 3, "value": true },
-        { "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": 3, "value": false },
-        { "rest": "CRISIS_BTN" }
+        {
+          "target_arch": "MEDIC",
+          "action": "SET_TOGGLE",
+          "slot": "toggle_1",
+          "value": true
+        },
+        {
+          "target_arch": "OPERATOR",
+          "action": "SET_TOGGLE",
+          "slot": "toggle_2",
+          "value": false
+        },
+        {
+          "rest": "CRISIS_BTN"
+        }
       ],
       "timeout_ms": 7000,
       "penalty": "health_minor"
     }
   ],
-
   "phases": [
     {
       "id": "intro",
@@ -208,19 +1655,143 @@
         "All stations, report ready. We go deeper. We survive this."
       ]
     },
-
+    {
+      "id": "preflight",
+      "type": "PREFLIGHT",
+      "duration_sec": 45,
+      "narrator_intro": "All stations, set your controls to starting positions. Confirm each when your display lights green.",
+      "init_commands": {
+        "NAVIGATOR": [
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_2",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "specialty_b",
+            "action": "SET_SLIDER",
+            "value": 0
+          }
+        ],
+        "ENGINEER": [
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_2",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_3",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "specialty_a",
+            "action": "SET_SLIDER",
+            "value": 0
+          }
+        ],
+        "OPERATOR": [
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_2",
+            "action": "SET_TOGGLE",
+            "value": false
+          }
+        ],
+        "SENTINEL": [
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_2",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "specialty_b",
+            "action": "SET_ROTARY_SW",
+            "value": 1
+          }
+        ],
+        "MEDIC": [
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          }
+        ],
+        "ANALYST": [
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_2",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "specialty_b",
+            "action": "SET_ROTARY_SW",
+            "value": 1
+          }
+        ],
+        "SCOUT": [
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_2",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_3",
+            "action": "SET_TOGGLE",
+            "value": false
+          }
+        ],
+        "COMMANDER": [
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          }
+        ]
+      }
+    },
     {
       "id": "frantic_1",
       "type": "FRANTIC",
       "duration_sec": 240,
-      "difficulty": {
-        "commands_per_min": { "start": 3, "end": 5 },
-        "coop_ratio": 0.15,
-        "crisis_chance_per_30s": 0.10,
-        "timeout_multiplier": 1.3
-      },
-      "pools": ["direct", "cooperative"],
-      "crises": ["crisis_hull_stress", "crisis_battery_fire"],
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_hull_stress",
+        "crisis_battery_fire"
+      ],
       "narrator_lines_ambient": [
         "Maintain three hundred metres. Not a sound.",
         "The Americans are pinging. Hold steady — let them pass overhead.",
@@ -228,7 +1799,6 @@
         "That was a practice charge. They want us to surface. Ignore it."
       ]
     },
-
     {
       "id": "branch_1",
       "type": "BRANCH",
@@ -249,19 +1819,20 @@
         "next_phase": "frantic_2_L"
       }
     },
-
     {
       "id": "frantic_2_W",
       "type": "FRANTIC",
       "duration_sec": 270,
-      "difficulty": {
-        "commands_per_min": { "start": 5, "end": 8 },
-        "coop_ratio": 0.30,
-        "crisis_chance_per_30s": 0.20,
-        "timeout_multiplier": 1.1
-      },
-      "pools": ["direct", "cooperative"],
-      "crises": ["crisis_depth_charge", "crisis_hull_stress", "crisis_reactor_scram"],
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_depth_charge",
+        "crisis_hull_stress",
+        "crisis_reactor_scram"
+      ],
       "narrator_lines_ambient": [
         "New contacts — the carrier USS Randolph has launched anti-submarine aircraft.",
         "Three hundred twenty metres. The hull is groaning. Watch the gauges.",
@@ -269,19 +1840,21 @@
         "Silent running. If anyone drops a wrench, we are all dead."
       ]
     },
-
     {
       "id": "frantic_2_L",
       "type": "FRANTIC",
       "duration_sec": 250,
-      "difficulty": {
-        "commands_per_min": { "start": 5, "end": 7 },
-        "coop_ratio": 0.35,
-        "crisis_chance_per_30s": 0.25,
-        "timeout_multiplier": 1.0
-      },
-      "pools": ["direct", "cooperative"],
-      "crises": ["crisis_depth_charge", "crisis_hull_stress", "crisis_reactor_scram", "crisis_battery_fire"],
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_depth_charge",
+        "crisis_hull_stress",
+        "crisis_reactor_scram",
+        "crisis_battery_fire"
+      ],
       "narrator_lines_ambient": [
         "Depth charges — closer now. They know exactly where we are.",
         "The Captain is shouting. The crew is near breaking point. Hold together.",
@@ -289,7 +1862,6 @@
         "Batteries at eight percent. We cannot stay down much longer."
       ]
     },
-
     {
       "id": "branch_2",
       "type": "BRANCH",
@@ -330,19 +1902,21 @@
         }
       }
     },
-
     {
       "id": "frantic_3_WW",
       "type": "FRANTIC",
       "duration_sec": 270,
-      "difficulty": {
-        "commands_per_min": { "start": 8, "end": 12 },
-        "coop_ratio": 0.40,
-        "crisis_chance_per_30s": 0.30,
-        "timeout_multiplier": 0.95
-      },
-      "pools": ["direct", "cooperative"],
-      "crises": ["crisis_depth_charge", "crisis_hull_stress", "crisis_reactor_scram", "crisis_battery_fire"],
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_depth_charge",
+        "crisis_hull_stress",
+        "crisis_reactor_scram",
+        "crisis_battery_fire"
+      ],
       "narrator_lines_ambient": [
         "Below the thermocline. Sonar can't find us — but the hull can't take this depth.",
         "Creeping ahead at two knots. Absolute silence.",
@@ -350,19 +1924,21 @@
         "Just a bit further. Hold it together. Almost clear."
       ]
     },
-
     {
       "id": "frantic_3_WL",
       "type": "FRANTIC",
       "duration_sec": 250,
-      "difficulty": {
-        "commands_per_min": { "start": 7, "end": 11 },
-        "coop_ratio": 0.45,
-        "crisis_chance_per_30s": 0.35,
-        "timeout_multiplier": 0.90
-      },
-      "pools": ["direct", "cooperative"],
-      "crises": ["crisis_depth_charge", "crisis_hull_stress", "crisis_reactor_scram", "crisis_battery_fire"],
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_depth_charge",
+        "crisis_hull_stress",
+        "crisis_reactor_scram",
+        "crisis_battery_fire"
+      ],
       "narrator_lines_ambient": [
         "Three hundred fifty metres. Beyond rated depth. The rivets are screaming.",
         "Men are hallucinating from CO2. Keep them focused.",
@@ -370,19 +1946,21 @@
         "The Americans are directly above. Depth charges falling like rain."
       ]
     },
-
     {
       "id": "frantic_3_LW",
       "type": "FRANTIC",
       "duration_sec": 250,
-      "difficulty": {
-        "commands_per_min": { "start": 7, "end": 11 },
-        "coop_ratio": 0.45,
-        "crisis_chance_per_30s": 0.30,
-        "timeout_multiplier": 0.95
-      },
-      "pools": ["direct", "cooperative"],
-      "crises": ["crisis_depth_charge", "crisis_hull_stress", "crisis_reactor_scram", "crisis_battery_fire"],
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_depth_charge",
+        "crisis_hull_stress",
+        "crisis_reactor_scram",
+        "crisis_battery_fire"
+      ],
       "narrator_lines_ambient": [
         "Into the trench — four hundred metres and dropping. Maximum depth.",
         "The destroyers are circling above, but the canyon walls scatter their sonar.",
@@ -390,19 +1968,21 @@
         "Battery alarm sounding. Shut it off — manually — before they hear it."
       ]
     },
-
     {
       "id": "frantic_3_LL",
       "type": "FRANTIC",
       "duration_sec": 240,
-      "difficulty": {
-        "commands_per_min": { "start": 6, "end": 10 },
-        "coop_ratio": 0.50,
-        "crisis_chance_per_30s": 0.40,
-        "timeout_multiplier": 0.85
-      },
-      "pools": ["direct", "cooperative"],
-      "crises": ["crisis_depth_charge", "crisis_hull_stress", "crisis_reactor_scram", "crisis_battery_fire"],
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_depth_charge",
+        "crisis_hull_stress",
+        "crisis_reactor_scram",
+        "crisis_battery_fire"
+      ],
       "narrator_lines_ambient": [
         "This is the end. Batteries dead. Air gone. We must surface.",
         "The Captain has ordered emergency blow. Make it happen.",
@@ -410,7 +1990,6 @@
         "Controlled ascent. Every system — give me everything you have left."
       ]
     },
-
     {
       "id": "branch_3",
       "type": "BRANCH",
@@ -418,95 +1997,85 @@
       "threshold": 0.55
     }
   ],
-
   "outcomes": {
-    "metrics_weights": {
-      "direct_rate":  0.30,
-      "coop_rate":    0.30,
-      "timeout_rate": 0.20,
-      "crisis_rate":  0.20
-    },
-    "disaster": {
-      "tier": "DISASTER",
+    "WWW": {
+      "tier": "TRIUMPH",
+      "title": "Silent Escape",
       "narrator_lines": [
-        "A hull breach at three hundred eighty metres. The sea pours in.",
-        "B-fifty-nine is lost with all hands. The ocean keeps its secrets.",
-        "Moscow will never know what happened. The Americans will search for weeks."
+        "B-fifty-nine slips beneath the thermocline and vanishes from American sonar.",
+        "Three days later, the submarine surfaces in international waters. Every soul aboard alive.",
+        "The world will never know how close it came. But the crew of B-fifty-nine will remember.",
+        "You held the line. In silence, in darkness, in fifty-degree heat. You survived."
       ]
     },
-    "endings": {
-      "WWW": {
-        "tier": "TRIUMPH",
-        "narrator_lines": [
-          "B-fifty-nine slips beneath the thermocline and vanishes from American sonar.",
-          "Three days later, the submarine surfaces in international waters. Every soul aboard alive.",
-          "The world will never know how close it came. But the crew of B-fifty-nine will remember.",
-          "You held the line. In silence, in darkness, in fifty-degree heat. You survived."
-        ]
-      },
-      "WWL": {
-        "tier": "SUCCESS",
-        "narrator_lines": [
-          "B-fifty-nine surfaces damaged but intact, far from the American search pattern.",
-          "The batteries are dead. The air is poison. But the crew is alive.",
-          "A Soviet supply ship reaches you within thirty-six hours. You are going home."
-        ]
-      },
-      "WLW": {
-        "tier": "SUCCESS",
-        "narrator_lines": [
-          "A desperate deep dive beyond rated depth. The hull screamed. But it held.",
-          "B-fifty-nine escapes through a thermal layer the Americans never suspected.",
-          "Battered, exhausted, barely functional. But free. A remarkable recovery."
-        ]
-      },
-      "WLL": {
-        "tier": "SURVIVE",
-        "sub_analysis": true,
-        "narrator_lines": [
-          "No choice. Emergency surface. The Americans are waiting.",
-          "USS Beale escorts B-fifty-nine to the surface. The crew emerges blinking into sunlight.",
-          "Alive, but the mission is a failure. Moscow will not be pleased."
-        ]
-      },
-      "LWW": {
-        "tier": "SUCCESS",
-        "narrator_lines": [
-          "From the jaws of disaster, the crew rallied. The undersea trench saved you.",
-          "B-fifty-nine limps into open water and surfaces under cover of darkness.",
-          "A legendary feat of submarine seamanship. From hopeless to free. Well done."
-        ]
-      },
-      "LWL": {
-        "tier": "SURVIVE",
-        "sub_analysis": true,
-        "narrator_lines": [
-          "Forced to surface after the batteries die completely. The Americans circle overhead.",
-          "The crew is evacuated onto USS Beale. Humiliating, but every man walks off alive.",
-          "There will be questions in Moscow. But your crew survived. That matters."
-        ]
-      },
-      "LLW": {
-        "tier": "SURVIVE",
-        "narrator_lines": [
-          "One last miracle. A current carried B-fifty-nine into a sonar shadow.",
-          "You surface in international waters, barely afloat. The submarine may never dive again.",
-          "But the crew of B-fifty-nine is alive. Against all odds."
-        ]
-      },
-      "LLL": {
-        "tier": "FAILURE",
-        "sub_analysis": true,
-        "narrator_lines": [
-          "All systems dead. Emergency blow fires the last compressed air.",
-          "B-fifty-nine broaches the surface like a dying whale. The Americans surround her.",
-          "The submarine is towed to port. The crew is interned. The mission is over.",
-          "But you are alive. On this day, in October nineteen sixty-two, that is enough."
-        ]
-      }
+    "WWL": {
+      "tier": "SUCCESS",
+      "title": "Damaged but Free",
+      "narrator_lines": [
+        "B-fifty-nine surfaces damaged but intact, far from the American search pattern.",
+        "The batteries are dead. The air is poison. But the crew is alive.",
+        "A Soviet supply ship reaches you within thirty-six hours. You are going home."
+      ]
+    },
+    "WLW": {
+      "tier": "SUCCESS",
+      "title": "Deep Dive Recovery",
+      "narrator_lines": [
+        "A desperate deep dive beyond rated depth. The hull screamed. But it held.",
+        "B-fifty-nine escapes through a thermal layer the Americans never suspected.",
+        "Battered, exhausted, barely functional. But free. A remarkable recovery."
+      ]
+    },
+    "WLL": {
+      "tier": "SURVIVE",
+      "title": "Forced to Surface",
+      "sub_analysis": true,
+      "narrator_lines": [
+        "No choice. Emergency surface. The Americans are waiting.",
+        "USS Beale escorts B-fifty-nine to the surface. The crew emerges blinking into sunlight.",
+        "Alive, but the mission is a failure. Moscow will not be pleased."
+      ]
+    },
+    "LWW": {
+      "tier": "SUCCESS",
+      "title": "Against All Odds",
+      "narrator_lines": [
+        "From the jaws of disaster, the crew rallied. The undersea trench saved you.",
+        "B-fifty-nine limps into open water and surfaces under cover of darkness.",
+        "A legendary feat of submarine seamanship. From hopeless to free. Well done."
+      ]
+    },
+    "LWL": {
+      "tier": "SURVIVE",
+      "title": "Captured but Alive",
+      "sub_analysis": true,
+      "narrator_lines": [
+        "Forced to surface after the batteries die completely. The Americans circle overhead.",
+        "The crew is evacuated onto USS Beale. Humiliating, but every man walks off alive.",
+        "There will be questions in Moscow. But your crew survived. That matters."
+      ]
+    },
+    "LLW": {
+      "tier": "SURVIVE",
+      "title": "Last Miracle",
+      "narrator_lines": [
+        "One last miracle. A current carried B-fifty-nine into a sonar shadow.",
+        "You surface in international waters, barely afloat. The submarine may never dive again.",
+        "But the crew of B-fifty-nine is alive. Against all odds."
+      ]
+    },
+    "LLL": {
+      "tier": "FAILURE",
+      "title": "Surfaced and Seized",
+      "sub_analysis": true,
+      "narrator_lines": [
+        "All systems dead. Emergency blow fires the last compressed air.",
+        "B-fifty-nine broaches the surface like a dying whale. The Americans surround her.",
+        "The submarine is towed to port. The crew is interned. The mission is over.",
+        "But you are alive. On this day, in October nineteen sixty-two, that is enough."
+      ]
     }
   },
-
   "narrator": {
     "voice": "soviet_submarine_officer",
     "tts_engine": "local",

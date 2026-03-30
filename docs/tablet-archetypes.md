@@ -1,18 +1,17 @@
 # Tablet Archetypes — Control Loadouts & Role Definitions
 
-> **Version:** 0.1.0 (Draft)
+> **Version:** 0.2.0 (Universal Base + Specialty Elements)
 >
-> This document defines every tablet archetype in the system. Each archetype is a unique hardware build with a fixed 5-control loadout. The Hub, companion app, and Mission Architect all reference these definitions.
->
-> **See also:** [protocol.md](protocol.md) for message schemas and `ctrl` types, [game-loop.md](game-loop.md) for how commands flow during play.
+> This document defines every tablet archetype in the system. Each tablet shares a **universal control base** and carries **2 specialty elements** that define its archetype identity. The Hub, companion app, and Mission Architect all reference these definitions.
 
 ---
 
 ## Table of Contents
 
-- [Design Principles](#design-principles)
-- [Base Tablet (Shared Across All Archetypes)](#base-tablet-shared-across-all-archetypes)
-- [Archetype Summary](#archetype-summary)
+- [Design Philosophy](#design-philosophy)
+- [Universal Base](#universal-base)
+- [Specialty Element Pool](#specialty-element-pool)
+- [Element Pairing Matrix](#element-pairing-matrix)
 - [Archetype Definitions](#archetype-definitions)
   - [1. Navigator](#1-navigator)
   - [2. Engineer](#2-engineer)
@@ -22,430 +21,432 @@
   - [6. Analyst](#6-analyst)
   - [7. Scout](#7-scout)
   - [8. Commander](#8-commander)
+- [Slot Naming & OLED Labels](#slot-naming--oled-labels)
 - [Narrative Label Examples](#narrative-label-examples)
+- [Statefulness & Pre-Flight](#statefulness--pre-flight)
+- [Difficulty-Scaled Element Engagement](#difficulty-scaled-element-engagement)
+- [Command Targeting Modes](#command-targeting-modes)
 - [Pin Budget Summary](#pin-budget-summary)
-- [BOM Impact Comparison](#bom-impact-comparison)
+- [BOM Impact](#bom-impact)
 - [Scaling & Future Archetypes](#scaling--future-archetypes)
 - [Duplicate Archetype Policy](#duplicate-archetype-policy)
 
 ---
 
-## Design Principles
+## Design Philosophy
 
-### Complexity Distribution
+Every tablet shares a large **universal control base** — 3 toggle switches, 4 momentary buttons, a crisis button, and a submit button. This means every player always has plenty to do, regardless of archetype. The 7 universal slots alone generate a rich command space for easy/medium difficulty.
 
-Every archetype follows the same complexity curve:
+On top of the universal base, each tablet carries **2 specialty elements** drawn from a shared pool of 8 unique hardware elements. Each element appears on **exactly 2 archetypes** — no duplicates, no orphans. This creates:
 
-| Slot | Complexity | Description |
-|---|---|---|
-| **Slot 1** | **High** | The archetype's signature control — analog, multi-step, or precision input. Unique across all 8 archetypes. |
-| **Slot 2** | **Medium** | A dramatic or satisfying control — covered safety toggle or illuminated arcade button. |
-| **Slots 3–5** | **Simple** | Toggle switches and momentary pushbuttons. Quick binary inputs. |
+- **OPEN commands:** Specialty actions that 2 different archetypes can race to complete (first responder wins).
+- **Cross-tablet commands:** Display a specialty command on one player's screen for the other player who shares that element.
+- **Difficulty scaling:** Easy games rely heavily on the universal base; harder games increasingly engage specialty elements.
 
-**Why this structure:**
-- **Playability.** One complex control per tablet prevents overload. Players are doing frantic physical tasks under time pressure; cognitive complexity has to be metered.
-- **Scenario design.** The Mission Architect can target the signature control for high-stakes commands and use the simple controls for rapid-fire binary decisions.
-- **Manufacturing.** Slots 2–5 draw from a small shared parts pool (covered toggles, arcade buttons, standard toggles, pushbuttons). Only Slot 1 is unique per archetype.
-- **Cost.** The signature control is the cost driver. Simple slots keep BOM low.
-
-### Naming Convention
-
-Archetype names are **deliberately generic** so they map naturally across any scenario theme:
-
-| Archetype | Space | Pirate / Naval | Submarine | Fantasy |
-|---|---|---|---|---|
-| Navigator | Helmsman | Quartermaster | Helmsman | Pathfinder |
-| Engineer | Systems Chief | Ship's Carpenter | Machinist | Artificer |
-| Operator | Comms Officer | Signalman | Radio Operator | Herald |
-| Sentinel | Security Chief | Master-at-Arms | Weapons Officer | Warden |
-| Medic | Ship's Doctor | Surgeon | Corpsman | Healer |
-| Analyst | Science Officer | Cartographer | Sonar Tech | Scholar |
-| Scout | Recon Specialist | Lookout | Periscope Officer | Ranger |
-| Commander | First Officer | Bosun | Executive Officer | Marshal |
-
-The archetype name is the **base identity** (used in firmware, protocol, and identification). The scenario provides a **narrative role name** pushed to the tablet's command screen via `OLED_LABELS` and `SCREEN_TEXT`.
-
-### Identification Feedback
-
-Each archetype is assigned a unique LED color, speaker tone, and vibration pattern so players can identify their tablet at a glance across the table.
-
-| # | Archetype | LED Color | RGB | Tone | Vibe Pattern |
-|---|---|---|---|---|---|
-| 1 | Navigator | Blue | `(0, 100, 255)` | Rising arpeggio | 2 short pulses |
-| 2 | Engineer | Orange | `(255, 100, 0)` | Low power hum | 1 long pulse |
-| 3 | Operator | Green | `(0, 200, 60)` | Radio chirp | 3 quick taps |
-| 4 | Sentinel | Purple | `(140, 0, 255)` | Alert klaxon note | 2 long pulses |
-| 5 | Medic | White | `(255, 255, 255)` | Soft chime | 1 short, 1 long |
-| 6 | Analyst | Cyan | `(0, 200, 200)` | Data blip sequence | 4 rapid taps |
-| 7 | Scout | Yellow | `(255, 200, 0)` | Sonar ping | 1 short pulse |
-| 8 | Commander | Red | `(255, 0, 30)` | Authority horn blast | 3 long pulses |
-
-> **Accessibility note:** Red/green colorblindness (deuteranopia) may make Engineer (orange) and Operator (green) harder to distinguish visually. The speaker tone and vibration pattern provide redundant identification channels. The 7-segment display also shows the unique player ID number.
+The universal base ensures accessibility. The specialty elements create identity, chaos, and replayability.
 
 ---
 
-## Base Tablet (Shared Across All Archetypes)
+## Universal Base
 
-These components are present on **every** tablet regardless of archetype. They are not counted in the 5-slot loadout.
+Every tablet has the same 10 physical controls in the universal base:
 
-| Component | Interface | GPIO | Purpose |
+### Commandable Controls (7 slots)
+
+| Slot Name | Control Type | Physical Form | Action Type |
 |---|---|---|---|
-| 1× Guarded Illuminated Pushbutton (safety cover + LED momentary) | Digital input + LED output | 2 | Crisis response; flip cover and press to ready-up |
-| 1× Submit Button | Digital input | 1 | Lock in analog values |
-| 1× 7-Segment Display (TM1637) | Custom 2-wire | 2 (CLK, DIO) | Player ID, connection status |
-| 5× 1.3" I2C OLED (SSD1306/SH1106) | I2C via TCA9548A mux | 2 (shared SDA/SCL) | Per-slot narrative labels |
-| 1× Command Screen (SPI TFT, size TBD) | SPI | 4 (MOSI, SCK, CS, DC) | Commands, cross-tablet directives |
-| 1× Status RGB LED (WS2812 NeoPixel) | 1-wire data | 1 | Archetype color, alerts |
-| 1× Speaker (piezo) | PWM | 1 | Tones, jingles, alerts |
-| 1× Vibration Motor (coin, via MOSFET) | Digital output | 1 | Haptic feedback, identification |
-| **Base total** | | **~14 GPIO** | |
+| `toggle_1` | Toggle switch | **Bat** cap, color A | `SET_TOGGLE` |
+| `toggle_2` | Toggle switch | **Rocker** cap, color B | `SET_TOGGLE` |
+| `toggle_3` | Toggle switch | **Paddle** cap, color C | `SET_TOGGLE` |
+| `button_1` | Momentary button | **Round**, red | `PRESS_BUTTON` |
+| `button_2` | Momentary button | **Square**, blue | `PRESS_BUTTON` |
+| `button_3` | Momentary button | **Oval**, yellow | `PRESS_BUTTON` |
+| `button_4` | Momentary button | **Diamond**, green | `PRESS_BUTTON` |
+
+All 3 toggles and 4 buttons use **different physical shapes and colors** so the Hub can command them by appearance: "Flip the bat switch!" or "Press the blue square!"
+
+### System Controls (not scenario-commanded)
+
+| Control | Physical Form | Purpose |
+|---|---|---|
+| **Crisis Button** | Guarded illuminated mushroom button | Crisis event response, ready-up |
+| **Submit Button** | Distinct momentary (near command screen) | Lock in analog/specialty values |
 
 ---
 
-## Archetype Summary
+## Specialty Element Pool
 
-| # | ID | Name | Signature Control | Medium Control | Simple Controls | Add'l GPIO |
-|---|---|---|---|---|---|---|
-| 1 | `NAVIGATOR` | Navigator | Analog Joystick | Linear Slider (45mm) | Toggle, Toggle, Momentary Pushbutton | 8 |
-| 2 | `ENGINEER` | Engineer | Linear Slider (60mm) | Illuminated Arcade Button | Toggle, Toggle, Toggle | 6 |
-| 3 | `OPERATOR` | Operator | Rotary Encoder | Covered Safety Toggle | Toggle, Momentary, Momentary | 7 |
-| 4 | `SENTINEL` | Sentinel | NFC/RFID Scanner (RC522) | 3-Position Rotary Switch | Toggle, Toggle, Momentary | 8 |
-| 5 | `MEDIC` | Medic | Color-Match Dial | Rotary Encoder (small) | Toggle, Momentary, Momentary | 8 |
-| 6 | `ANALYST` | Analyst | 4-Button Keypad | LED Wave Dial (small) | Toggle, Toggle, Momentary | 11 |
-| 7 | `SCOUT` | Scout | LED Wave Dial | Covered Safety Toggle | Toggle, Toggle, Toggle | 6 |
-| 8 | `COMMANDER` | Commander | Multi-Position Rotary Switch (6-pos) | Illuminated Arcade Button | Toggle, Momentary, Momentary | 6 |
+8 unique hardware elements, each appearing on exactly 2 archetypes:
 
-Every archetype now has a T2-capable Slot 2 control. Each T2 action type appears on exactly two archetypes (one as Slot 1 signature, one as Slot 2 medium):
-- `SET_SLIDER`: Engineer (sig) + Navigator (med)
-- `SET_ENCODER`: Operator (sig) + Medic (med)
-- `SET_ROTARY_SW`: Commander (sig) + Sentinel (med)
-- `MATCH_WAVE`: Scout (sig) + Analyst (med)
+| # | Element | Action Type | Tier | Description |
+|---|---|---|---|---|
+| 1 | **Joystick** | `SET_JOYSTICK` | T3 | 2-axis analog joystick (ADC X/Y + click). Value: `{x, y}` range -100 to 100. |
+| 2 | **Slider / Fader** | `SET_SLIDER` | T2 | 45–60mm linear slide potentiometer. Value: 0–100 (percent). |
+| 3 | **Barrel Jack Patch Bay** | `PLUG_JACK` | T2 | 3 barrel jack ports + 3 tethered wires (RED/1kΩ, BLUE/2.2kΩ, GREEN/4.7kΩ). Each port has a 10kΩ pull-down ADC pin for resistor identification. 34 valid states total. |
+| 4 | **Rotary Encoder** | `SET_ENCODER` | T2 | Endless rotary encoder (A/B quadrature + click). Value: integer position. |
+| 5 | **Number Pad** | `ENTER_CODE` | T3 | 4-button keypad (digits 1–4). Player enters a sequence and presses Submit. Value: string (e.g., "3142"). |
+| 6 | **NFC Scanner** | `SCAN_NFC` | T3 | RC522 RFID/NFC reader (SPI). Player scans a tagged game badge/card. Value: card ID string. |
+| 7 | **Rotary Switch** | `SET_ROTARY_SW` | T2 | 6-position selector switch (ADC resistor ladder). Value: 1–6. Simpler difficulties may use only positions 1–3. |
+| 8 | **Color Dial** | `MATCH_COLOR` | T3 | Potentiometer + 2 addressable RGB LEDs (target LED + current LED). Player rotates to match the target color. Value: `[r, g, b]`. |
+
+---
+
+## Element Pairing Matrix
+
+Each element appears on exactly 2 archetypes. No two archetypes share the same pair.
+
+| Element | Archetype 1 | Archetype 2 |
+|---|---|---|
+| Joystick | **Navigator** (A) | **Scout** (A) |
+| Slider / Fader | **Navigator** (B) | **Engineer** (A) |
+| Barrel Jack Patch Bay | **Engineer** (B) | **Commander** (A) |
+| Rotary Encoder | **Operator** (A) | **Medic** (B) |
+| Number Pad | **Operator** (B) | **Analyst** (A) |
+| NFC Scanner | **Sentinel** (A) | **Commander** (B) |
+| Rotary Switch | **Sentinel** (B) | **Analyst** (B) |
+| Color Dial | **Medic** (A) | **Scout** (B) |
+
+**(A)** = `specialty_a` slot, **(B)** = `specialty_b` slot.
+
+### Archetype Summary
+
+| Archetype | Specialty A | Specialty B | Shared Elements With |
+|---|---|---|---|
+| **Navigator** | Joystick | Slider | Scout (Joy), Engineer (Slider) |
+| **Engineer** | Slider | Barrel Jacks | Navigator (Slider), Commander (Jacks) |
+| **Operator** | Rotary Encoder | Number Pad | Medic (Encoder), Analyst (NumPad) |
+| **Sentinel** | NFC Scanner | Rotary Switch | Commander (NFC), Analyst (RotSwitch) |
+| **Medic** | Color Dial | Rotary Encoder | Scout (Color), Operator (Encoder) |
+| **Analyst** | Number Pad | Rotary Switch | Operator (NumPad), Sentinel (RotSwitch) |
+| **Scout** | Joystick | Color Dial | Navigator (Joy), Medic (Color) |
+| **Commander** | Barrel Jacks | NFC Scanner | Engineer (Jacks), Sentinel (NFC) |
 
 ---
 
 ## Archetype Definitions
 
+All archetypes share the universal base (3 toggles, 4 buttons, crisis, submit). Only specialty elements differ.
+
 ### 1. Navigator
 
-> *Direction, course-plotting, precision maneuvering.*
+**Role:** Steering, flight control, thrust management.
+**Specialty A:** Joystick — 2-axis analog (`SET_JOYSTICK`)
+**Specialty B:** Slider / Fader — linear pot (`SET_SLIDER`)
 
-**Firmware ID:** `NAVIGATOR` · **LED:** Blue `(0, 100, 255)` · **Tone:** Rising arpeggio · **Vibe:** 2 short pulses
+The Navigator is the physical, kinetic role. The joystick feels like flying; the slider gives throttle control. Together with 3 toggles for thruster/system switches and 4 buttons for waypoints/confirmations, the Navigator has deep piloting gameplay.
 
-| Slot | Component | Interface | `ctrl` Type | Value Format | Notes |
-|---|---|---|---|---|---|
-| 1 | **Analog Joystick** (2-axis + click) | 2× ADC + 1 GPIO | `JOYSTICK` | `{"x": int8, "y": int8}` (−100 to 100) | Click is separate digital input; X/Y require Submit to lock in |
-| 2 | **Linear Slider** (45mm slide pot) | 1 ADC | `SLIDER` | `uint8` (0–100, percent) | Requires Submit to lock in value. Shorter than Engineer's 60mm to differentiate feel. |
-| 3 | Toggle Switch | 1 GPIO | `TOGGLE` | `bool` | |
-| 4 | Toggle Switch | 1 GPIO | `TOGGLE` | `bool` | |
-| 5 | Momentary Pushbutton | 1 GPIO | `BUTTON` | `bool` | |
-
-**Additional GPIO:** 3 ADC + 5 digital = **8 pins**
-
-**Gameplay flavor:** The Navigator handles steering and course corrections. The joystick is the star — precision aiming, course plotting, docking maneuvers. The slider controls throttle/speed — "set thrust to 70%." Toggles control auxiliary systems (thrusters, stabilizers). The pushbutton is a quick-confirm action.
+**Typical commands:** "Hard to port!", "Thrust to 70%!", "Flip the bat switch!", "Press the red button!"
 
 ---
 
 ### 2. Engineer
 
-> *Power systems, machinery, throttle control.*
+**Role:** Power management, system routing, physical connections.
+**Specialty A:** Slider / Fader — linear pot (`SET_SLIDER`)
+**Specialty B:** Barrel Jack Patch Bay — 3 ports, 3 wires (`PLUG_JACK`)
 
-**Firmware ID:** `ENGINEER` · **LED:** Orange `(255, 100, 0)` · **Tone:** Low power hum · **Vibe:** 1 long pulse
+The Engineer manages raw power levels (slider) and physically routes connections (plugging wires into ports). The barrel jacks are the most physically distinctive control in the game — pulling and plugging real cables under pressure is unforgettable.
 
-| Slot | Component | Interface | `ctrl` Type | Value Format | Notes |
-|---|---|---|---|---|---|
-| 1 | **Linear Slider** (60mm slide pot) | 1 ADC | `SLIDER` | `uint8` (0–100, percent) | Requires Submit to lock in value |
-| 2 | Illuminated Arcade Button | 2 GPIO (switch + LED) | `BUTTON` | `bool` | LED controlled by Hub via `HAPTIC` |
-| 3 | Toggle Switch | 1 GPIO | `TOGGLE` | `bool` | |
-| 4 | Toggle Switch | 1 GPIO | `TOGGLE` | `bool` | |
-| 5 | Toggle Switch | 1 GPIO | `TOGGLE` | `bool` | |
-
-**Additional GPIO:** 1 ADC + 5 digital = **6 pins**
-
-**Gameplay flavor:** The Engineer manages raw power. Slider commands are "set thrust to 60%" or "reduce reactor to 25%." The arcade button is the big dramatic action — prime the engines, dump the core, fire the boilers. Toggles control subsystems (fuel lines, cooling, ventilation).
+**Typical commands:** "Power to maximum!", "Plug the RED wire into port 2!", "Flip the rocker switch!"
 
 ---
 
 ### 3. Operator
 
-> *Signals, communication, fine-tuning.*
+**Role:** Communications, frequency tuning, code entry.
+**Specialty A:** Rotary Encoder — endless dial (`SET_ENCODER`)
+**Specialty B:** Number Pad — 4-button keypad (`ENTER_CODE`)
 
-**Firmware ID:** `OPERATOR` · **LED:** Green `(0, 200, 60)` · **Tone:** Radio chirp · **Vibe:** 3 quick taps
+The Operator tunes frequencies (encoder) and enters authorization codes (number pad). This archetype is the codebreaker — precise, methodical, and critical for cooperative commands where other players shout codes across the table.
 
-| Slot | Component | Interface | `ctrl` Type | Value Format | Notes |
-|---|---|---|---|---|---|
-| 1 | **Rotary Encoder** (infinite scroll + click) | 2 GPIO (A, B) + 1 GPIO (btn) | `ENCODER` | `int16` (absolute position) | Click-push is a separate `BUTTON` event; scroll requires Submit |
-| 2 | Covered Safety Toggle | 1 GPIO | `TOGGLE` | `bool` | |
-| 3 | Toggle Switch | 1 GPIO | `TOGGLE` | `bool` | |
-| 4 | Momentary Pushbutton | 1 GPIO | `BUTTON` | `bool` | |
-| 5 | Momentary Pushbutton | 1 GPIO | `BUTTON` | `bool` | |
-
-**Additional GPIO:** 7 digital = **7 pins**
-
-**Gameplay flavor:** The Operator tunes and adjusts. Rotary encoder commands are "tune frequency to 47" or "scroll to channel 12." The covered safety toggle is the broadcast override or emergency signal. Pushbuttons handle quick send/receive/confirm actions.
+**Typical commands:** "Tune to frequency 88!", "Enter code 3-1-4-2!", "Flip the paddle switch!"
 
 ---
 
 ### 4. Sentinel
 
-> *Security, defense, access control.*
+**Role:** Security, access control, alert levels.
+**Specialty A:** NFC Scanner — RFID reader (`SCAN_NFC`)
+**Specialty B:** Rotary Switch — 6-position selector (`SET_ROTARY_SW`)
 
-**Firmware ID:** `SENTINEL` · **LED:** Purple `(140, 0, 255)` · **Tone:** Alert klaxon note · **Vibe:** 2 long pulses
+The Sentinel controls access (scanning badges) and sets alert/security levels (rotary switch). This is the gatekeeper role — physically scanning tagged cards under time pressure adds a unique, tactile urgency.
 
-| Slot | Component | Interface | `ctrl` Type | Value Format | Notes |
-|---|---|---|---|---|---|
-| 1 | **NFC/RFID Scanner** (RC522) | SPI (shared bus) + CS + IRQ | `NFC_SCAN` | `string` (scanned card UID) | Game packs include small NFC "item cards" (clearance badges, keys) |
-| 2 | **3-Position Rotary Switch** | 1 ADC (resistor ladder) | `ROTARY_SW` | `uint8` (1–3, position) | 3 discrete positions; no Submit needed. Smaller than Commander's 6-pos. |
-| 3 | Toggle Switch | 1 GPIO | `TOGGLE` | `bool` | |
-| 4 | Toggle Switch | 1 GPIO | `TOGGLE` | `bool` | |
-| 5 | Momentary Pushbutton | 1 GPIO | `BUTTON` | `bool` | |
-
-**Additional GPIO:** 2 SPI-related + 1 ADC + 5 digital = **8 pins** (SPI bus shared with command screen)
-
-**Gameplay flavor:** The Sentinel controls access and defense. NFC commands are "scan the RED clearance badge!" — the player must find the right physical card from the set included in the game pack and tap it on the scanner. The rotary switch selects alert levels or security modes (SAFE / CAUTION / LOCKDOWN). Toggles handle bulkhead doors, shield sectors, alarm systems.
-
-**NFC Item Cards:** Each game pack can include a small set of themed NFC cards (e.g., colored clearance badges, key cards, artifact tokens). These are separate from the game-pack NFC card placed on the Hub. They add a physical "find the right card and scan it" mechanic unique to the Sentinel.
+**Typical commands:** "Scan the ALPHA badge!", "Set alert to LOCKDOWN — position 3!", "Press the green diamond!"
 
 ---
 
 ### 5. Medic
 
-> *Health, diagnostics, chemical mixing.*
+**Role:** Medical compounds, dosage control, crew health.
+**Specialty A:** Color Dial — pot + 2 RGB LEDs (`MATCH_COLOR`)
+**Specialty B:** Rotary Encoder — endless dial (`SET_ENCODER`)
 
-**Firmware ID:** `MEDIC` · **LED:** White `(255, 255, 255)` · **Tone:** Soft chime · **Vibe:** 1 short, 1 long
+The Medic matches chemical compounds by color (color dial) and dials precise dosages (encoder). The color dial is visually spectacular — two LEDs showing target vs. current color, and the player rotates to match. High skill ceiling, very satisfying.
 
-| Slot | Component | Interface | `ctrl` Type | Value Format | Notes |
-|---|---|---|---|---|---|
-| 1 | **Color-Match Dial** (pot + RGB LED) | 1 ADC + 1 GPIO (NeoPixel) | `COLOR_DIAL` | `[r, g, b]` | Pot sweeps through hues; RGB LED shows current color. Must match target, then Submit. |
-| 2 | **Rotary Encoder** (small, EC11-style) | 2 GPIO (A, B) + 1 GPIO (btn) | `ENCODER` | `int16` (absolute position) | Scroll requires Submit; click is separate. Smaller knob than Operator's. |
-| 3 | Toggle Switch | 1 GPIO | `TOGGLE` | `bool` | |
-| 4 | Momentary Pushbutton | 1 GPIO | `BUTTON` | `bool` | |
-| 5 | Momentary Pushbutton | 1 GPIO | `BUTTON` | `bool` | |
-
-**Additional GPIO:** 1 ADC + 7 digital = **8 pins**
-
-**Gameplay flavor:** The Medic mixes and administers. Color-match commands are "mix the antidote to GREEN" — the player rotates the dial until the RGB LED matches. The rotary encoder controls dosage precision — "set dosage to 150" or "dial IV drip to 80." Pushbuttons are quick diagnostic confirms; toggles control life support and quarantine.
+**Typical commands:** "Mix the BLUE stabilizer!", "Dosage to 150 — stat!", "Flip the bat switch!"
 
 ---
 
 ### 6. Analyst
 
-> *Data entry, code sequences, research.*
+**Role:** Data analysis, computations, signal processing.
+**Specialty A:** Number Pad — 4-button keypad (`ENTER_CODE`)
+**Specialty B:** Rotary Switch — 6-position selector (`SET_ROTARY_SW`)
 
-**Firmware ID:** `ANALYST` · **LED:** Cyan `(0, 200, 200)` · **Tone:** Data blip sequence · **Vibe:** 4 rapid taps
+The Analyst enters override codes (number pad) and selects analysis modes (rotary switch). This is the brainy role — under pressure, punching in codes correctly while selecting the right mode channel demands focus.
 
-| Slot | Component | Interface | `ctrl` Type | Value Format | Notes |
-|---|---|---|---|---|---|
-| 1 | **4-Button Keypad** (labeled 1–4) | 4 GPIO | `KEYPAD` | `string` (e.g., `"4231"`) | Player enters multi-digit codes. Submit locks in the sequence. |
-| 2 | **LED Wave Dial** (small pot + 4-LED bar) | 1 ADC + 1 GPIO (NeoPixel data) | `WAVE_DIAL` | `uint8` (0–255 position) | Smaller than Scout's ring; 4-LED bar shows position. Must match target, then Submit. |
-| 3 | Toggle Switch | 1 GPIO | `TOGGLE` | `bool` | |
-| 4 | Toggle Switch | 1 GPIO | `TOGGLE` | `bool` | |
-| 5 | Momentary Pushbutton | 1 GPIO | `BUTTON` | `bool` | |
-
-**Additional GPIO:** 1 ADC + 10 digital = **11 pins**
-
-**Gameplay flavor:** The Analyst handles data and codes. Keypad commands are "enter code 3-1-4-2" or "input sequence: 2-2-4-1." The wave dial tunes data frequencies or calibrates sensors — "tune signal to 180" or "set waveform to 60." Toggles manage data feeds and processing modes.
+**Typical commands:** "Enter trajectory code 4-5-1-9!", "Set to analysis mode 4!", "Press the blue square!"
 
 ---
 
 ### 7. Scout
 
-> *Reconnaissance, signal tracking, detection.*
+**Role:** Reconnaissance, sensor sweeps, stealth operations.
+**Specialty A:** Joystick — 2-axis analog (`SET_JOYSTICK`)
+**Specialty B:** Color Dial — pot + 2 RGB LEDs (`MATCH_COLOR`)
 
-**Firmware ID:** `SCOUT` · **LED:** Yellow `(255, 200, 0)` · **Tone:** Sonar ping · **Vibe:** 1 short pulse
+The Scout physically aims sensors (joystick) and matches signal colors for target identification (color dial). This archetype shares the joystick with Navigator and the color dial with Medic — creating OPEN command opportunities for both elements.
 
-| Slot | Component | Interface | `ctrl` Type | Value Format | Notes |
-|---|---|---|---|---|---|
-| 1 | **LED Wave Dial** (pot + NeoPixel ring) | 1 ADC + 1 GPIO (NeoPixel data) | `WAVE_DIAL` | `uint8` (0–255 position) | Potentiometer sweeps position; NeoPixel ring shows sweep point. Must match target, then Submit. |
-| 2 | Covered Safety Toggle | 1 GPIO | `TOGGLE` | `bool` | |
-| 3 | Toggle Switch | 1 GPIO | `TOGGLE` | `bool` | |
-| 4 | Toggle Switch | 1 GPIO | `TOGGLE` | `bool` | |
-| 5 | Toggle Switch | 1 GPIO | `TOGGLE` | `bool` | |
-
-**Additional GPIO:** 1 ADC + 5 digital = **6 pins**
-
-**Gameplay flavor:** The Scout tracks and detects. Wave dial commands are "tune scanner to position 180" or "lock tracking signal at 75%." The NeoPixel ring provides satisfying visual feedback as the player sweeps. The covered toggle is stealth mode / active scan override. Toggles control scan sectors and detection filters.
+**Typical commands:** "Sweep sensors to bearing 120!", "Match the target signal — GREEN!", "Flip the paddle switch!"
 
 ---
 
 ### 8. Commander
 
-> *Authority, mode selection, critical decisions.*
+**Role:** Authority, routing, overrides, mission-critical decisions.
+**Specialty A:** Barrel Jack Patch Bay — 3 ports, 3 wires (`PLUG_JACK`)
+**Specialty B:** NFC Scanner — RFID reader (`SCAN_NFC`)
 
-**Firmware ID:** `COMMANDER` · **LED:** Red `(255, 0, 30)` · **Tone:** Authority horn blast · **Vibe:** 3 long pulses
+The Commander physically routes ship systems (barrel jacks) and authorizes critical actions (NFC scan). This is the authority role — plugging in the right cables and scanning override badges under crisis pressure. Shares barrel jacks with Engineer and NFC with Sentinel.
 
-| Slot | Component | Interface | `ctrl` Type | Value Format | Notes |
-|---|---|---|---|---|---|
-| 1 | **Multi-Position Rotary Switch** (6-pos) | 1 ADC (resistor ladder) | `ROTARY_SW` | `uint8` (1–6, position) | Chunky selector knob. Hub commands "set to position 4." No Submit needed — position is discrete. |
-| 2 | Illuminated Arcade Button | 2 GPIO (switch + LED) | `BUTTON` | `bool` | |
-| 3 | Toggle Switch | 1 GPIO | `TOGGLE` | `bool` | |
-| 4 | Momentary Pushbutton | 1 GPIO | `BUTTON` | `bool` | |
-| 5 | Momentary Pushbutton | 1 GPIO | `BUTTON` | `bool` | |
+**Typical commands:** "Plug the BLUE wire into port 1!", "Scan the OMEGA override badge!", "Press the red button!"
 
-**Additional GPIO:** 1 ADC + 5 digital = **6 pins**
+---
 
-**Gameplay flavor:** The Commander selects modes and authorizes. Rotary switch commands are "set to BATTLE STATIONS" or "switch to position 3." The arcade button is the big authority action — launch, authorize, override. Toggles and pushbuttons handle quick tactical decisions (fire control, alert levels, comms channels).
+## Slot Naming & OLED Labels
+
+Each tablet has **9 OLED displays** — one per commandable slot — showing narrative labels pushed by the Hub when a scenario loads.
+
+| Slot | OLED Display Position | Universal / Specialty |
+|---|---|---|
+| `toggle_1` | Above bat toggle | Universal |
+| `toggle_2` | Above rocker toggle | Universal |
+| `toggle_3` | Above paddle toggle | Universal |
+| `button_1` | Above round red button | Universal |
+| `button_2` | Above square blue button | Universal |
+| `button_3` | Above oval yellow button | Universal |
+| `button_4` | Above diamond green button | Universal |
+| `specialty_a` | Adjacent to specialty element A | Specialty |
+| `specialty_b` | Adjacent to specialty element B | Specialty |
+
+The Hub pushes 9 labels per tablet via `OLED_LABELS` when a scenario loads. Labels are max 16 characters. The same physical toggle becomes "Port Thruster" in one scenario and "East Gate" in another.
 
 ---
 
 ## Narrative Label Examples
 
-The same physical controls get relabeled per scenario via Hub-pushed `OLED_LABELS`. Here are examples across three themes:
+### Station Omega (Space Theme)
 
-### Navigator
+| Archetype | toggle_1 | toggle_2 | toggle_3 | button_1 | button_2 | button_3 | button_4 | specialty_a | specialty_b |
+|---|---|---|---|---|---|---|---|---|---|
+| NAVIGATOR | Port Thruster | Stbd Thruster | Drift Brake | Mark Waypoint | Flare Launch | Sensor Ping | Dock Clamp | Helm Control | Thrust Lever |
+| ENGINEER | Reactor | Coolant Valve | Fuel Dump | Emergency Vent | Purge Line | System Reset | Aux Power | Power Grid | Patch Bay |
+| OPERATOR | Distress Beacon | Short-Range | Long-Range | Hail Vessel | Alert Broadcast | Jam Signal | Clear Channel | Frequency Dial | Auth Code |
+| SENTINEL | Bulkhead Lock | Airlock Ctrl | Laser Grid | Alarm Bell | Badge Override | Deck Scan | Evac Signal | Access Badge | Alert Level |
 
-| Slot | Control | Space Theme | Pirate Theme | Submarine Theme |
-|---|---|---|---|---|
-| 1 | Joystick | Helm Control | Ship's Wheel | Diving Planes |
-| 2 | Slider | Thrust Level | Sail Trim | Speed Ahead |
-| 3 | Toggle | Port Thruster | Port Sail | Left Rudder |
-| 4 | Toggle | Starboard Thruster | Starboard Sail | Right Rudder |
-| 5 | Pushbutton | Plot Course | Mark Position | Ping Sonar |
+### The Crimson Galleon (Pirate Theme)
 
-### Engineer
+| Archetype | toggle_1 | toggle_2 | toggle_3 | button_1 | button_2 | button_3 | button_4 | specialty_a | specialty_b |
+|---|---|---|---|---|---|---|---|---|---|
+| NAVIGATOR | Port Sail | Stbd Sail | Anchor | Bearing Mark | Signal Flare | Depth Ping | Grapple Hook | Helm | Sail Trim |
+| ENGINEER | Bilge Pump | Cannon Port | Chain Hoist | Ram Brace | Keel Brace | Hull Patch | Powder Load | Steam Valve | Rigging Bay |
 
-| Slot | Control | Space Theme | Pirate Theme | Submarine Theme |
-|---|---|---|---|---|
-| 1 | Slider | Reactor Output | Sail Hoist | Propulsion |
-| 2 | Arcade Button | Engage FTL | Fire Cannons | Launch Torpedo |
-| 3 | Toggle | Coolant Flow | Bilge Pump | Ballast Valve A |
-| 4 | Toggle | Fuel Routing | Cargo Hatch | Ballast Valve B |
-| 5 | Toggle | Ventilation | Gunport Doors | Air Recirculation |
+---
 
-### Sentinel
+## Statefulness & Pre-Flight
 
-| Slot | Control | Space Theme | Pirate Theme | Submarine Theme |
-|---|---|---|---|---|
-| 1 | NFC Scanner | ID Badge Scanner | Captain's Seal | Access Card Reader |
-| 2 | Rotary Switch | Alert Level | Battle Stance | Threat Level |
-| 3 | Toggle | Shield Sector A | Armor Plating | Torpedo Tube 1 |
-| 4 | Toggle | Shield Sector B | Boarding Nets | Torpedo Tube 2 |
-| 5 | Pushbutton | Sound Alarm | Ring Bell | Collision Alarm |
+### Stateful Controls
 
-### Medic
+Some controls maintain persistent state between commands:
 
-| Slot | Control | Space Theme | Pirate Theme | Submarine Theme |
-|---|---|---|---|---|
-| 1 | Color Dial | Mix Antidote | Brew Tonic | Mix O₂ Blend |
-| 2 | Encoder | Dosage Dial | Tonic Strength | IV Drip Rate |
-| 3 | Toggle | Medbay Power | Sickbay Lantern | Infirmary Light |
-| 4 | Pushbutton | Run Diagnostic | Check Pulse | Read Vitals |
-| 5 | Pushbutton | Request Supplies | Call for Rum | Request Blood Bank |
+| Category | Controls | State Model |
+|---|---|---|
+| **Binary stateful** | Toggles, barrel jack ports | ON/OFF per switch/port. Hub tracks state; won't command "turn ON" if already ON. |
+| **Continuous stateful** | Slider, encoder, color dial | Position value persists. Hub tracks approximate state for valid command generation. |
+| **Discrete stateful** | Rotary switch | Position 1–6. Hub tracks current position. |
+| **Momentary (stateless)** | Buttons, number pad, NFC scanner | Fire-and-forget. No state tracking needed. |
 
-### Commander
+Scenario command pools **must** provide both ON and OFF variants for every toggle command, and multiple target values for continuous/discrete controls. The validator enforces this.
 
-| Slot | Control | Space Theme | Pirate Theme | Submarine Theme |
-|---|---|---|---|---|
-| 1 | Rotary Switch | Alert Level | Fleet Formation | Depth Setting |
-| 2 | Arcade Button | Authorize Launch | Give the Order | Authorize Dive |
-| 3 | Toggle | Comms Channel | Flag Signals | Silent Running |
-| 4 | Pushbutton | All Hands | Bosun's Whistle | General Quarters |
-| 5 | Pushbutton | Captain's Log | Ship's Log | Record Entry |
+### Pre-Flight Initialization
 
-*(Operator, Analyst, and Scout follow the same pattern — the Hub relabels every slot per theme.)*
+At game start, before the first frantic phase, the Hub runs a **pre-flight sequence** that:
+
+1. **Establishes known state.** Hub sends initialization commands ("Flip the bat switch ON!", "Set slider to 50%") that double as crew onboarding.
+2. **Introduces controls narratively.** "Navigator, warm up your helm control. Set thrust to fifty percent." — blends tutorial with story.
+3. **Syncs the Hub's state table.** Tablets report their actual state; Hub reconciles.
+4. **Handles negligent players.** Hub encourages players who haven't completed pre-flight ("Look alive, Navigator!") but doesn't block others from proceeding.
+
+The pre-flight phase is defined in each scenario's phase list as a `PREFLIGHT` phase with initialization commands per role.
+
+---
+
+## Difficulty-Scaled Element Engagement
+
+The Hub varies how much it relies on specialty elements vs. the universal base depending on difficulty:
+
+| Difficulty | Universal Base | Specialty Elements | Specialty Feedback |
+|---|---|---|---|
+| **Easy** | 80–90% of commands | 10–20% of commands | Element lights up + OLED hint shows exact target |
+| **Medium** | 60–70% of commands | 30–40% of commands | OLED shows target value only (no element lighting) |
+| **Hard** | 40–50% of commands | 50–60% of commands | Brief flash on element, then dark. Memory test. |
+| **Extreme** | 30–40% of commands | 60–70% of commands | Cross-tablet: command appears on *another* player's screen |
+
+**Exception — Joystick:** Skips "brief flash then dark" on Hard. Instead, Hard uses the same OLED-only feedback as Medium (shows target position + current position). The joystick's 2-axis nature makes pure memory impractical and unfun.
+
+**Exception — Barrel Jacks on Extreme:** Does NOT cycle through all combinations. Instead uses single-wire placement: "Plug the GREEN wire into port 3!" — only 2 legitimate port options for simpler decision-making under extreme pressure.
+
+---
+
+## Command Targeting Modes
+
+### TARGETED (Default)
+
+Command targets a specific archetype. Only that player can execute it.
+
+```json
+{ "target_arch": "NAVIGATOR", "action": "SET_SLIDER", "slot": "specialty_b", ... }
+```
+
+### OPEN
+
+Command targets `"ANY"` — any archetype that has the required element can respond. The first correct responder wins. All other tablets that were also eligible receive a **cooperative green flash** (not a "too late" dismissal — this feels positive, not punishing).
+
+```json
+{ "target": "ANY", "action": "SET_JOYSTICK", ... }
+```
+
+For `SET_JOYSTICK` OPEN commands, both Navigator and Scout can answer. The Hub auto-resolves the slot from each tablet's capability matrix. OPEN commands increase engagement on harder difficulties.
+
+### COOP (Cross-Tablet)
+
+Command appears on one player's screen but targets another player's controls. The display player must shout the instruction across the table.
+
+```json
+{ "display_on": "COMMANDER", "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", ... }
+```
 
 ---
 
 ## Pin Budget Summary
 
-| Component | GPIO Used | Notes |
+### Per-Tablet GPIO Allocation (ESP32-S3-WROOM-1-N16R8)
+
+| Subsystem | Pins | Notes |
 |---|---|---|
-| **Base tablet** | ~14 | Shared across all archetypes (see [Base Tablet](#base-tablet-shared-across-all-archetypes)) |
-| **Archetype controls** | 6–9 | Varies by archetype (see summary table) |
-| **Total per tablet** | **20–23** | |
-| **ESP32-S3 available** | ~36 | Plenty of headroom |
+| **I2C bus** (shared) | 2 | SDA + SCL for 9 OLEDs (muxed via TCA9548A) + command screen |
+| **TCA9548A mux** | 1 | Reset pin (optional) |
+| **Toggle switches ×3** | 3 | Digital input with pull-up |
+| **Momentary buttons ×4** | 4 | Digital input with pull-up |
+| **Crisis button** | 1 | Digital input |
+| **Submit button** | 1 | Digital input |
+| **Status RGB LED** | 1 | WS2812B data line |
+| **Speaker** | 1 | PWM or I2S |
+| **Vibration motor** | 1 | MOSFET-driven GPIO |
+| **7-segment display** | 0 | On I2C bus (HT16K33) |
+| **Battery ADC** | 1 | Voltage divider |
+| **Subtotal (universal)** | **16** | |
+| **Specialty A** | 1–4 | Varies by element (see below) |
+| **Specialty B** | 1–4 | Varies by element |
+| **Total** | **18–24** | Well within ESP32-S3 GPIO budget |
 
-### Per-Archetype Breakdown
+### Specialty Element Pin Costs
 
-| Archetype | ADC Pins | Digital GPIO | Total Added | Notes |
-|---|---|---|---|---|
-| Navigator | 3 (joystick X, Y + slider) | 5 | 8 | Joystick button is digital; slider = T2 throttle |
-| Engineer | 1 (slider) | 5 | 6 | Arcade button LED is output |
-| Operator | 0 | 7 | 7 | Encoder A, B, button = 3 |
-| Sentinel | 1 (rotary switch ladder) | 7 | 8 | NFC shares SPI bus; 3-pos rotary via ADC |
-| Medic | 1 (pot) | 7 | 8 | NeoPixel for RGB LED; encoder A, B, btn = 3 |
-| Analyst | 1 (wave dial pot) | 10 | 11 | 4 keypad + wave dial (ADC + NeoPixel) + 2 toggles + 1 button |
-| Scout | 1 (pot) | 5 | 6 | NeoPixel for LED ring |
-| Commander | 1 (resistor ladder) | 5 | 6 | 6-pos switch via single ADC |
-
-All archetypes fit comfortably within the ESP32-S3 GPIO budget.
+| Element | GPIO Pins | Notes |
+|---|---|---|
+| Joystick | 3 | X ADC + Y ADC + click digital |
+| Slider | 1 | ADC |
+| Barrel Jack Patch Bay | 3 | 3× ADC (one per port, resistor ID) |
+| Rotary Encoder | 2 | A + B (click optional, shared with button) |
+| Number Pad | 4 | 4× digital input (matrix or direct) |
+| NFC Scanner | 4 | SPI (MOSI, MISO, SCK, CS) |
+| Rotary Switch | 1 | ADC (resistor ladder) |
+| Color Dial | 2 | ADC (pot) + data (WS2812B × 2 RGB LEDs) |
 
 ---
 
-## BOM Impact Comparison
+## BOM Impact
 
-Relative cost impact of each archetype's signature control versus the base tablet. Prices are rough estimates at 1,000+ unit volume.
+### Universal Base Cost (every tablet)
 
-| Archetype | Signature Component | Est. Unit Cost | Note |
+| Component | Qty | Unit Cost | Extended |
 |---|---|---|---|
-| Navigator | Analog Joystick (PSP/thumbstick style) | ~$0.80 | Common, cheap |
-| Engineer | 60mm Slide Potentiometer | ~$0.50 | Very common |
-| Operator | Rotary Encoder (EC11-style) | ~$0.40 | Cheapest signature |
-| Sentinel | RC522 NFC Module | ~$1.50 | Most expensive; adds NFC item-card gameplay |
-| Medic | 10K Pot + WS2812 RGB LED | ~$0.60 | |
-| Analyst | 4× tactile buttons + caps | ~$0.30 | Cheapest build |
-| Scout | 10K Pot + NeoPixel Ring (8-LED) | ~$1.20 | Ring is the cost driver |
-| Commander | 6-Position Rotary Switch | ~$0.70 | |
+| Toggle switches (bat/rocker/paddle) | 3 | $0.35 | $1.05 |
+| Momentary buttons (shaped, colored) | 4 | $0.25 | $1.00 |
+| Crisis button (guarded illuminated) | 1 | $1.20 | $1.20 |
+| Submit button | 1 | $0.15 | $0.15 |
+| SSD1306 OLED 0.96" | 9 | $1.10 | $9.90 |
+| TCA9548A I2C mux | 2 | $0.60 | $1.20 |
+| Command screen (SSD1306 1.3" or ST7789 1.54") | 1 | $2.50 | $2.50 |
+| ESP32-S3-WROOM-1 | 1 | $3.00 | $3.00 |
+| **Universal subtotal** | | | **~$20.00** |
 
-**Shared medium-tier components (per tablet):**
+### Specialty Element Costs (2 per tablet)
 
-| Component | Est. Unit Cost | Notes |
+| Element | Unit Cost | Notes |
 |---|---|---|
-| Covered Safety Toggle | ~$0.60 | Operator, Scout |
-| Illuminated Arcade Button | ~$0.80 | Engineer, Commander |
-| Linear Slider (45mm) | ~$0.40 | Navigator Slot 2 |
-| 3-Position Rotary Switch | ~$0.50 | Sentinel Slot 2 |
-| Rotary Encoder (EC11) | ~$0.40 | Medic Slot 2 |
-| LED Wave Dial (4-LED bar) | ~$0.80 | Analyst Slot 2 |
-| Standard Toggle Switch | ~$0.20 | |
-| Momentary Pushbutton | ~$0.10 | |
+| Joystick | $0.80 | PS2-style thumb joystick |
+| Slider / Fader | $0.60 | 45mm linear pot |
+| Barrel Jack Patch Bay | $1.50 | 3× panel-mount jacks + 3× tethered plugs + resistors |
+| Rotary Encoder | $0.50 | EC11-style with knob |
+| Number Pad | $0.80 | 4× tactile buttons + mounting |
+| NFC Scanner | $1.80 | RC522 module (SPI) |
+| Rotary Switch | $0.70 | 6-position + resistor ladder |
+| Color Dial | $1.00 | Pot + 2× WS2812B LEDs |
 
-**Archetype control BOM range:** ~$2.00–$4.50 per tablet on top of the base PCB cost.
+Average specialty pair: ~$1.80. Total tablet COGS: ~$22–24 depending on archetype.
 
 ---
 
 ## Scaling & Future Archetypes
 
-### Current: 8 Archetypes = 8 Players Max
+### Starter Pack (Core 4)
 
-With 8 unique archetypes (one of each), the system supports the full 8-player cap. A **starter pack (4 tablets)** could ship with a curated selection:
+A minimum-viable product ships with 1 Hub + 4 tablets:
 
-| Pack | Included Archetypes | Rationale |
+| Tablet | Specialty A | Specialty B |
 |---|---|---|
-| **Core 4** | Navigator, Engineer, Operator, Sentinel | Covers steering, power, comms, defense — the essential crew |
-| **Expansion 4** | Medic, Analyst, Scout, Commander | Adds depth and new mechanics (color matching, NFC items, data entry, authority) |
+| Navigator | Joystick | Slider |
+| Engineer | Slider | Barrel Jacks |
+| Operator | Rotary Encoder | Number Pad |
+| Sentinel | NFC Scanner | Rotary Switch |
 
-### Adding More Archetypes (V2+)
+These 4 cover 6 of the 8 specialty elements (missing: Color Dial, Barrel Jacks duplicate coverage). All 4 have strong thematic identity and distinct physical feel.
 
-New archetypes can be added by:
-1. Designing a new signature control not already in use.
-2. Assigning a new firmware ID, LED color, tone, and vibe pattern.
-3. Adding the `ctrl` type to [protocol.md](protocol.md).
-4. Building scenario command maps that target the new control.
+### Expansion Pack (4 more)
 
-**Possible future signature controls:**
-- Membrane keypad (full 0–9 + symbols)
-- Touch strip / capacitive slider
-- Pressure sensor (squeeze strength)
-- Tilt/accelerometer (physical tilting)
-- Multi-axis gimbal
+| Tablet | Specialty A | Specialty B |
+|---|---|---|
+| Medic | Color Dial | Rotary Encoder |
+| Analyst | Number Pad | Rotary Switch |
+| Scout | Joystick | Color Dial |
+| Commander | Barrel Jacks | NFC Scanner |
 
-**Constraint:** The Hub's command-dispatching logic scales linearly with archetype count. Scenarios need command maps for each archetype present, but can mark archetypes as "optional" — the Hub only dispatches commands to archetypes that actually connected.
+Completing the full 8 ensures every element appears on exactly 2 tablets, enabling the full OPEN command and cross-tablet mechanics.
+
+### V2: New Elements
+
+Future hardware revisions could add elements to the pool (e.g., a membrane pressure sensor, a tilt/accelerometer, a mini trackball). New elements would be paired onto a new pair of archetypes, or a "V2" variant of existing archetypes.
 
 ---
 
 ## Duplicate Archetype Policy
 
-### V1: One of Each
+**V1: No duplicates.** The Hub rejects a `JOIN_REQ` if that archetype is already connected (`JOIN_DENY` reason: `ARCH_TAKEN`). Each archetype may appear at most once per session. Scenarios assume unique archetypes.
 
-In V1 firmware, each archetype may appear **only once** per session. If a second Navigator tries to join, the Hub responds with `JOIN_DENY` (reason: `ARCH_TAKEN`).
-
-**Rationale:** Simplifies command dispatching. "Navigator, set heading to 270" is unambiguous when there's only one Navigator.
-
-### Future: Allow Duplicates
-
-For larger events or team-based modes, future firmware could allow duplicate archetypes with disambiguation:
+**Future:** For larger events or team-based modes, firmware could allow duplicate archetypes with disambiguation:
 - Hub assigns sub-IDs: "Navigator 1" and "Navigator 2".
-- Commands would target by player ID (already supported in protocol) rather than by archetype name alone.
-- The scenario narrator would say "Player 3, set heading to 270!" using the player number instead of role name.
+- Commands target by player ID (already supported in protocol) rather than by archetype alone.
+- Narrator says "Player 3, set heading to 270!" using the player number instead of role name.
 
-This requires no protocol changes — `COMMAND` already targets by `player_id`. Only the scenario's command voice lines and display text need to accommodate numbered players.
+This requires no protocol changes — `COMMAND` already targets by `player_id`. Only scenario voice lines and display text need to accommodate numbered players.

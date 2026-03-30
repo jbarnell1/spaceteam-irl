@@ -1,6 +1,6 @@
 # ESP-NOW Protocol Specification
 
-> **Version:** 0.1.0 (Draft)
+> **Version:** 0.2.0 (Draft)
 >
 > This document is the single source of truth for all communication between the Central Hub and Player Tablets. All firmware implementations must conform to this spec.
 >
@@ -179,7 +179,7 @@ Tablet broadcasts a join request after boot. Sent repeatedly (every 1s) until ac
 
 | Field | Type | Description |
 |---|---|---|
-| `arch` | `string` | Archetype ID: `NAVIGATOR`, `ENGINEER`, `SHIELD_TECH`, `COMM_SPEC` |
+| `arch` | `string` | Archetype ID: `NAVIGATOR`, `ENGINEER`, `OPERATOR`, `SENTINEL`, `MEDIC`, `ANALYST`, `SCOUT`, `COMMANDER` |
 | `fw` | `string` | Firmware version (semver) |
 | `mac` | `string` | Tablet's MAC address (for Hub peer table) |
 | `sid` | `string` | Session ID (empty on first join; set to paired Hub's SID on reconnect attempts) |
@@ -334,25 +334,29 @@ Player lifts crisis button cover (cancels ready).
 
 #### `OLED_LABELS` — Hub → Tablet
 
-Hub pushes narrative labels to a tablet's 5 OLED displays. Sent once when scenario loads, and potentially mid-game if labels change.
+Hub pushes narrative labels to a tablet's 9 OLED displays (7 universal + 2 specialty). Sent once when scenario loads, and potentially mid-game if labels change.
 
 ```json
 {
   "type": "OLED_LABELS",
   "target": 1,
   "labels": [
-    "Main Thruster",
-    "Navigation Stick",
-    "Shield Power",
-    "Comms Relay",
-    "Warp Toggle"
+    "Port Thruster",
+    "Stbd Thruster",
+    "Drift Brake",
+    "Mark Waypoint",
+    "Flare Launch",
+    "Sensor Ping",
+    "Dock Clamp",
+    "Helm Control",
+    "Thrust Lever"
   ]
 }
 ```
 
 | Field | Type | Description |
 |---|---|---|
-| `labels` | `string[5]` | Display text for each of the 5 OLED slots, ordered by slot index |
+| `labels` | `string[9]` | Display text for each OLED, ordered: toggle_1, toggle_2, toggle_3, button_1–4, specialty_a, specialty_b |
 
 ---
 
@@ -408,7 +412,7 @@ The core gameplay message. Pushes a command to a tablet's command screen.
   "target": 2,
   "cmd_id": "cmd_0042",
   "action": "SET_SLIDER",
-  "slot": 1,
+  "slot": "specialty_a",
   "value": 75,
   "label": "Set thrust to 75%",
   "timeout": 8000,
@@ -420,27 +424,26 @@ The core gameplay message. Pushes a command to a tablet's command screen.
 |---|---|---|
 | `cmd_id` | `string` | Unique command instance ID (for matching responses) |
 | `action` | `string` | Control action type (see [Action Types](#action-types) below) |
-| `slot` | `uint8` | Which control slot (1–5) the action targets, if applicable |
+| `slot` | `string` | Slot name: `toggle_1`–`toggle_3`, `button_1`–`button_4`, `specialty_a`, `specialty_b` |
 | `value` | varies | Target value (depends on action type) |
 | `label` | `string` | Human-readable text to display on command screen |
 | `timeout` | `uint16` | Milliseconds until command expires (0 = no timeout) |
-| `mode` | `string` | `DIRECT` (for this player) or `COOP` (shout to another player) |
+| `mode` | `string` | `DIRECT` (for this player), `COOP` (shout to another player), or `OPEN` (first correct responder wins) |
 
 ##### Action Types
 
 | `action` | Expected input | `value` format |
 |---|---|---|
 | `SET_TOGGLE` | Flip a toggle switch | `bool` (true/false) |
-| `SET_SLIDER` | Move slider to position | `uint8` (0–100 percent) |
-| `SET_DIAL` | Rotate potentiometer to value | `uint8` (0–255) |
-| `SET_JOYSTICK` | Move joystick to position | `{"x": int8, "y": int8}` (-100 to 100 per axis) |
 | `PRESS_BUTTON` | Press a specific button | `null` (just press it) |
-| `ENTER_CODE` | Type a code on button matrix | `string` (e.g., `"4231"`) |
+| `SET_SLIDER` | Move slider to position | `uint8` (0–100 percent) |
 | `SET_ENCODER` | Scroll encoder to value | `int16` (target position) |
-| `SCAN_NFC` | Scan an NFC card (Sentinel) | `string` (expected card ID) |
-| `MATCH_COLOR` | Match RGB dial to target | `[r,g,b]` |
-| `MATCH_WAVE` | Match LED wave dial to target | `uint8` (0–255 position) |
 | `SET_ROTARY_SW` | Turn rotary switch to position | `uint8` (1–6, discrete position) |
+| `PLUG_JACK` | Plug barrel jack wires into ports | `{"port": uint8, "wire": string}` |
+| `SET_JOYSTICK` | Move joystick to position | `{"x": int8, "y": int8}` (-100 to 100 per axis) |
+| `MATCH_COLOR` | Match RGB dial to target | `[r,g,b]` |
+| `ENTER_CODE` | Type a code on number pad | `string` (e.g., `"4231"`) |
+| `SCAN_NFC` | Scan an NFC card (Sentinel/Commander) | `string` (expected card ID) |
 | `CRISIS_BTN` | Press the crisis button | `null` |
 
 ---
@@ -571,6 +574,7 @@ Transitions the game to a new phase.
 | `phase` values | Description |
 |---|---|
 | `INTRO` | Narrative introduction, scene-setting |
+| `PREFLIGHT` | Pre-flight systems check — crew onboarding |
 | `FRANTIC` | Active gameplay — commands firing |
 | `WRAPUP` | Debrief, scores, educational content |
 
@@ -635,7 +639,7 @@ The primary input message. Sent on any control state change.
   "type": "STATE",
   "id": 2,
   "ts": 52340,
-  "slot": 1,
+  "slot": "specialty_a",
   "ctrl": "SLIDER",
   "val": 75
 }
@@ -643,7 +647,7 @@ The primary input message. Sent on any control state change.
 
 | Field | Type | Description |
 |---|---|---|
-| `slot` | `uint8` | Which control slot changed (1–5) |
+| `slot` | `string` | Which control slot changed (`toggle_1`–`toggle_3`, `button_1`–`button_4`, `specialty_a`, `specialty_b`) |
 | `ctrl` | `string` | Control type (see below) |
 | `val` | varies | New value |
 
@@ -652,16 +656,15 @@ The primary input message. Sent on any control state change.
 | `ctrl` | `val` type | Notes |
 |---|---|---|
 | `TOGGLE` | `bool` | true = on, false = off |
-| `SLIDER` | `uint8` | 0–100 (percent) |
-| `DIAL` | `uint8` | 0–255 (raw ADC mapped) |
-| `JOYSTICK` | `{"x": int8, "y": int8}` | -100 to 100 per axis |
 | `BUTTON` | `bool` | true = pressed, false = released |
+| `SLIDER` | `uint8` | 0–100 (percent) |
 | `ENCODER` | `int16` | Absolute position or delta (TBD) |
-| `NFC_SCAN` | `string` | Scanned card ID |
-| `COLOR_DIAL` | `[r,g,b]` | Current matched color |
-| `WAVE_DIAL` | `uint8` | 0–255 position |
-| `KEYPAD` | `string` | Entered sequence (e.g., `"4231"`) |
 | `ROTARY_SW` | `uint8` | 1–6 (discrete position) |
+| `PATCH_BAY` | `[uint8, uint8, uint8]` | Wire ID per port (0 = empty), e.g., `[1, 3, 0]` |
+| `JOYSTICK` | `{"x": int8, "y": int8}` | -100 to 100 per axis |
+| `COLOR_DIAL` | `[r,g,b]` | Current matched color |
+| `KEYPAD` | `string` | Entered sequence (e.g., `"4231"`) |
+| `NFC_SCAN` | `string` | Scanned card ID |
 
 ---
 
@@ -675,7 +678,7 @@ Player presses the Submit button to lock in a value (prevents spam on analog con
   "id": 2,
   "ts": 52890,
   "cmd_id": "cmd_0042",
-  "slot": 1,
+  "slot": "specialty_a",
   "ctrl": "SLIDER",
   "val": 75
 }
@@ -998,9 +1001,9 @@ An unrecognized NFC card was placed.
 ### Hub States
 
 ```
-IDLE → PAIRING → LOBBY → COUNTDOWN → GAME_INTRO → GAME_FRANTIC → GAME_WRAPUP → SCORE → LOBBY
-                   ↑                                                                     │
-                   └─────────────────────────────────────────────────────────────────────────┘
+IDLE → PAIRING → LOBBY → COUNTDOWN → GAME_INTRO → GAME_PREFLIGHT → GAME_FRANTIC → GAME_WRAPUP → SCORE → LOBBY
+                   ↑                                                                                       │
+                   └───────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 | State | Description | Transitions |
@@ -1009,7 +1012,8 @@ IDLE → PAIRING → LOBBY → COUNTDOWN → GAME_INTRO → GAME_FRANTIC → GAM
 | `PAIRING` | Accepting tablet connections | → `LOBBY` (at least 1 tablet joined) |
 | `LOBBY` | Players joining, readying, NFC card placed | → `COUNTDOWN` (all ready + NFC present) |
 | `COUNTDOWN` | 3-2-1 countdown | → `GAME_INTRO` |
-| `GAME_INTRO` | Narration / scene-setting phase | → `GAME_FRANTIC` |
+| `GAME_INTRO` | Narration / scene-setting phase | → `GAME_PREFLIGHT` |
+| `GAME_PREFLIGHT` | Pre-flight systems check (crew onboarding) | → `GAME_FRANTIC` |
 | `GAME_FRANTIC` | Active command phase | → `GAME_WRAPUP` (timer) or `SCORE` (health=0) |
 | `GAME_WRAPUP` | Debrief / educational phase | → `SCORE` |
 | `SCORE` | Post-game summary | → `LOBBY` |
@@ -1077,7 +1081,7 @@ ESP-NOW max: **250 bytes**. JSON with short keys keeps us well under budget.
 | `STATE` | ~55 bytes | Per control change |
 | `SUBMIT` | ~70 bytes | Includes cmd_id |
 | `COMMAND` | ~120 bytes | Largest common gameplay message |
-| `OLED_LABELS` | ~140 bytes | 5 short strings; keep labels ≤ 20 chars each |
+| `OLED_LABELS` | ~210 bytes | 9 short strings; keep labels ≤ 16 chars each |
 | `LOBBY_STATE` | ~160 bytes | Grows with player count; 8 players approaches limit |
 | `SCORE_SUMMARY` | ~200 bytes | Post-game only; can afford to be larger |
 | `COOP_COMMAND` | ~110 bytes | |
