@@ -85,15 +85,18 @@ The Hub supports **two power sources** with automatic switching:
 - Battery connector: JST-PH 2-pin, keyed. Add reverse-polarity protection (Schottky diode or P-MOSFET).
 - Estimated current draw: ~200–350mA average (ESP32-S3 WiFi/ESP-NOW + amplifier + NFC). Runtime: ~6–10 hours on quality alkaline AAs.
 
-### Source 2: USB-C (Stationary Play)
+### Source 2: USB-C (Stationary Play + Firmware Flashing)
 
 ```
-USB-C 5V → Same regulator path → 3.3V rail
+USB-C 5V → Schottky diode → regulator input (OR-ed with battery) → 3.3V rail
 ```
 
-- USB-C connector: 6-pin (power-only, CC resistors for 5V default) or 16-pin (USB 2.0 data for firmware updates).
-- CC1/CC2: 5.1kΩ pull-down resistors to GND (required by USB-C spec to request 5V).
-- Route USB D+/D− to ESP32-S3 USB pins for firmware flashing (development use).
+- **Connector:** USB-C 16-pin (USB 2.0 data + power). Always use the data-capable variant — power-only saves nothing and loses flashing.
+- **CC1/CC2:** 5.1kΩ pull-down resistors to GND (required by USB-C spec to request 5V).
+- **D+/D−:** Route to ESP32-S3 GPIO19 (USB_D−) and GPIO20 (USB_D+). The ESP32-S3 has a **built-in USB-Serial/JTAG peripheral** — no external USB-to-UART bridge chip needed. Keep traces short, matched length, 90Ω differential impedance.
+- **ESD protection:** USBLC6-2SC6 TVS diode array on D+/D− lines.
+- **Boot/Reset:** BOOT button (pulls GPIO0 low) + RESET button (pulls EN low), plus auto-reset circuit (two NPN transistors, DTR/RTS cross-wired) so PlatformIO/Arduino IDE can flash automatically. Same circuit as tablets — see [tablet PCB brief](pcb-design-brief.md#usb-c-connector-firmware-flashing--optional-power).
+- **Use case:** Plug-in play for classroom/event deployments (no batteries needed), firmware updates, serial debug console.
 
 ### Power Path OR-ing
 

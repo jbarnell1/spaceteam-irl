@@ -69,10 +69,26 @@ Standard reference design per Espressif's hardware design guide:
 - USB D+/D−: Route to USB-C pad for firmware flashing (development only — no USB in gameplay)
 - Antenna keepout: Follow module datasheet — no copper pour or traces under antenna area
 
+### USB-C Connector (Firmware Flashing + Optional Power)
+
+The ESP32-S3 has a **built-in USB-Serial/JTAG peripheral** on GPIO19 (D−) and GPIO20 (D+). No external USB-to-UART bridge chip (CP2102, CH340) is needed — the native peripheral handles firmware flashing, serial console, and JTAG debug directly.
+
+- **Connector:** USB-C 16-pin (USB 2.0 data + power). SMD mid-mount or through-hole, board-edge placement.
+- **CC1/CC2:** 5.1kΩ pull-down resistors to GND (required by USB-C spec to request 5V from host).
+- **D+/D−:** Route directly to ESP32-S3 GPIO19 (USB_D−) and GPIO20 (USB_D+). Keep traces short, matched length, 90Ω differential impedance.
+- **VBUS (5V):** Route to 3.3V regulator input via Schottky diode (OR-ed with battery). When USB is connected, it powers the board.
+- **Boot mode:** To enter firmware download mode, GPIO0 must be held LOW while the chip resets. Provide a **BOOT button** (momentary, pulls GPIO0 to GND) and a **RESET button** (momentary, pulls EN to GND). Both are small tactile buttons on the PCB — not panel-mounted (development use only). In production, firmware flashing is triggered via the `esptool.py` USB-CDC auto-reset circuit (DTR/RTS → EN/GPIO0 via transistor pair).
+- **Auto-reset circuit:** Two NPN transistors (2N7002 or equivalent) with DTR → EN and RTS → GPIO0 cross-wired per the standard ESP32 auto-program circuit. This lets PlatformIO/Arduino IDE flash without manually pressing buttons.
+- **ESD protection:** Add a USBLC6-2SC6 (or equivalent) TVS diode array on D+/D− lines.
+
+> **For production/scale:** The USB-C port can be placed inside the enclosure (accessible by removing a panel or battery door) so it's available for factory flashing and field firmware updates but not exposed to players during gameplay. Alternatively, a **pogo-pin test jig** targeting exposed PCB pads (VBUS, D+, D−, GND, EN, GPIO0) can be used for high-volume factory flashing without requiring a connector on every board — but USB-C is recommended through at least the first production run for field serviceability.
+
 ### Power Supply
 
 ```
 2× AA (3.0V nom, 1.8V min) → TPS61200 Boost → 3.3V rail
+        — OR —
+USB-C 5V → Schottky diode → TPS61200 input (OR-ed with battery)
 ```
 
 - **TPS61200DRCR** (SOT-23-6 / SON-6): Fixed 3.3V output variant preferred (TPS61200DRCR or TPS61202DSCR)
@@ -226,6 +242,7 @@ Total available on ESP32-S3: ~36 usable GPIO (excluding strapping pins, flash/PS
 | SPI (MOSI, MISO, SCK) | 3 | Shared bus: TFT + NFC |
 | TFT CS, DC, RST, BL | 4 | Command screen |
 | NFC CS, IRQ, RST | 3 | Commander only (2 pins reusable on other archetypes) |
+| USB D+/D− (GPIO19, GPIO20) | 2 | Native USB-Serial/JTAG — firmware flashing + serial console |
 | TM1637 (CLK, DIO) | 2 | 7-segment display |
 | NeoPixel Status LED | 1 | WS2812B data |
 | Speaker PWM | 1 | Piezo |
@@ -233,9 +250,9 @@ Total available on ESP32-S3: ~36 usable GPIO (excluding strapping pins, flash/PS
 | Crisis Button (switch) | 1 | Guarded illuminated pushbutton — switch input |
 | Crisis Button (LED) | 1 | Guarded illuminated pushbutton — LED output |
 | Submit Button | 1 | Analog value confirm |
-| **Base subtotal** | **~20** | |
+| **Base subtotal** | **~22** | |
 | **Archetype controls** | **6–11** | See [Pin Budget Summary](../../docs/tablet-archetypes.md#pin-budget-summary) |
-| **Total** | **26–31** | Well within 36 available |
+| **Total** | **28–33** | Well within 36 available |
 
 > **Important:** Consult the ESP32-S3 datasheet for strapping pin restrictions (GPIO0, GPIO3, GPIO45, GPIO46). These should NOT be used for general I/O without understanding boot-mode implications. Pins GPIO26–32 are internal flash/PSRAM on the -N16R8 module and are NOT available.
 
@@ -253,6 +270,8 @@ Total available on ESP32-S3: ~36 usable GPIO (excluding strapping pins, flash/PS
 | Control panel | Top face of enclosure | Controls are panel-mounted, wired to PCB headers below |
 | Display cutouts | Enclosure has 5 rectangular OLED windows + 1 TFT window | OLEDs mount flush to panel; PCB sits below |
 | Battery sled | Bottom or side compartment | JST cable to PCB |
+| USB-C port | Side or bottom edge | Board-edge mount. Can be internal (behind battery door) for production. |
+| BOOT + RESET buttons | On PCB near USB-C | Small tactile buttons for development flashing. Not panel-mounted. |
 | Power switch | Edge-accessible | Slide switch at PCB edge or wired to panel |
 
 ---
@@ -269,7 +288,7 @@ Total available on ESP32-S3: ~36 usable GPIO (excluding strapping pins, flash/PS
 
 ### General
 
-- **Silkscreen:** Label every connector (SLOT1, SLOT2, OLED1–5, TFT, BATT, MOTOR, SPK, CRISIS, SUBMIT). Mark pin 1 on all headers.
+- **Silkscreen:** Label every connector (SLOT1, SLOT2, OLED1–5, TFT, USB, BATT, MOTOR, SPK, CRISIS, SUBMIT, BOOT, RST). Mark pin 1 on all headers.
 - **Test points:** Add labeled test points for 3V3, GND, SDA, SCL, MOSI, SCK, and at least 2 spare GPIO.
 - **Grounding:** Solid ground plane on bottom layer. Star-ground or separate analog/digital ground not required at these frequencies, but keep ADC traces away from noisy digital lines (SPI, NeoPixel).
 - **Antenna clearance:** The ESP32-S3-WROOM module has an onboard PCB antenna. Keep a copper-free zone (no traces, no ground pour) under and around the antenna per the module datasheet (~15mm keepout).

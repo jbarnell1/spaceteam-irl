@@ -47,7 +47,11 @@
 | H2 | 2.4GHz External Antenna (IPEX/U.FL) | 1 | Cable + antenna | — | $0.30 | Stick or PCB-type antenna. Mount on enclosure exterior. |
 | H3 | Buck Regulator (AP2112K-3.3 or similar) | 1 | SOT-23-5 (SMD) | — | $0.15 | 6V (4×AA) → 3.3V. Low dropout, 600mA output. |
 | H4 | 4× AA Battery Sled | 1 | Wired | — | $0.50 | Spring-contact sled, chassis-mount. 6V nominal. |
-| H5 | USB-C Connector (power input, optional) | 1 | SMD | — | $0.20 | 5V wall-power alternative to batteries. Add 3.3V LDO or share H3 regulator. |
+| H5 | USB-C Connector (16-pin, USB 2.0) | 1 | SMD mid-mount | USB D+/D− to GPIO19/20 | $0.15 | 5V wall-power + firmware flashing. No external UART bridge needed (ESP32-S3 native USB). |
+| H5b | USBLC6-2SC6 ESD Protection | 1 | SOT-23-6 (SMD) | — | $0.10 | TVS array on USB D+/D− lines. |
+| H5c | BOOT Button (4×4mm tactile) | 1 | SMD | GPIO0 → GND | $0.02 | Pulls GPIO0 low for download mode. On-PCB only. |
+| H5d | RESET Button (4×4mm tactile) | 1 | SMD | EN → GND | $0.02 | Hard reset. On-PCB only. |
+| H5e | Auto-Reset Transistors (2N7002 × 2) | 2 | SOT-23 (SMD) | DTR/RTS circuit | $0.04 | One-click flash from IDE without manual button press. |
 | H6 | Power Switch (SPST slide) | 1 | Through-hole | Inline | $0.10 | Board edge for enclosure access. |
 | H7 | Power Path / OR-ing Circuit | 1 | SOT-23 (SMD) | — | $0.10 | Ideal diode or Schottky OR: auto-select between USB-C and battery. Prevents backfeed. |
 | H8 | Decoupling Caps (10µF + 100nF) | 3 sets | 0402/0603 (SMD) | — | $0.05 | Per ESP32-S3 reference design. |
@@ -124,22 +128,22 @@ V2 adds HDMI output for optional TV hookup (mission briefings, spectator view). 
 
 | Category | Est. Cost |
 |---|---|
-| MCU & Power (H1–H9) | ~$5.25 |
+| MCU & Power (H1–H9) | ~$5.38 |
 | Audio (H10–H12) | ~$0.90 |
 | Storage (H13) | ~$1.20 |
 | NFC Reader (H14–H15) | ~$1.50 |
 | Display & Interaction (H16–H17) | ~$0.90 |
 | Status & Feedback (H18–H19) | ~$0.09 |
 | Passives & PCB (H20–H23) | ~$1.30 |
-| **V1 Hub Total** | **~$11.14** |
+| **V1 Hub Total** | **~$11.27** |
 
 ### V2 Hub (Audio + HDMI)
 
 | | |
 |---|---|
-| V1 Hub Total | ~$11.14 |
+| V1 Hub Total | ~$11.27 |
 | V2 HDMI Add-On | ~$3.10 |
-| **V2 Hub Total** | **~$14.24** |
+| **V2 Hub Total** | **~$14.37** |
 
 > Both variants are well within the ~$15 COGS target from [pack-strategy.md](../../docs/pack-strategy.md). The V1 Hub has comfortable margin (~$4) for enclosure, packaging, and assembly overhead.
 

@@ -54,6 +54,11 @@ These components appear on **every** tablet. See [tablet-archetypes.md § Base T
 | B4 | Power Switch (SPST) | 1 | Through-hole | 1 GPIO or inline | $0.10 | Simple on/off. |
 | B5 | Decoupling Caps (10µF + 100nF) | 3 sets | 0402/0603 (SMD) | — | $0.05 | Per standard ESP32-S3 reference design. |
 | B6 | Boost Inductor (4.7µH) | 1 | SMD | — | $0.10 | Per TPS61200 datasheet. |
+| B16 | USB-C Connector (16-pin, USB 2.0) | 1 | SMD mid-mount | USB D+/D− to GPIO19/20 | $0.15 | Firmware flashing + optional power input. No external UART bridge needed. |
+| B17 | USBLC6-2SC6 ESD Protection | 1 | SOT-23-6 (SMD) | — | $0.10 | TVS array on USB D+/D− lines. |
+| B18 | BOOT Button (4×4mm tactile) | 1 | SMD | GPIO0 → GND | $0.02 | Pulls GPIO0 low for download mode. On-PCB only. |
+| B19 | RESET Button (4×4mm tactile) | 1 | SMD | EN → GND | $0.02 | Hard reset. On-PCB only. |
+| B20 | Auto-Reset Transistors (2N7002 × 2) | 2 | SOT-23 (SMD) | DTR/RTS circuit | $0.04 | Enables one-click flash from IDE without manual button press. |
 
 ### Displays
 
@@ -94,11 +99,12 @@ These components appear on **every** tablet. See [tablet-archetypes.md § Base T
 | Category | Est. Cost |
 |---|---|
 | MCU & Power | ~$4.85 |
+| USB & Programming | ~$0.33 |
 | Displays | ~$9.75 |
 | Feedback | ~$0.61 |
 | Shared Inputs | ~$1.35 |
 | Passives & PCB | ~$1.85 |
-| **Base Total** | **~$18.41** |
+| **Base Total** | **~$18.74** |
 
 > **Note:** Displays are the dominant cost driver (~54% of base BOM). Sourcing OLEDs and the TFT command screen at better volume pricing or consolidating to fewer/smaller displays would have the biggest impact on COGS.
 
@@ -264,15 +270,15 @@ Each archetype adds its unique 5-slot control loadout to the base tablet. See [t
 
 | Archetype | Base BOM | Controls BOM | **Total COGS** | Notes |
 |---|---|---|---|---|
-| Navigator | $18.41 | $1.70 | **$20.11** | |
-| Engineer | $18.41 | $1.90 | **$20.31** | |
-| Operator | $18.41 | $1.40 | **$19.81** | Cheapest build |
-| Sentinel | $18.41 | $2.03 | **$20.44** | Hall trigger is simple + cheap |
-| Medic | $18.41 | $1.08 | **$19.49** | |
-| Analyst | $18.41 | $1.60 | **$20.01** | Highest GPIO usage (11 pins) |
-| Scout | $18.41 | $2.40 | **$20.81** | NeoPixel ring is cost driver |
-| Commander | $18.41 | $1.95 | **$20.36** | |
-| | | **Average** | **$20.17** | Slightly above $20 target — display sourcing is key lever |
+| Navigator | $18.74 | $1.70 | **$20.44** | |
+| Engineer | $18.74 | $1.90 | **$20.64** | |
+| Operator | $18.74 | $1.40 | **$20.14** | Cheapest build |
+| Sentinel | $18.74 | $2.03 | **$20.77** | Hall trigger is simple + cheap |
+| Medic | $18.74 | $1.08 | **$19.82** | |
+| Analyst | $18.74 | $1.60 | **$20.34** | Highest GPIO usage (11 pins) |
+| Scout | $18.74 | $2.40 | **$21.14** | NeoPixel ring is cost driver |
+| Commander | $18.74 | $1.95 | **$20.69** | |
+| | | **Average** | **$20.50** | Slightly above $20 target — display sourcing is key lever |
 
 > **Critical cost driver:** The 5× OLED displays ($6.25) and TFT command screen ($2.50) together represent ~$8.75 or ~44% of total COGS. Negotiating volume pricing on displays has the highest impact.
 
