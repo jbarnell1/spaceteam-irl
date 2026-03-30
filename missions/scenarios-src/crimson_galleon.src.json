@@ -1,0 +1,1592 @@
+{
+  "schema_version": "1.0",
+  "meta": {
+    "id": "CRIMSON_GALLEON_01",
+    "title": "The Crimson Galleon",
+    "pack": "HIGH_SEAS_COLLECTION",
+    "theme": "naval",
+    "subject": "teamwork",
+    "age_rating": "8+",
+    "difficulty": "medium",
+    "player_count": {
+      "min": 3,
+      "max": 8
+    },
+    "duration_sec": {
+      "min": 840,
+      "max": 900
+    },
+    "adaptive_pacing": true,
+    "version": "2.0.0",
+    "author": "mission_architect"
+  },
+  "roles": {
+    "NAVIGATOR": "Sailing Master",
+    "ENGINEER": "Ship's Carpenter",
+    "OPERATOR": "Signalman",
+    "SENTINEL": "Master-at-Arms",
+    "MEDIC": "Ship's Surgeon",
+    "ANALYST": "Cartographer",
+    "SCOUT": "Lookout",
+    "COMMANDER": "Bosun"
+  },
+  "oled_labels": {
+    "NAVIGATOR": [
+      "Port Guns",
+      "Stbd Guns",
+      "Helm Lock",
+      "Drop Anchor",
+      "Signal Horn",
+      "Reef Warning",
+      "Tack About",
+      "Ship's Wheel",
+      "Sail Trim"
+    ],
+    "ENGINEER": [
+      "Mast Brace",
+      "Keel Bolts",
+      "Cut Rigging",
+      "Patch Hull",
+      "Seal Hatch",
+      "Clear Debris",
+      "Shore Timber",
+      "Bilge Pump",
+      "Cable Splices"
+    ],
+    "OPERATOR": [
+      "Run Up Colours",
+      "Fog Horn",
+      "Parley Flag",
+      "Hail Ship",
+      "Fire Flare",
+      "Relay Orders",
+      "Sound Whistle",
+      "Signal Lamp",
+      "Signal Code"
+    ],
+    "SENTINEL": [
+      "Brig Lock",
+      "Gun Port",
+      "Weapons Free",
+      "Beat to Qrts",
+      "Powder Check",
+      "Sound Alarm",
+      "Clear Decks",
+      "Cannon Brace",
+      "Watch Roster"
+    ],
+    "MEDIC": [
+      "Rum Ration",
+      "Fever Ward",
+      "Quarantine",
+      "Check Wounds",
+      "Smelling Salt",
+      "Apply Splint",
+      "Triage Report",
+      "Remedy Mix",
+      "Laudanum Dose"
+    ],
+    "ANALYST": [
+      "Tide Table",
+      "Star Fix",
+      "Compass Lock",
+      "Log Entry",
+      "Depth Sounding",
+      "Plot Course",
+      "Reef Check",
+      "Chart Course",
+      "Glass Bearing"
+    ],
+    "SCOUT": [
+      "Flag Hoist",
+      "Port Watch",
+      "Stbd Watch",
+      "Crow's Nest",
+      "Alert Deck",
+      "Mark Bearing",
+      "Reef Sighting",
+      "Spyglass Brng",
+      "Threat Color"
+    ],
+    "COMMANDER": [
+      "Master Key",
+      "Battle Drums",
+      "Parley Terms",
+      "Confirm Order",
+      "All Hands",
+      "Ship's Log",
+      "Pipe All Hands",
+      "Ship's Orders",
+      "Captain's Seal"
+    ]
+  },
+  "command_pools": {
+    "direct": [
+      {
+        "id": "nav_hard_port",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_a",
+        "label": "Hard to port! Reef ahead!",
+        "narrator_line": "Sailing Master! Hard to port — reef dead ahead!",
+        "value_preset": "WEST"
+      },
+      {
+        "id": "nav_hard_stbd",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_a",
+        "label": "Hard starboard! Shoal water!",
+        "narrator_line": "Hard starboard — shoal water on the port bow!",
+        "value_preset": "EAST"
+      },
+      {
+        "id": "nav_run_before",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_a",
+        "label": "Come about! Run before the wind!",
+        "narrator_line": "Come about! Run before the wind — full ahead!",
+        "value_preset": "NORTH"
+      },
+      {
+        "id": "nav_close_haul",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_a",
+        "label": "Close-haul! Into the wind!",
+        "narrator_line": "Close-haul! Take her into the wind!",
+        "value_preset": "SOUTH"
+      },
+      {
+        "id": "nav_full_sail",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_b",
+        "label": "Full sail — all canvas!",
+        "narrator_line": "Full sail! Every scrap of canvas — move!",
+        "value_preset": "MAX"
+      },
+      {
+        "id": "nav_half_sail",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_b",
+        "label": "Reduce to half sail!",
+        "narrator_line": "Reduce sail to half — we're heeling too far!",
+        "value_preset": "HALF"
+      },
+      {
+        "id": "nav_bare_poles",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_b",
+        "label": "Strike sail — bare poles!",
+        "narrator_line": "Strike all sail — bare poles! Storm coming!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "nav_port_guns",
+        "target_arch": "NAVIGATOR",
+        "capability": "toggle_1",
+        "label": "Port guns — RUN OUT!",
+        "narrator_line": "Run out the port guns!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "nav_port_secure",
+        "target_arch": "NAVIGATOR",
+        "capability": "toggle_1",
+        "label": "Port guns — SECURE!",
+        "narrator_line": "Secure the port guns — lash them down!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "nav_stbd_guns",
+        "target_arch": "NAVIGATOR",
+        "capability": "toggle_2",
+        "label": "Starboard guns — READY!",
+        "narrator_line": "Starboard battery — run them out!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "nav_stbd_secure",
+        "target_arch": "NAVIGATOR",
+        "capability": "toggle_2",
+        "label": "Starboard guns — SECURE!",
+        "narrator_line": "Secure starboard guns!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "nav_anchor",
+        "target_arch": "NAVIGATOR",
+        "capability": "button_1",
+        "label": "Drop anchor NOW!",
+        "narrator_line": "Drop anchor! All stop!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "eng_pump_max",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_a",
+        "label": "Bilge pump to MAXIMUM!",
+        "narrator_line": "Carpenter! Bilge pumps to maximum — we're taking water!",
+        "value_preset": "MAX"
+      },
+      {
+        "id": "eng_pump_half",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_a",
+        "label": "Bilge pump to half!",
+        "narrator_line": "Ease the bilge pump to half — steady now!",
+        "value_preset": "HALF"
+      },
+      {
+        "id": "eng_pump_min",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_a",
+        "label": "Bilge pump to minimum!",
+        "narrator_line": "Cut the bilge pump to minimum — save the arms!",
+        "value_preset": "LOW"
+      },
+      {
+        "id": "eng_pump_off",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_a",
+        "label": "Shut the bilge pump!",
+        "narrator_line": "Carpenter! Shut down the bilge pump!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "eng_patch",
+        "target_arch": "ENGINEER",
+        "capability": "button_1",
+        "label": "Patch the hull — NOW!",
+        "narrator_line": "Carpenter! Patch that hole before we sink!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "eng_mast_on",
+        "target_arch": "ENGINEER",
+        "capability": "toggle_1",
+        "label": "Brace the mainmast!",
+        "narrator_line": "Brace the mainmast — it's cracking!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "eng_mast_off",
+        "target_arch": "ENGINEER",
+        "capability": "toggle_1",
+        "label": "Release mast braces!",
+        "narrator_line": "Release the mast braces — we need to tack!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "eng_keel_on",
+        "target_arch": "ENGINEER",
+        "capability": "toggle_2",
+        "label": "Tighten keel bolts!",
+        "narrator_line": "Tighten the keel bolts — she's working loose!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "eng_keel_off",
+        "target_arch": "ENGINEER",
+        "capability": "toggle_2",
+        "label": "Release keel bolts!",
+        "narrator_line": "Release the keel bolts — shifting the ballast!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "eng_rigging_on",
+        "target_arch": "ENGINEER",
+        "capability": "toggle_3",
+        "label": "Cut the fouled rigging!",
+        "narrator_line": "Carpenter! Cut that fouled rigging away!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "eng_rigging_off",
+        "target_arch": "ENGINEER",
+        "capability": "toggle_3",
+        "label": "Secure the rigging!",
+        "narrator_line": "Secure the rigging — lash it down tight!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "eng_splice_main",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_b",
+        "label": "Splice: main rigging!",
+        "narrator_line": "Carpenter! Main rigging splice — wire it up!",
+        "value_preset": "NORMAL"
+      },
+      {
+        "id": "eng_splice_fore",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_b",
+        "label": "Splice: fore cables!",
+        "narrator_line": "Splice the fore cables — swap those leads!",
+        "value_preset": "BACKUP"
+      },
+      {
+        "id": "eng_splice_aft",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_b",
+        "label": "Splice: aft rigging!",
+        "narrator_line": "Aft rigging splice — emergency config!",
+        "value_preset": "BYPASS"
+      },
+      {
+        "id": "op_lamp_88",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_a",
+        "label": "Signal lamp to code 88!",
+        "narrator_line": "Signalman! Flash code eighty-eight — pursuit signal!",
+        "value": 88
+      },
+      {
+        "id": "op_lamp_42",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_a",
+        "label": "Signal lamp: code 42!",
+        "narrator_line": "Signalman! Code forty-two — request assistance!",
+        "value": 42
+      },
+      {
+        "id": "op_lamp_150",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_a",
+        "label": "Signal: all-clear code 150!",
+        "narrator_line": "Signal all-clear — code one-fifty!",
+        "value": 150
+      },
+      {
+        "id": "op_lamp_200",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_a",
+        "label": "Emergency signal 200!",
+        "narrator_line": "Signalman! Emergency — code two hundred!",
+        "value": 200
+      },
+      {
+        "id": "op_colours_on",
+        "target_arch": "OPERATOR",
+        "capability": "toggle_1",
+        "label": "Run up the colours!",
+        "narrator_line": "Run up the King's colours! Show them who we are!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "op_colours_off",
+        "target_arch": "OPERATOR",
+        "capability": "toggle_1",
+        "label": "Strike the colours!",
+        "narrator_line": "Strike the colours — run silent!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "op_horn_on",
+        "target_arch": "OPERATOR",
+        "capability": "toggle_2",
+        "label": "Sound the fog horn!",
+        "narrator_line": "Sound the fog horn — warn them off!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "op_horn_off",
+        "target_arch": "OPERATOR",
+        "capability": "toggle_2",
+        "label": "Silence the fog horn!",
+        "narrator_line": "Silence that horn — we need stealth!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "op_hail",
+        "target_arch": "OPERATOR",
+        "capability": "button_1",
+        "label": "Hail the enemy vessel!",
+        "narrator_line": "Hail that vessel — demand they strike!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "op_flare",
+        "target_arch": "OPERATOR",
+        "capability": "button_2",
+        "label": "Fire a signal flare!",
+        "narrator_line": "Fire a flare! Mark our position!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "op_code_347",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_b",
+        "label": "Signal code: 3-4-7!",
+        "narrator_line": "Signalman! Code three-four-seven — rally signal!",
+        "value": "347",
+        "timeout_ms": 7000
+      },
+      {
+        "id": "op_code_1805",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_b",
+        "label": "Signal code: 1-8-0-5!",
+        "narrator_line": "Code eighteen-oh-five — Trafalgar signal!",
+        "value": "1805"
+      },
+      {
+        "id": "op_code_999",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_b",
+        "label": "Emergency code: 9-9-9!",
+        "narrator_line": "Signalman! Emergency code — triple nine!",
+        "value": "999",
+        "timeout_ms": 7000
+      },
+      {
+        "id": "sent_brace_full",
+        "target_arch": "SENTINEL",
+        "capability": "specialty_a",
+        "label": "Brace the cannon — FULL!",
+        "narrator_line": "Master-at-Arms! Brace that cannon to maximum — HOLD!",
+        "value_preset": "FULL"
+      },
+      {
+        "id": "sent_brace_light",
+        "target_arch": "SENTINEL",
+        "capability": "specialty_a",
+        "label": "Ease the cannon brace!",
+        "narrator_line": "Ease the brace to light — we need to traverse!",
+        "value_preset": "LIGHT"
+      },
+      {
+        "id": "sent_watch_day",
+        "target_arch": "SENTINEL",
+        "capability": "specialty_b",
+        "label": "Watch roster — DAY!",
+        "narrator_line": "Master-at-Arms! Set watch to day roster!",
+        "value_preset": "POS_1"
+      },
+      {
+        "id": "sent_watch_battle",
+        "target_arch": "SENTINEL",
+        "capability": "specialty_b",
+        "label": "Watch roster — BATTLE!",
+        "narrator_line": "Battle stations! Set the watch to battle!",
+        "value_preset": "POS_2"
+      },
+      {
+        "id": "sent_watch_night",
+        "target_arch": "SENTINEL",
+        "capability": "specialty_b",
+        "label": "Watch roster — NIGHT!",
+        "narrator_line": "Night watch! Set the roster — position three!",
+        "value_preset": "POS_3"
+      },
+      {
+        "id": "sent_brig_on",
+        "target_arch": "SENTINEL",
+        "capability": "toggle_1",
+        "label": "Lock the brig!",
+        "narrator_line": "Lock the brig — prisoners below!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "sent_brig_off",
+        "target_arch": "SENTINEL",
+        "capability": "toggle_1",
+        "label": "Unlock the brig!",
+        "narrator_line": "Unlock the brig — all hands needed on deck!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "sent_gunport_on",
+        "target_arch": "SENTINEL",
+        "capability": "toggle_2",
+        "label": "Open gun ports!",
+        "narrator_line": "Open the gun ports!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "sent_gunport_off",
+        "target_arch": "SENTINEL",
+        "capability": "toggle_2",
+        "label": "Close gun ports!",
+        "narrator_line": "Close the gun ports — we're taking spray!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "sent_quarters",
+        "target_arch": "SENTINEL",
+        "capability": "button_1",
+        "label": "Beat to quarters!",
+        "narrator_line": "Beat to quarters! All hands to battle stations!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "med_blue",
+        "target_arch": "MEDIC",
+        "capability": "specialty_a",
+        "label": "Mix BLUE remedy!",
+        "narrator_line": "Surgeon! Mix the blue fever remedy — men are dropping!",
+        "value_preset": "BLUE"
+      },
+      {
+        "id": "med_red",
+        "target_arch": "MEDIC",
+        "capability": "specialty_a",
+        "label": "Mix RED poultice!",
+        "narrator_line": "Surgeon! Red poultice for the wounded — hurry!",
+        "value_preset": "RED"
+      },
+      {
+        "id": "med_green",
+        "target_arch": "MEDIC",
+        "capability": "specialty_a",
+        "label": "Mix GREEN antidote!",
+        "narrator_line": "Mix the green antidote — possible poisoning!",
+        "value_preset": "GREEN"
+      },
+      {
+        "id": "med_dose_150",
+        "target_arch": "MEDIC",
+        "capability": "specialty_b",
+        "label": "Laudanum dose to 150!",
+        "narrator_line": "Surgeon! Laudanum to one-fifty — the Captain needs it!",
+        "value": 150
+      },
+      {
+        "id": "med_dose_80",
+        "target_arch": "MEDIC",
+        "capability": "specialty_b",
+        "label": "Reduce dose to 80!",
+        "narrator_line": "Ease the dose to eighty — too much and he'll sleep!",
+        "value": 80
+      },
+      {
+        "id": "med_dose_250",
+        "target_arch": "MEDIC",
+        "capability": "specialty_b",
+        "label": "Emergency dose — 250!",
+        "narrator_line": "Emergency dose! Crank it to two-fifty — stat!",
+        "value": 250
+      },
+      {
+        "id": "med_rum_on",
+        "target_arch": "MEDIC",
+        "capability": "toggle_1",
+        "label": "Issue the rum ration!",
+        "narrator_line": "Issue the rum ration — steady the men's nerves!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "med_rum_off",
+        "target_arch": "MEDIC",
+        "capability": "toggle_1",
+        "label": "Cut the rum ration!",
+        "narrator_line": "Cut the rum — I need clear heads!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "med_wounds",
+        "target_arch": "MEDIC",
+        "capability": "button_1",
+        "label": "Check the wounded!",
+        "narrator_line": "Surgeon! Check on the wounded below!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "med_salts",
+        "target_arch": "MEDIC",
+        "capability": "button_2",
+        "label": "Smelling salts — revive him!",
+        "narrator_line": "Smelling salts! Revive that man!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "ana_code_721",
+        "target_arch": "ANALYST",
+        "capability": "specialty_a",
+        "label": "Chart bearing: 7-2-1!",
+        "narrator_line": "Cartographer! Plot bearing seven-two-one!",
+        "value": "721",
+        "timeout_ms": 7000
+      },
+      {
+        "id": "ana_code_4519",
+        "target_arch": "ANALYST",
+        "capability": "specialty_a",
+        "label": "Chart code: 4-5-1-9!",
+        "narrator_line": "Navigation code four-five-one-nine — plot it!",
+        "value": "4519"
+      },
+      {
+        "id": "ana_code_308",
+        "target_arch": "ANALYST",
+        "capability": "specialty_a",
+        "label": "Enter bearing 3-0-8!",
+        "narrator_line": "Cartographer! Bearing three-zero-eight!",
+        "value": "308",
+        "timeout_ms": 7000
+      },
+      {
+        "id": "ana_glass_4",
+        "target_arch": "ANALYST",
+        "capability": "specialty_b",
+        "label": "Glass bearing to FOUR!",
+        "narrator_line": "Cartographer! Set the glass to position four!",
+        "value_preset": "POS_4"
+      },
+      {
+        "id": "ana_glass_2",
+        "target_arch": "ANALYST",
+        "capability": "specialty_b",
+        "label": "Glass bearing to TWO!",
+        "narrator_line": "Bearing two — track that sail!",
+        "value_preset": "POS_2"
+      },
+      {
+        "id": "ana_glass_5",
+        "target_arch": "ANALYST",
+        "capability": "specialty_b",
+        "label": "Set bearing to FIVE!",
+        "narrator_line": "Bearing five — that's the Galleon!",
+        "value_preset": "POS_5"
+      },
+      {
+        "id": "ana_tide_on",
+        "target_arch": "ANALYST",
+        "capability": "toggle_1",
+        "label": "Check the tide table!",
+        "narrator_line": "Check the tide table — is the channel passable?",
+        "value_preset": "ON"
+      },
+      {
+        "id": "ana_tide_off",
+        "target_arch": "ANALYST",
+        "capability": "toggle_1",
+        "label": "Close the tide table!",
+        "narrator_line": "Stow the tide table — we've got what we need!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "ana_star_on",
+        "target_arch": "ANALYST",
+        "capability": "toggle_2",
+        "label": "Take a star fix!",
+        "narrator_line": "Star fix! Confirm our position!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "ana_star_off",
+        "target_arch": "ANALYST",
+        "capability": "toggle_2",
+        "label": "Close the star fix!",
+        "narrator_line": "Stow the sextant — star fix complete!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "ana_log",
+        "target_arch": "ANALYST",
+        "capability": "button_1",
+        "label": "Log our position!",
+        "narrator_line": "Log that position in the ship's record!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "sco_glass_right",
+        "target_arch": "SCOUT",
+        "capability": "specialty_a",
+        "label": "Spyglass bearing 120!",
+        "narrator_line": "Lookout! Spyglass to bearing one-twenty!",
+        "value": {
+          "x": 70,
+          "y": -40
+        }
+      },
+      {
+        "id": "sco_glass_left",
+        "target_arch": "SCOUT",
+        "capability": "specialty_a",
+        "label": "Spyglass to 200!",
+        "narrator_line": "Lookout! Bearing two hundred — what do you see?",
+        "value": {
+          "x": -50,
+          "y": -60
+        }
+      },
+      {
+        "id": "sco_glass_up",
+        "target_arch": "SCOUT",
+        "capability": "specialty_a",
+        "label": "Sweep to bearing 60!",
+        "narrator_line": "Sweep to sixty — something on the horizon!",
+        "value": {
+          "x": 50,
+          "y": 60
+        },
+        "tolerance": {
+          "x": 20,
+          "y": 15
+        }
+      },
+      {
+        "id": "sco_flag_on",
+        "target_arch": "SCOUT",
+        "capability": "toggle_1",
+        "label": "Hoist signal flags!",
+        "narrator_line": "Hoist the signal flags — spread the word!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "sco_flag_off",
+        "target_arch": "SCOUT",
+        "capability": "toggle_1",
+        "label": "Strike the flags!",
+        "narrator_line": "Strike the flags — go dark!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "sco_port_on",
+        "target_arch": "SCOUT",
+        "capability": "toggle_2",
+        "label": "Eyes to port — NOW!",
+        "narrator_line": "Lookout! Eyes to port — report what you see!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "sco_port_off",
+        "target_arch": "SCOUT",
+        "capability": "toggle_2",
+        "label": "Port watch — stand down!",
+        "narrator_line": "Port watch stand down — eyes forward!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "sco_stbd_on",
+        "target_arch": "SCOUT",
+        "capability": "toggle_3",
+        "label": "Eyes to starboard!",
+        "narrator_line": "Starboard watch — scan the horizon!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "sco_stbd_off",
+        "target_arch": "SCOUT",
+        "capability": "toggle_3",
+        "label": "Starboard — stand down!",
+        "narrator_line": "Starboard watch stand down — eyes forward!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "sco_crows_nest",
+        "target_arch": "SCOUT",
+        "capability": "button_1",
+        "label": "Man the crow's nest!",
+        "narrator_line": "Up the crow's nest — I need a full view!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "sco_color_red",
+        "target_arch": "SCOUT",
+        "capability": "specialty_b",
+        "label": "Match RED threat flag!",
+        "narrator_line": "Lookout! Red flag sighting — hostile ship!",
+        "value_preset": "RED"
+      },
+      {
+        "id": "sco_color_blue",
+        "target_arch": "SCOUT",
+        "capability": "specialty_b",
+        "label": "Match BLUE friendly flag!",
+        "narrator_line": "Blue flag — friendly vessel! Confirm it!",
+        "value_preset": "DEEP_BLUE"
+      },
+      {
+        "id": "sco_color_green",
+        "target_arch": "SCOUT",
+        "capability": "specialty_b",
+        "label": "Match GREEN all-clear!",
+        "narrator_line": "Green flag — all clear! Match it!",
+        "value_preset": "GREEN"
+      },
+      {
+        "id": "cmd_pursuit",
+        "target_arch": "COMMANDER",
+        "capability": "specialty_a",
+        "label": "Orders: PURSUIT wiring!",
+        "narrator_line": "Bosun! Pursuit routing — wire it up!",
+        "value_preset": "NORMAL"
+      },
+      {
+        "id": "cmd_broadside",
+        "target_arch": "COMMANDER",
+        "capability": "specialty_a",
+        "label": "Orders: BROADSIDE wiring!",
+        "narrator_line": "Bosun! Broadside routing — swap those leads!",
+        "value_preset": "BACKUP"
+      },
+      {
+        "id": "cmd_hold",
+        "target_arch": "COMMANDER",
+        "capability": "specialty_a",
+        "label": "Orders: HOLD wiring!",
+        "narrator_line": "Hold station — wire the patch bay now!",
+        "value_preset": "BYPASS"
+      },
+      {
+        "id": "cmd_retreat",
+        "target_arch": "COMMANDER",
+        "capability": "specialty_a",
+        "label": "Orders: RETREAT wiring!",
+        "narrator_line": "Retreat! Fall-back routing — wire it now!",
+        "value_preset": "LOCKDOWN"
+      },
+      {
+        "id": "cmd_confirm",
+        "target_arch": "COMMANDER",
+        "capability": "button_1",
+        "label": "Confirm the order!",
+        "narrator_line": "Bosun! Confirm that order — pipe it through!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "cmd_key_on",
+        "target_arch": "COMMANDER",
+        "capability": "toggle_1",
+        "label": "Master key — TURN IT!",
+        "narrator_line": "Turn the master key — unlock the magazine!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "cmd_key_off",
+        "target_arch": "COMMANDER",
+        "capability": "toggle_1",
+        "label": "Master key — LOCK IT!",
+        "narrator_line": "Lock the master key — secure the magazine!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "cmd_allhands",
+        "target_arch": "COMMANDER",
+        "capability": "button_2",
+        "label": "ALL HANDS ON DECK!",
+        "narrator_line": "All hands on deck! Every man to his station!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "cmd_log",
+        "target_arch": "COMMANDER",
+        "capability": "button_3",
+        "label": "Update the ship's log!",
+        "narrator_line": "Log it! Ship's log — note the engagement!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "cmd_seal_captain",
+        "target_arch": "COMMANDER",
+        "capability": "specialty_b",
+        "label": "Scan the CAPTAIN'S SEAL!",
+        "narrator_line": "Bosun! Scan the Captain's seal — authorization!",
+        "value": "CAPT_SEAL"
+      },
+      {
+        "id": "cmd_seal_admiralty",
+        "target_arch": "COMMANDER",
+        "capability": "specialty_b",
+        "label": "Scan ADMIRALTY orders!",
+        "narrator_line": "Bosun! The Admiralty orders — scan them now!",
+        "value": "ADM_SEAL"
+      }
+    ],
+    "cooperative": [
+      {
+        "id": "coop_cmd_tell_nav_port",
+        "display_on": "COMMANDER",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_a",
+        "label": "Tell Helm: hard to port!",
+        "narrator_line": "Bosun! Tell the Sailing Master — hard to port!",
+        "value_preset": "WEST"
+      },
+      {
+        "id": "coop_eng_tell_nav_run",
+        "display_on": "ENGINEER",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_a",
+        "label": "Tell Helm: run before the wind!",
+        "narrator_line": "Carpenter! Shout to the Helm — run before the wind!",
+        "value_preset": "NORTH"
+      },
+      {
+        "id": "coop_ana_tell_eng_max",
+        "display_on": "ANALYST",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_a",
+        "label": "Tell Carpenter: pump to max!",
+        "narrator_line": "Cartographer! Tell the Carpenter — pumps to maximum!",
+        "value_preset": "MAX"
+      },
+      {
+        "id": "coop_cmd_tell_eng_half",
+        "display_on": "COMMANDER",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_a",
+        "label": "Tell Carpenter: pump to half!",
+        "narrator_line": "Bosun! Tell the Carpenter — half pump!",
+        "value_preset": "HALF"
+      },
+      {
+        "id": "coop_nav_tell_op_88",
+        "display_on": "NAVIGATOR",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_a",
+        "label": "Tell Signals: code 88!",
+        "narrator_line": "Helm! Tell the Signalman — code eighty-eight!",
+        "value": 88
+      },
+      {
+        "id": "coop_sco_tell_op_42",
+        "display_on": "SCOUT",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_a",
+        "label": "Tell Signals: code 42!",
+        "narrator_line": "Lookout! Shout to Signals — code forty-two!",
+        "value": 42
+      },
+      {
+        "id": "coop_med_tell_sent_brig",
+        "display_on": "MEDIC",
+        "target_arch": "SENTINEL",
+        "capability": "toggle_1",
+        "label": "Tell Arms: lock the brig!",
+        "narrator_line": "Surgeon! Shout to the Master-at-Arms — lock the brig!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "coop_op_tell_sent_quarters",
+        "display_on": "OPERATOR",
+        "target_arch": "SENTINEL",
+        "capability": "button_1",
+        "label": "Tell Arms: beat to quarters!",
+        "narrator_line": "Signalman! Tell the Master-at-Arms — beat to quarters!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "coop_eng_tell_med_rum",
+        "display_on": "ENGINEER",
+        "target_arch": "MEDIC",
+        "capability": "toggle_1",
+        "label": "Tell Surgeon: issue rum!",
+        "narrator_line": "Carpenter! Tell the Surgeon — issue the rum ration!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "coop_sent_tell_med_salts",
+        "display_on": "SENTINEL",
+        "target_arch": "MEDIC",
+        "capability": "button_2",
+        "label": "Tell Surgeon: smelling salts!",
+        "narrator_line": "Master-at-Arms! Tell the Surgeon — salts, NOW!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "coop_nav_tell_ana_308",
+        "display_on": "NAVIGATOR",
+        "target_arch": "ANALYST",
+        "capability": "specialty_a",
+        "label": "Tell Charts: bearing 3-0-8!",
+        "narrator_line": "Helm! Tell the Cartographer — bearing three-zero-eight!",
+        "value": "308"
+      },
+      {
+        "id": "coop_cmd_tell_ana_glass",
+        "display_on": "COMMANDER",
+        "target_arch": "ANALYST",
+        "capability": "specialty_b",
+        "label": "Tell Charts: glass to FOUR!",
+        "narrator_line": "Bosun! Tell the Cartographer — position four!",
+        "value_preset": "POS_4"
+      },
+      {
+        "id": "coop_ana_tell_sco_glass",
+        "display_on": "ANALYST",
+        "target_arch": "SCOUT",
+        "capability": "specialty_a",
+        "label": "Tell Lookout: glass to 120!",
+        "narrator_line": "Cartographer! Tell the Lookout — bearing one-twenty!",
+        "value": {
+          "x": 70,
+          "y": -40
+        }
+      },
+      {
+        "id": "coop_op_tell_sco_flags",
+        "display_on": "OPERATOR",
+        "target_arch": "SCOUT",
+        "capability": "toggle_1",
+        "label": "Tell Lookout: hoist flags!",
+        "narrator_line": "Signalman! Tell the Lookout — hoist the signal flags!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "coop_sco_tell_cmd_pursuit",
+        "display_on": "SCOUT",
+        "target_arch": "COMMANDER",
+        "capability": "specialty_a",
+        "label": "Tell Bosun: pursuit wiring!",
+        "narrator_line": "Lookout! Tell the Bosun — pursuit routing!",
+        "value_preset": "NORMAL"
+      },
+      {
+        "id": "coop_med_tell_cmd_key",
+        "display_on": "MEDIC",
+        "target_arch": "COMMANDER",
+        "capability": "toggle_1",
+        "label": "Tell Bosun: turn the key!",
+        "narrator_line": "Surgeon! Shout to the Bosun — turn the master key!",
+        "value_preset": "ON"
+      }
+    ],
+    "open": [
+      {
+        "id": "open_joystick_port",
+        "target": "ANY",
+        "action": "SET_JOYSTICK",
+        "label": "Someone — hard to port!",
+        "narrator_line": "Anyone with a helm — hard to port!",
+        "value_preset": "WEST"
+      },
+      {
+        "id": "open_slider_max",
+        "target": "ANY",
+        "action": "SET_SLIDER",
+        "label": "Anyone — pump to MAXIMUM!",
+        "narrator_line": "Whoever has a pump or lever — full power NOW!",
+        "value_preset": "MAX"
+      },
+      {
+        "id": "open_encoder_75",
+        "target": "ANY",
+        "action": "SET_ENCODER",
+        "label": "Quick — dial to 75!",
+        "narrator_line": "Any dial operator — set it to seventy-five!",
+        "value": 75
+      },
+      {
+        "id": "open_color_yellow",
+        "target": "ANY",
+        "action": "MATCH_COLOR",
+        "label": "Someone — match YELLOW!",
+        "narrator_line": "Anyone with a colour dial — match yellow NOW!",
+        "value_preset": "YELLOW"
+      },
+      {
+        "id": "open_rotary_3",
+        "target": "ANY",
+        "action": "SET_ROTARY_SW",
+        "label": "Anyone — dial to position 3!",
+        "narrator_line": "Whoever has a selector — position three!",
+        "value_preset": "POS_3"
+      },
+      {
+        "id": "open_code_1588",
+        "target": "ANY",
+        "action": "ENTER_CODE",
+        "label": "Someone — enter code 1-5-8-8!",
+        "narrator_line": "Anyone with a keypad — code fifteen-eighty-eight!",
+        "value": "1588",
+        "timeout_ms": 7000
+      }
+    ]
+  },
+  "crises": [
+    {
+      "id": "crisis_broadside",
+      "type": "CRISIS_ALL",
+      "label": "BROADSIDE INCOMING!",
+      "narrator_line": "BROADSIDE! ALL HANDS — BRACE FOR IMPACT!",
+      "required_count": "all",
+      "timeout_ms": 5000,
+      "penalty": "health_major"
+    },
+    {
+      "id": "crisis_storm_surge",
+      "type": "CRISIS_THRESHOLD",
+      "label": "ROGUE WAVE!",
+      "narrator_line": "ROGUE WAVE! Grab hold — at least four of you! BRACE!",
+      "required_count": 4,
+      "timeout_ms": 6000,
+      "penalty": "health_minor"
+    },
+    {
+      "id": "crisis_fire_below",
+      "type": "MULTI_ACTION",
+      "label": "FIRE IN THE HOLD!",
+      "narrator_line": "FIRE IN THE HOLD! Carpenter — pump the bilge! Surgeon — treat the burned! Everyone — buckets!",
+      "actions": [
+        {
+          "target_arch": "ENGINEER",
+          "capability": "specialty_a",
+          "value_preset": "MAX"
+        },
+        {
+          "target_arch": "MEDIC",
+          "capability": "toggle_1",
+          "value_preset": "ON"
+        },
+        {
+          "rest": "CRISIS_BTN"
+        }
+      ],
+      "timeout_ms": 7000,
+      "penalty": "health_major"
+    },
+    {
+      "id": "crisis_rigging_snap",
+      "type": "MULTI_ACTION",
+      "label": "RIGGING SNAPPED!",
+      "narrator_line": "THE RIGGING'S SNAPPED! Carpenter — brace the mast! Lookout — check the bearing! HOLD FAST!",
+      "actions": [
+        {
+          "target_arch": "ENGINEER",
+          "capability": "toggle_1",
+          "value_preset": "ON"
+        },
+        {
+          "target_arch": "SCOUT",
+          "capability": "specialty_a",
+          "value": {
+            "x": 70,
+            "y": -40
+          }
+        },
+        {
+          "rest": "CRISIS_BTN"
+        }
+      ],
+      "timeout_ms": 7000,
+      "penalty": "health_minor"
+    }
+  ],
+  "phases": [
+    {
+      "id": "intro",
+      "type": "NARRATION",
+      "duration_sec": 60,
+      "narrator_lines": [
+        "Attention all hands. This is your Captain speaking.",
+        "The Spanish pirate galleon Sangre Carmesi has been sighted off the southern cape.",
+        "She has been preying on merchant convoys for six months. The Admiralty wants her taken.",
+        "All hands to stations. We sail to intercept. God save the King."
+      ]
+    },
+    {
+      "id": "preflight",
+      "type": "PREFLIGHT",
+      "duration_sec": 45,
+      "narrator_intro": "All hands, set your stations to starting positions. Confirm each control when your display lights green.",
+      "init_commands": {
+        "NAVIGATOR": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_2",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "specialty_b",
+            "value_preset": "OFF"
+          }
+        ],
+        "ENGINEER": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_2",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_3",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "specialty_a",
+            "value_preset": "OFF"
+          }
+        ],
+        "OPERATOR": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_2",
+            "value_preset": "OFF"
+          }
+        ],
+        "SENTINEL": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_2",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "specialty_b",
+            "value_preset": "POS_1"
+          }
+        ],
+        "MEDIC": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          }
+        ],
+        "ANALYST": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_2",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "specialty_b",
+            "value_preset": "POS_1"
+          }
+        ],
+        "SCOUT": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_2",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_3",
+            "value_preset": "OFF"
+          }
+        ],
+        "COMMANDER": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          }
+        ]
+      }
+    },
+    {
+      "id": "frantic_1",
+      "type": "FRANTIC",
+      "duration_sec": 240,
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_storm_surge",
+        "crisis_rigging_snap"
+      ],
+      "narrator_lines_ambient": [
+        "Steady lads. The wind is with us.",
+        "Keep those sails trimmed — we need every knot of speed.",
+        "The Galleon's been spotted two leagues south-south-east.",
+        "Hands to your stations. No slacking."
+      ]
+    },
+    {
+      "id": "branch_1",
+      "type": "BRANCH",
+      "evaluate": "frantic_1",
+      "threshold": 0.55,
+      "win": {
+        "narrator_lines": [
+          "Excellent seamanship! We've closed the distance. The Galleon is in sight!",
+          "Prepare for engagement. Run out the guns and ready the crew."
+        ],
+        "next_phase": "frantic_2_W"
+      },
+      "lose": {
+        "narrator_lines": [
+          "Too slow! The Galleon is pulling ahead. She knows we're coming.",
+          "We need to sail harder, or we'll lose her in the island chain!"
+        ],
+        "next_phase": "frantic_2_L"
+      }
+    },
+    {
+      "id": "frantic_2_W",
+      "type": "FRANTIC",
+      "duration_sec": 270,
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_broadside",
+        "crisis_storm_surge",
+        "crisis_fire_below"
+      ],
+      "narrator_lines_ambient": [
+        "The Galleon is turning to fight! Battle with the Spaniards!",
+        "Cannons ready! Wait for the order!",
+        "She's flying the red flag — no quarter! Stand firm!",
+        "Close the distance — I want to see the whites of their eyes!"
+      ]
+    },
+    {
+      "id": "frantic_2_L",
+      "type": "FRANTIC",
+      "duration_sec": 250,
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_broadside",
+        "crisis_storm_surge",
+        "crisis_fire_below",
+        "crisis_rigging_snap"
+      ],
+      "narrator_lines_ambient": [
+        "She's getting away! More sail! MORE SAIL!",
+        "A squall is building to the west — this complicates things.",
+        "The crew is tiring — keep their spirits up!",
+        "We cannot let her reach the open sea! Push through!"
+      ]
+    },
+    {
+      "id": "branch_2",
+      "type": "BRANCH",
+      "evaluate": "current",
+      "threshold": 0.55,
+      "condition_per_path": {
+        "W": {
+          "win": {
+            "narrator_lines": [
+              "The broadside struck true! The Galleon's mainmast is falling!",
+              "She's crippled! Close in for the final engagement — board her!"
+            ],
+            "next_phase": "frantic_3_WW"
+          },
+          "lose": {
+            "narrator_lines": [
+              "The pirates returned fire with a vengeance. Our rigging is shredded!",
+              "We're limping, but they're wounded too. One last chance — press the attack!"
+            ],
+            "next_phase": "frantic_3_WL"
+          }
+        },
+        "L": {
+          "win": {
+            "narrator_lines": [
+              "She tried to flee through the strait, but we cut her off!",
+              "The Galleon is trapped! All guns — prepare to fire!"
+            ],
+            "next_phase": "frantic_3_LW"
+          },
+          "lose": {
+            "narrator_lines": [
+              "She's almost at the open sea. We have one shot at this.",
+              "Everything you have! Ram her if you must! England expects!"
+            ],
+            "next_phase": "frantic_3_LL"
+          }
+        }
+      }
+    },
+    {
+      "id": "frantic_3_WW",
+      "type": "FRANTIC",
+      "duration_sec": 270,
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_broadside",
+        "crisis_storm_surge",
+        "crisis_fire_below",
+        "crisis_rigging_snap"
+      ],
+      "narrator_lines_ambient": [
+        "Grappling hooks away! Boarding parties forward!",
+        "The pirates are fighting like cornered rats!",
+        "Hold the deck! Push them back!",
+        "Their captain is on the quarterdeck — take him alive!"
+      ]
+    },
+    {
+      "id": "frantic_3_WL",
+      "type": "FRANTIC",
+      "duration_sec": 250,
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_broadside",
+        "crisis_storm_surge",
+        "crisis_fire_below",
+        "crisis_rigging_snap"
+      ],
+      "narrator_lines_ambient": [
+        "Both ships are battered — this is anyone's fight!",
+        "Keep firing! Don't let them regroup!",
+        "The wind is shifting — use it!",
+        "One more broadside and she'll strike her colours!"
+      ]
+    },
+    {
+      "id": "frantic_3_LW",
+      "type": "FRANTIC",
+      "duration_sec": 250,
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_broadside",
+        "crisis_storm_surge",
+        "crisis_fire_below",
+        "crisis_rigging_snap"
+      ],
+      "narrator_lines_ambient": [
+        "We've got her cornered! Don't let up now!",
+        "She's trying to slip past — block the channel!",
+        "Fire at will! Aim for the waterline!",
+        "The pirates are panicking — keep the pressure on!"
+      ]
+    },
+    {
+      "id": "frantic_3_LL",
+      "type": "FRANTIC",
+      "duration_sec": 240,
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_broadside",
+        "crisis_storm_surge",
+        "crisis_fire_below",
+        "crisis_rigging_snap"
+      ],
+      "narrator_lines_ambient": [
+        "This is our last chance! She must not escape!",
+        "The ship is falling apart around us — hold together!",
+        "Everything we have — FIRE!",
+        "For King and Country! Do not let her go!"
+      ]
+    },
+    {
+      "id": "branch_3",
+      "type": "BRANCH",
+      "evaluate": "current",
+      "threshold": 0.55
+    }
+  ],
+  "outcomes": {
+    "WWW": {
+      "tier": "TRIUMPH",
+      "title": "Prize Taken",
+      "narrator_lines": [
+        "The Crimson Galleon strikes her colours! The pirate captain surrenders his sword.",
+        "A King's fortune in stolen gold is recovered from her hold.",
+        "Textbook naval engagement. The Admiralty will name this one for the history books.",
+        "God save the King. Well fought, every man of you."
+      ]
+    },
+    "WWL": {
+      "tier": "SUCCESS",
+      "title": "Hard-Won Prize",
+      "narrator_lines": [
+        "After a brutal final exchange, the Galleon is captured — but at heavy cost.",
+        "She nearly slipped away in that last engagement. But the prize is ours.",
+        "The crew will need shore leave after this one. Well done, lads."
+      ]
+    },
+    "WLW": {
+      "tier": "SUCCESS",
+      "title": "Sea Legs Found",
+      "narrator_lines": [
+        "A rough middle passage, but you found your sea legs when it mattered.",
+        "The Galleon is taken. Her crew is in irons below decks.",
+        "Lost some good timber in the process, but the mission is accomplished. Good recovery."
+      ]
+    },
+    "WLL": {
+      "tier": "SURVIVE",
+      "title": "Wounded Quarry",
+      "sub_analysis": true,
+      "narrator_lines": [
+        "The Galleon escapes into open water, but we've wounded her badly.",
+        "She won't be raiding convoys for months. A partial victory at best.",
+        "That started so promising. What went wrong, gentlemen?"
+      ]
+    },
+    "LWW": {
+      "tier": "SUCCESS",
+      "title": "Comeback Crew",
+      "narrator_lines": [
+        "What a pursuit! A terrible start — but the crew rallied magnificently.",
+        "The pirates are captured and their vessel seized as a prize.",
+        "From the jaws of failure, you snatched victory. The Admiralty is impressed."
+      ]
+    },
+    "LWL": {
+      "tier": "SURVIVE",
+      "title": "Pyrrhic Prize",
+      "sub_analysis": true,
+      "narrator_lines": [
+        "Both ships limp into port. The Galleon is too damaged to flee, but we're no better.",
+        "The pirates are captured, but barely. A pyrrhic victory.",
+        "Inconsistency nearly cost us everything today."
+      ]
+    },
+    "LLW": {
+      "tier": "SURVIVE",
+      "title": "Divine Providence",
+      "narrator_lines": [
+        "A miracle at the last. One desperate broadside brought down her colours.",
+        "The ship is barely afloat. Half the crew is wounded. But the Galleon is ours.",
+        "Do not count on Divine Providence twice, gentlemen."
+      ]
+    },
+    "LLL": {
+      "tier": "FAILURE",
+      "title": "Disgrace and Ruin",
+      "sub_analysis": true,
+      "narrator_lines": [
+        "The Sangre Carmesi disappears beyond the horizon. Gone.",
+        "His Majesty's ship limps home in disgrace. The Admiralty will not be pleased.",
+        "Six months of piracy will continue. The convoys will burn. You have failed.",
+        "England mourns the ships that could not be saved."
+      ]
+    }
+  },
+  "narrator": {
+    "voice": "royal_navy_captain",
+    "tts_engine": "local",
+    "between_commands_lines": [
+      "Look lively, lads!",
+      "Time and tide wait for no man!",
+      "Hands to your stations!",
+      "The Galleon draws closer!",
+      "Move! Move! Move!",
+      "That's an order from the Captain!",
+      "Smartly now — no dawdling!",
+      "England expects every man to do his duty!"
+    ]
+  }
+}

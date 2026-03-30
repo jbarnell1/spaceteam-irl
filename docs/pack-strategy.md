@@ -64,11 +64,10 @@ Every hardware tier includes **one Hub** and a set of tablets. The Hub is the sa
 | 1× Central Hub | Standard |
 | 4× Tablets | **Navigator**, **Engineer**, **Operator**, **Sentinel** |
 | 2× Starter NFC Cards | "First Voyage" + "Storm Warning" (~3 min + ~5 min) |
-| Sentinel NFC Item Cards | 4× themed item cards for the Sentinel's NFC scanner |
 | Batteries | 2× AA per tablet + 4× AA for Hub (12 total included) |
 | Quick-start guide | |
 
-**Why these 4:** Navigator (steering), Engineer (power), Operator (comms), Sentinel (defense) — the four fundamental crew roles. Cooperative commands across these four create rich cross-talk. The Sentinel's NFC scanner adds a unique "find the physical card" mechanic that showcases the hardware.
+**Why these 4:** Navigator (steering), Engineer (power), Operator (comms), Sentinel (defense) — the four fundamental crew roles. Cooperative commands across these four create rich cross-talk. The Sentinel’s spring-return trigger adds a unique analog squeeze mechanic that showcases the hardware.
 
 | | |
 |---|---|
@@ -87,7 +86,6 @@ Every hardware tier includes **one Hub** and a set of tablets. The Hub is the sa
 | 1× Central Hub | Standard |
 | 8× Tablets | All 8 archetypes |
 | 4× Starter NFC Cards | "First Voyage" + "Storm Warning" + "The Crimson Galleon" + "Deep Dive" |
-| Sentinel NFC Item Cards | 6× themed item cards |
 | Batteries | 2× AA per tablet + 4× AA for Hub (20 total included) |
 | Quick-start guide + full manual | |
 | Carrying case | Foam-insert case for all 8 tablets + Hub |
@@ -122,7 +120,7 @@ However, we could offer a **Tablet-Only Upgrade Pack** for customers who already
 
 | Pack | Contents | Price |
 |---|---|---|
-| 2-Tablet Upgrade | Any 2 archetypes + NFC items (if Sentinel included) | $39 |
+| 2-Tablet Upgrade | Any 2 archetypes | $39 |
 | 4-Tablet Upgrade | Any 4 archetypes | $69 |
 
 These are **direct/online-only** (companion app purchase or website) since they require choosing specific archetypes.
@@ -192,7 +190,7 @@ These include **physical extras** beyond the NFC card:
 
 | Extra | Description | Which Packs |
 |---|---|---|
-| Sentinel Item Cards | 2–4 additional themed NFC item cards for the Sentinel's scanner | Any pack with Sentinel-heavy scenarios |
+| Commander NFC Item Cards | 2–4 additional themed NFC item cards for the Commander's scanner | Any pack with Commander-heavy scenarios |
 | Map/Poster | Fold-out themed map or poster (adds to table atmosphere) | Premium theme bundles |
 | Character Cards | Printed role cards with archetype art and quick-reference controls | Deluxe bundles |
 
@@ -269,7 +267,7 @@ These two archetypes have the widest command vocabulary (joystick covers 2D spac
 | Navigator | Direction, course — the "driver" |
 | Engineer | Power, systems — the "engine room" |
 | Operator | Communication — bridges the gap between players (encoder tuning = "finding the right channel") |
-| Sentinel | Defense + NFC physicality — adds a unique tactile mechanic (scanning cards) |
+| Sentinel | Defense + trigger precision — adds a unique analog squeeze mechanic (spring-return hall trigger) |
 
 This 4-player composition hits every cooperative command axis:
 - Navigator ↔ Engineer (steering + power coordination)

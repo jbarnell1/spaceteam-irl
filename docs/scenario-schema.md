@@ -85,13 +85,13 @@ Each row shows what action types are available on the specialty slots. All arche
 | **Navigator** | `SET_JOYSTICK` `{x,y}` | `SET_SLIDER` `0–100` |
 | **Engineer** | `SET_SLIDER` `0–100` | `PLUG_JACK` `{port,wire}` |
 | **Operator** | `SET_ENCODER` `int` | `ENTER_CODE` `"3142"` |
-| **Sentinel** | `SCAN_NFC` `"uid"` | `SET_ROTARY_SW` `1–6` |
+| **Sentinel** | `SET_TRIGGER` `0–100` | `SET_ROTARY_SW` `1–6` |
 | **Medic** | `MATCH_COLOR` `[r,g,b]` | `SET_ENCODER` `int` |
 | **Analyst** | `ENTER_CODE` `"3142"` | `SET_ROTARY_SW` `1–6` |
 | **Scout** | `SET_JOYSTICK` `{x,y}` | `MATCH_COLOR` `[r,g,b]` |
 | **Commander** | `PLUG_JACK` `{port,wire}` | `SCAN_NFC` `"uid"` |
 
-**Element sharing:** Each specialty element appears on exactly 2 archetypes. This enables OPEN commands (either archetype can answer) and cross-tablet commands.
+**Element sharing:** Most specialty elements appear on 2 archetypes, enabling OPEN commands (either can answer) and cross-tablet commands. The Hall Trigger (Sentinel) and NFC Scanner (Commander) are each exclusive to one archetype.
 
 | Element | Action Type | Archetypes |
 |---|---|---|
@@ -100,7 +100,8 @@ Each row shows what action types are available on the specialty slots. All arche
 | Barrel Jack Patch Bay | `PLUG_JACK` | Engineer, Commander |
 | Rotary Encoder | `SET_ENCODER` | Operator, Medic |
 | Number Pad | `ENTER_CODE` | Operator, Analyst |
-| NFC Scanner | `SCAN_NFC` | Sentinel, Commander |
+| Hall Trigger | `SET_TRIGGER` | Sentinel |
+| NFC Scanner | `SCAN_NFC` | Commander |
 | Rotary Switch | `SET_ROTARY_SW` | Sentinel, Analyst |
 | Color Dial | `MATCH_COLOR` | Medic, Scout |
 
@@ -120,7 +121,7 @@ Commands are classified by how much cognitive/physical effort they require. The 
 | Tier | Description | Action Types | Avg. Execution Time |
 |---|---|---|---|
 | **T1 — Quick** | Binary flip or press. Instant. | `SET_TOGGLE`, `PRESS_BUTTON` | 1–2 seconds |
-| **T2 — Standard** | Moderate precision or matching. | `SET_SLIDER`, `SET_ENCODER`, `SET_ROTARY_SW`, `PLUG_JACK` | 3–6 seconds |
+| **T2 — Standard** | Moderate precision or matching. | `SET_SLIDER`, `SET_ENCODER`, `SET_ROTARY_SW`, `PLUG_JACK`, `SET_TRIGGER` | 3–6 seconds |
 | **T3 — Complex** | Multi-step or high precision. | `SET_JOYSTICK`, `MATCH_COLOR`, `ENTER_CODE`, `SCAN_NFC` | 5–12 seconds |
 
 ### Statefulness
@@ -136,6 +137,7 @@ Controls fall into two categories that affect command generation:
 | Slider (`SET_SLIDER`) | Continuous 0–100 | Multiple distinct target values |
 | Rotary Encoder (`SET_ENCODER`) | Continuous integer | Multiple distinct target values |
 | Rotary Switch (`SET_ROTARY_SW`) | Discrete 1–6 | Multiple position targets |
+| Hall Trigger (`SET_TRIGGER`) | Continuous 0–100, spring-return | Multiple distinct target values (spring returns to 0 on release) |
 | Color Dial (`MATCH_COLOR`) | Continuous [r,g,b] | Multiple distinct color targets |
 
 **Momentary controls** are fire-and-forget. No state tracking needed:

@@ -37,7 +37,7 @@
 
 Every tablet shares a large **universal control base** — 3 toggle switches, 4 momentary buttons, a crisis button, and a submit button. This means every player always has plenty to do, regardless of archetype. The 7 universal slots alone generate a rich command space for easy/medium difficulty.
 
-On top of the universal base, each tablet carries **2 specialty elements** drawn from a shared pool of 8 unique hardware elements. Each element appears on **exactly 2 archetypes** — no duplicates, no orphans. This creates:
+On top of the universal base, each tablet carries **2 specialty elements** drawn from a shared pool of 9 unique hardware elements. Most elements appear on 2 archetypes; the Hall Trigger (Sentinel) and NFC Scanner (Commander) are each exclusive to one archetype. This creates:
 
 - **OPEN commands:** Specialty actions that 2 different archetypes can race to complete (first responder wins).
 - **Cross-tablet commands:** Display a specialty command on one player's screen for the other player who shares that element.
@@ -76,7 +76,7 @@ All 3 toggles and 4 buttons use **different physical shapes and colors** so the 
 
 ## Specialty Element Pool
 
-8 unique hardware elements, each appearing on exactly 2 archetypes:
+9 unique hardware elements. Most appear on 2 archetypes; the Hall Trigger and NFC Scanner are each exclusive to one archetype:
 
 | # | Element | Action Type | Tier | Description |
 |---|---|---|---|---|
@@ -85,15 +85,16 @@ All 3 toggles and 4 buttons use **different physical shapes and colors** so the 
 | 3 | **Barrel Jack Patch Bay** | `PLUG_JACK` | T2 | 3 barrel jack ports + 3 tethered wires (RED/1kΩ, BLUE/2.2kΩ, GREEN/4.7kΩ). Each port has a 10kΩ pull-down ADC pin for resistor identification. 34 valid states total. |
 | 4 | **Rotary Encoder** | `SET_ENCODER` | T2 | Endless rotary encoder (A/B quadrature + click). Value: integer position. |
 | 5 | **Number Pad** | `ENTER_CODE` | T3 | 4-button keypad (digits 1–4). Player enters a sequence and presses Submit. Value: string (e.g., "3142"). |
-| 6 | **NFC Scanner** | `SCAN_NFC` | T3 | RC522 RFID/NFC reader (SPI). Player scans a tagged game badge/card. Value: card ID string. |
-| 7 | **Rotary Switch** | `SET_ROTARY_SW` | T2 | 6-position selector switch (ADC resistor ladder). Value: 1–6. Simpler difficulties may use only positions 1–3. |
-| 8 | **Color Dial** | `MATCH_COLOR` | T3 | Potentiometer + 2 addressable RGB LEDs (target LED + current LED). Player rotates to match the target color. Value: `[r, g, b]`. |
+| 6 | **Hall Trigger** | `SET_TRIGGER` | T2 | SS49E Hall sensor + magnet + spring + lever pivot. Player squeezes a spring-return trigger lever. Value: 0–100 (continuous). Spring returns to 0 on release. |
+| 7 | **NFC Scanner** | `SCAN_NFC` | T3 | RC522 RFID/NFC reader (SPI). Player scans a tagged game badge/card. Value: card ID string. |
+| 8 | **Rotary Switch** | `SET_ROTARY_SW` | T2 | 6-position selector switch (ADC resistor ladder). Value: 1–6. Simpler difficulties may use only positions 1–3. |
+| 9 | **Color Dial** | `MATCH_COLOR` | T3 | Potentiometer + 2 addressable RGB LEDs (target LED + current LED). Player rotates to match the target color. Value: `[r, g, b]`. |
 
 ---
 
 ## Element Pairing Matrix
 
-Each element appears on exactly 2 archetypes. No two archetypes share the same pair.
+Most elements appear on 2 archetypes. No two archetypes share the same pair.
 
 | Element | Archetype 1 | Archetype 2 |
 |---|---|---|
@@ -102,7 +103,8 @@ Each element appears on exactly 2 archetypes. No two archetypes share the same p
 | Barrel Jack Patch Bay | **Engineer** (B) | **Commander** (A) |
 | Rotary Encoder | **Operator** (A) | **Medic** (B) |
 | Number Pad | **Operator** (B) | **Analyst** (A) |
-| NFC Scanner | **Sentinel** (A) | **Commander** (B) |
+| Hall Trigger | **Sentinel** (A) | — |
+| NFC Scanner | **Commander** (B) | — |
 | Rotary Switch | **Sentinel** (B) | **Analyst** (B) |
 | Color Dial | **Medic** (A) | **Scout** (B) |
 
@@ -115,11 +117,11 @@ Each element appears on exactly 2 archetypes. No two archetypes share the same p
 | **Navigator** | Joystick | Slider | Scout (Joy), Engineer (Slider) |
 | **Engineer** | Slider | Barrel Jacks | Navigator (Slider), Commander (Jacks) |
 | **Operator** | Rotary Encoder | Number Pad | Medic (Encoder), Analyst (NumPad) |
-| **Sentinel** | NFC Scanner | Rotary Switch | Commander (NFC), Analyst (RotSwitch) |
+| **Sentinel** | Hall Trigger | Rotary Switch | Analyst (RotSwitch) |
 | **Medic** | Color Dial | Rotary Encoder | Scout (Color), Operator (Encoder) |
 | **Analyst** | Number Pad | Rotary Switch | Operator (NumPad), Sentinel (RotSwitch) |
 | **Scout** | Joystick | Color Dial | Navigator (Joy), Medic (Color) |
-| **Commander** | Barrel Jacks | NFC Scanner | Engineer (Jacks), Sentinel (NFC) |
+| **Commander** | Barrel Jacks | NFC Scanner | Engineer (Jacks) |
 
 ---
 
@@ -165,13 +167,13 @@ The Operator tunes frequencies (encoder) and enters authorization codes (number 
 
 ### 4. Sentinel
 
-**Role:** Security, access control, alert levels.
-**Specialty A:** NFC Scanner — RFID reader (`SCAN_NFC`)
+**Role:** Security, containment, alert levels.
+**Specialty A:** Hall Trigger — spring-return analog lever (`SET_TRIGGER`)
 **Specialty B:** Rotary Switch — 6-position selector (`SET_ROTARY_SW`)
 
-The Sentinel controls access (scanning badges) and sets alert/security levels (rotary switch). This is the gatekeeper role — physically scanning tagged cards under time pressure adds a unique, tactile urgency.
+The Sentinel holds containment fields, braces bulkheads, and sets alert/security levels (rotary switch). The hall trigger is a spring-loaded lever that snaps back to zero on release — demanding sustained grip under pressure. No other archetype has a "hold it steady or lose it" mechanic.
 
-**Typical commands:** "Scan the ALPHA badge!", "Set alert to LOCKDOWN — position 3!", "Press the green diamond!"
+**Typical commands:** "Containment clamp to FULL — HOLD IT!", "Set alert to LOCKDOWN — position 3!", "Press the green diamond!"
 
 ---
 
@@ -217,7 +219,7 @@ The Scout physically aims sensors (joystick) and matches signal colors for targe
 **Specialty A:** Barrel Jack Patch Bay — 3 ports, 3 wires (`PLUG_JACK`)
 **Specialty B:** NFC Scanner — RFID reader (`SCAN_NFC`)
 
-The Commander physically routes ship systems (barrel jacks) and authorizes critical actions (NFC scan). This is the authority role — plugging in the right cables and scanning override badges under crisis pressure. Shares barrel jacks with Engineer and NFC with Sentinel.
+The Commander physically routes ship systems (barrel jacks) and authorizes critical actions (NFC scan). This is the authority role — plugging in the right cables and scanning override badges under crisis pressure. Shares barrel jacks with Engineer.
 
 **Typical commands:** "Plug the BLUE wire into port 1!", "Scan the OMEGA override badge!", "Press the red button!"
 
@@ -252,7 +254,7 @@ The Hub pushes 9 labels per tablet via `OLED_LABELS` when a scenario loads. Labe
 | NAVIGATOR | Port Thruster | Stbd Thruster | Drift Brake | Mark Waypoint | Flare Launch | Sensor Ping | Dock Clamp | Helm Control | Thrust Lever |
 | ENGINEER | Reactor | Coolant Valve | Fuel Dump | Emergency Vent | Purge Line | System Reset | Aux Power | Power Grid | Patch Bay |
 | OPERATOR | Distress Beacon | Short-Range | Long-Range | Hail Vessel | Alert Broadcast | Jam Signal | Clear Channel | Frequency Dial | Auth Code |
-| SENTINEL | Bulkhead Lock | Airlock Ctrl | Laser Grid | Alarm Bell | Badge Override | Deck Scan | Evac Signal | Access Badge | Alert Level |
+| SENTINEL | Bulkhead Lock | Airlock Ctrl | Laser Grid | Alarm Bell | Badge Override | Deck Scan | Evac Signal | Lockdown Grip | Alert Level |
 
 ### The Crimson Galleon (Pirate Theme)
 
@@ -272,8 +274,9 @@ Some controls maintain persistent state between commands:
 | Category | Controls | State Model |
 |---|---|---|
 | **Binary stateful** | Toggles, barrel jack ports | ON/OFF per switch/port. Hub tracks state; won't command "turn ON" if already ON. |
-| **Continuous stateful** | Slider, encoder, color dial | Position value persists. Hub tracks approximate state for valid command generation. |
+
 | **Discrete stateful** | Rotary switch | Position 1–6. Hub tracks current position. |
+| **Continuous stateful** | Slider, encoder, color dial, hall trigger | Position value persists. Hub tracks approximate state for valid command generation. Hall trigger spring-returns to 0 on release. |
 | **Momentary (stateless)** | Buttons, number pad, NFC scanner | Fire-and-forget. No state tracking needed. |
 
 Scenario command pools **must** provide both ON and OFF variants for every toggle command, and multiple target values for continuous/discrete controls. The validator enforces this.
@@ -400,6 +403,7 @@ Command appears on one player's screen but targets another player's controls. Th
 | Barrel Jack Patch Bay | $1.50 | 3× panel-mount jacks + 3× tethered plugs + resistors |
 | Rotary Encoder | $0.50 | EC11-style with knob |
 | Number Pad | $0.80 | 4× tactile buttons + mounting |
+| Hall Trigger | $1.50 | SS49E Hall sensor + magnet + spring + lever |
 | NFC Scanner | $1.80 | RC522 module (SPI) |
 | Rotary Switch | $0.70 | 6-position + resistor ladder |
 | Color Dial | $1.00 | Pot + 2× WS2812B LEDs |
@@ -419,9 +423,9 @@ A minimum-viable product ships with 1 Hub + 4 tablets:
 | Navigator | Joystick | Slider |
 | Engineer | Slider | Barrel Jacks |
 | Operator | Rotary Encoder | Number Pad |
-| Sentinel | NFC Scanner | Rotary Switch |
+| Sentinel | Hall Trigger | Rotary Switch |
 
-These 4 cover 6 of the 8 specialty elements (missing: Color Dial, Barrel Jacks duplicate coverage). All 4 have strong thematic identity and distinct physical feel.
+These 4 cover 6 of the 9 specialty elements (missing: Color Dial, NFC Scanner, Barrel Jacks duplicate coverage). All 4 have strong thematic identity and distinct physical feel.
 
 ### Expansion Pack (4 more)
 
@@ -432,11 +436,11 @@ These 4 cover 6 of the 8 specialty elements (missing: Color Dial, Barrel Jacks d
 | Scout | Joystick | Color Dial |
 | Commander | Barrel Jacks | NFC Scanner |
 
-Completing the full 8 ensures every element appears on exactly 2 tablets, enabling the full OPEN command and cross-tablet mechanics.
+Completing the full 8 ensures all 9 specialty elements are covered, enabling the full OPEN command and cross-tablet mechanics.
 
 ### V2: New Elements
 
-Future hardware revisions could add elements to the pool (e.g., a membrane pressure sensor, a tilt/accelerometer, a mini trackball). New elements would be paired onto a new pair of archetypes, or a "V2" variant of existing archetypes.
+Future hardware revisions could add elements to the pool (e.g., a tilt/accelerometer, a mini trackball). New elements would be paired onto a new pair of archetypes, or a "V2" variant of existing archetypes.
 
 ---
 

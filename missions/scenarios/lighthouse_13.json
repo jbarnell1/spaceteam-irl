@@ -8,173 +8,1599 @@
     "subject": "perseverance",
     "age_rating": "8+",
     "difficulty": "medium",
-    "player_count": { "min": 1, "max": 2 },
-    "duration_sec": { "min": 570, "max": 630 },
+    "player_count": {
+      "min": 1,
+      "max": 2
+    },
+    "duration_sec": {
+      "min": 570,
+      "max": 630
+    },
     "adaptive_pacing": true,
     "version": "2.0.0",
     "author": "mission_architect",
     "design_note": "Designed for 1-2 player sessions. Two lighthouse keepers on a remote rock in the North Atlantic. A Category 4 storm hits. Keep the light burning, the foghorn sounding, and the radio alive — or ships wreck on the rocks."
   },
-
   "roles": {
-    "NAVIGATOR":  "Lamp Keeper",
-    "ENGINEER":   "Mechanic",
-    "OPERATOR":   "Signalman",
-    "SENTINEL":   "Watch",
-    "MEDIC":      "Keeper's Mate",
-    "ANALYST":    "Weather Eye",
-    "SCOUT":      "Coast Watch",
-    "COMMANDER":  "Head Keeper"
+    "NAVIGATOR": "Lamp Keeper",
+    "ENGINEER": "Mechanic",
+    "OPERATOR": "Signalman",
+    "SENTINEL": "Watch",
+    "MEDIC": "Keeper's Mate",
+    "ANALYST": "Weather Eye",
+    "SCOUT": "Coast Watch",
+    "COMMANDER": "Head Keeper"
   },
-
   "oled_labels": {
-    "NAVIGATOR": ["Left Shutter",  "Right Shutter",  "Backup Lamp",    "Ignite Lamp",    "Flash Signal",   "Wiper",          "Horn Blast",     "Lamp Bearing",   "Lamp Bright"],
-    "ENGINEER":  ["Fuel Valve",    "Oil Pressure",   "Wrench Turn",    "Pump Start",     "Belt Kick",      "Grease Gun",     "Kill Switch",    "Generator",      "Junction Box"],
-    "OPERATOR":  ["Foghorn On",    "Distress Sig",   "Antenna Aim",    "Storm Warn",     "Morse Key",      "Channel Scan",   "Beacon Ping",    "Radio Freq",     "Signal Code"],
-    "SENTINEL":  ["North Watch",   "South Watch",    "Lantern Hook",   "Flare Gun",      "Bell Ring",      "Bolt Lock",      "Wave Flag",      "Scan Horizon",   "Door Seal"],
-    "MEDIC":     ["Bandage",       "Tourniquet",     "Brace Splint",   "Blanket",        "Hot Drink",      "Smelling Salt",  "Dry Clothes",    "First Aid",      "Warmth Dial"],
-    "ANALYST":   ["Storm Track",   "Tide Chart",     "Log Book",       "Log Entry",      "Plot Course",    "Check Compass",  "Mark Chart",     "Barometer",      "Wind Gauge"],
-    "SCOUT":     ["Porthole",      "East Shore",     "West Shore",     "Spyglass",       "Scan Reef",      "Check Buoy",     "Count Masts",    "Wave Height",    "Sea State"],
-    "COMMANDER": ["Lock Down",     "Storm Shutters", "Muster Point",   "Confirm Order",  "All Hands",      "Mayday",         "Stand Down",     "Station Wires",  "Station Log"]
-  },
-
-  "command_pools": {
-    "direct": [
-      { "id": "nav_lamp_north",     "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Lamp bearing — NORTH!",                  "narrator_line": "Lamp Keeper! Swing the beam north — ship on the rocks!",    "value": {"x":0,"y":80},   "tolerance": {"x":20,"y":15}, "timeout_ms": 8000 },
-      { "id": "nav_lamp_south",     "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Lamp bearing — SOUTH!",                  "narrator_line": "South! The beam — south! Trawler in the channel!",          "value": {"x":0,"y":-80},  "tolerance": {"x":20,"y":15}, "timeout_ms": 8000 },
-      { "id": "nav_lamp_east",      "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Lamp bearing — EAST!",                   "narrator_line": "East bearing! Sweep the reef — something's out there!",     "value": {"x":80,"y":0},   "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
-      { "id": "nav_lamp_west",      "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Lamp bearing — WEST!",                   "narrator_line": "West! Point the lamp west — the headland!",                 "value": {"x":-80,"y":0},  "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
-      { "id": "nav_bright_full",    "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": "specialty_b", "tier": "T2", "label": "Full brightness!",                       "narrator_line": "Full brightness! Max the beam — they can't see us!",        "value": 100, "tolerance": 10,                       "timeout_ms": 5000 },
-      { "id": "nav_bright_half",    "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": "specialty_b", "tier": "T2", "label": "Half brightness — save fuel!",           "narrator_line": "Half power — conserve the oil! We need it to last!",        "value": 50,  "tolerance": 10,                       "timeout_ms": 5000 },
-      { "id": "nav_bright_low",     "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": "specialty_b", "tier": "T2", "label": "Low beam — emergency!",                  "narrator_line": "Low beam only — the generator's struggling!",               "value": 20,  "tolerance": 10,                       "timeout_ms": 5000 },
-      { "id": "nav_left_shutter",   "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Open left shutter!",                     "narrator_line": "Left shutter — open it! Clear the lens!",                   "value": true,                                       "timeout_ms": 3000 },
-      { "id": "nav_left_close",     "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Close left shutter!",                    "narrator_line": "Shut the left shutter — debris incoming!",                  "value": false,                                      "timeout_ms": 3000 },
-      { "id": "nav_right_shutter",  "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Open right shutter!",                    "narrator_line": "Right shutter — get that side open!",                       "value": true,                                       "timeout_ms": 3000 },
-      { "id": "nav_right_close",    "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Close right shutter!",                   "narrator_line": "Right side shut! The spray will kill the lens!",            "value": false,                                      "timeout_ms": 3000 },
-      { "id": "nav_backup_on",      "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": "toggle_3",    "tier": "T1", "label": "Backup lamp — ON!",                      "narrator_line": "Backup lamp on! The main might fail — be ready!",           "value": true,                                       "timeout_ms": 3000 },
-      { "id": "nav_backup_off",     "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": "toggle_3",    "tier": "T1", "label": "Backup lamp — OFF!",                     "narrator_line": "Kill the backup — it's drawing too much power!",            "value": false,                                      "timeout_ms": 3000 },
-      { "id": "nav_ignite",         "target_arch": "NAVIGATOR", "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "IGNITE the lamp!",                       "narrator_line": "Ignite! Light that lamp — NOW!",                            "value": null,                                       "timeout_ms": 3000 },
-      { "id": "nav_flash",          "target_arch": "NAVIGATOR", "action": "PRESS_BUTTON", "slot": "button_2",    "tier": "T1", "label": "Flash signal — three!",                  "narrator_line": "Flash it! Three pulses — warn that trawler!",               "value": null,                                       "timeout_ms": 3000 },
-
-      { "id": "eng_gen_full",       "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": "specialty_a", "tier": "T2", "label": "Generator to FULL!",                     "narrator_line": "Mechanic! Generator to full — we need every watt!",         "value": 100, "tolerance": 10,                       "timeout_ms": 5000 },
-      { "id": "eng_gen_half",       "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": "specialty_a", "tier": "T2", "label": "Generator to half!",                     "narrator_line": "Half power on the genny — it's overheating!",               "value": 50,  "tolerance": 10,                       "timeout_ms": 5000 },
-      { "id": "eng_gen_idle",       "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": "specialty_a", "tier": "T2", "label": "Generator to idle!",                     "narrator_line": "Idle the generator! Cool it down before it seizes!",        "value": 10,  "tolerance": 10,                       "timeout_ms": 5000 },
-      { "id": "eng_gen_off",        "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": "specialty_a", "tier": "T2", "label": "Kill the generator!",                    "narrator_line": "Kill it! Shut the generator down — fire risk!",             "value": 0,   "tolerance": 10,                       "timeout_ms": 5000 },
-      { "id": "eng_patch_main",     "target_arch": "ENGINEER",  "action": "PLUG_JACK",    "slot": "specialty_b", "tier": "T2", "label": "Wire: main power relay!",                "narrator_line": "Mechanic! Patch the main power relay — jacks in!",          "value": {"A":"1","B":"2","C":"3"},                  "timeout_ms": 6000 },
-      { "id": "eng_patch_backup",   "target_arch": "ENGINEER",  "action": "PLUG_JACK",    "slot": "specialty_b", "tier": "T2", "label": "Wire: backup generator!",                "narrator_line": "Backup generator wiring — swap those jacks NOW!",           "value": {"A":"2","B":"3","C":"1"},                  "timeout_ms": 6000 },
-      { "id": "eng_patch_foghorn",  "target_arch": "ENGINEER",  "action": "PLUG_JACK",    "slot": "specialty_b", "tier": "T2", "label": "Wire: foghorn circuit!",                 "narrator_line": "Foghorn circuit! Reroute those jacks — it's dead!",         "value": {"A":"3","B":"1","C":"2"},                  "timeout_ms": 6000 },
-      { "id": "eng_fuel_on",        "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Open fuel valve!",                       "narrator_line": "Fuel valve — open! Feed the generator!",                    "value": true,                                       "timeout_ms": 3000 },
-      { "id": "eng_fuel_off",       "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Close fuel valve!",                      "narrator_line": "Close the fuel! We're flooding the engine!",                "value": false,                                      "timeout_ms": 3000 },
-      { "id": "eng_oil_on",         "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Oil pressure — engage!",                 "narrator_line": "Oil pressure! Engage the feed — bearings are dry!",         "value": true,                                       "timeout_ms": 3000 },
-      { "id": "eng_oil_off",        "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Oil pressure — release!",                "narrator_line": "Release the oil pressure — it's too high!",                 "value": false,                                      "timeout_ms": 3000 },
-      { "id": "eng_wrench_on",      "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": "toggle_3",    "tier": "T1", "label": "Wrench — tighten coupling!",             "narrator_line": "Tighten that coupling! Wrench it shut — NOW!",              "value": true,                                       "timeout_ms": 3000 },
-      { "id": "eng_wrench_off",     "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": "toggle_3",    "tier": "T1", "label": "Loosen the coupling!",                   "narrator_line": "Loosen the coupling — it's cross-threaded!",                "value": false,                                      "timeout_ms": 3000 },
-      { "id": "eng_pump",           "target_arch": "ENGINEER",  "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "Start the bilge pump!",                  "narrator_line": "Pump! Start the bilge — water's coming in!",                "value": null,                                       "timeout_ms": 3000 },
-
-      { "id": "op_freq_121",        "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": "specialty_a", "tier": "T2", "label": "Emergency freq 121!",                    "narrator_line": "Signalman! Frequency one-two-one — emergency band!",        "value": 121,                                        "timeout_ms": 6000 },
-      { "id": "op_freq_156",        "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": "specialty_a", "tier": "T2", "label": "Coast Guard: freq 156!",                 "narrator_line": "One-five-six — that's the Coast Guard! Hail them!",         "value": 156,                                        "timeout_ms": 6000 },
-      { "id": "op_freq_200",        "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": "specialty_a", "tier": "T2", "label": "Weather service: freq 200!",             "narrator_line": "Two hundred — weather service! Get the latest forecast!",   "value": 200,                                        "timeout_ms": 6000 },
-      { "id": "op_freq_80",         "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": "specialty_a", "tier": "T2", "label": "Ship channel: freq 80!",                 "narrator_line": "Eighty — the shipping channel! Warn them off!",             "value": 80,                                         "timeout_ms": 6000 },
-      { "id": "op_code_2182",       "target_arch": "OPERATOR",  "action": "ENTER_CODE",   "slot": "specialty_b", "tier": "T3", "label": "Distress code: 2-1-8-2!",                "narrator_line": "Signalman! Code two-one-eight-two — international distress!","value": "2182",                                     "timeout_ms": 8000 },
-      { "id": "op_code_505",        "target_arch": "OPERATOR",  "action": "ENTER_CODE",   "slot": "specialty_b", "tier": "T3", "label": "Relay code: 5-0-5!",                     "narrator_line": "Five-zero-five — the relay station! Patch us through!",     "value": "505",                                      "timeout_ms": 7000 },
-      { "id": "op_code_730",        "target_arch": "OPERATOR",  "action": "ENTER_CODE",   "slot": "specialty_b", "tier": "T3", "label": "Station code: 7-3-0!",                   "narrator_line": "Seven-three-zero — our station ID! Send it!",               "value": "730",                                      "timeout_ms": 7000 },
-      { "id": "op_foghorn_on",      "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "FOGHORN — ON!",                          "narrator_line": "Foghorn! Sound it — ships in the channel!",                 "value": true,                                       "timeout_ms": 3000 },
-      { "id": "op_foghorn_off",     "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Foghorn — OFF!",                         "narrator_line": "Kill the foghorn — it's drawing too much power!",           "value": false,                                      "timeout_ms": 3000 },
-      { "id": "op_distress_on",     "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Send distress signal!",                  "narrator_line": "Distress signal! Broadcast it — we need help!",             "value": true,                                       "timeout_ms": 3000 },
-      { "id": "op_distress_off",    "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Cancel distress!",                       "narrator_line": "Cancel distress — false alarm! We've got it handled!",      "value": false,                                      "timeout_ms": 3000 },
-      { "id": "op_storm_warn",      "target_arch": "OPERATOR",  "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "Broadcast storm warning!",               "narrator_line": "Storm warning! Broadcast it to all ships!",                 "value": null,                                       "timeout_ms": 3000 },
-      { "id": "op_morse",           "target_arch": "OPERATOR",  "action": "PRESS_BUTTON", "slot": "button_2",    "tier": "T1", "label": "Morse key — send SOS!",                  "narrator_line": "Morse key! S-O-S — dit dit dit dah dah dah dit dit dit!",   "value": null,                                       "timeout_ms": 3000 },
-
-      { "id": "sent_horizon",       "target_arch": "SENTINEL",  "action": "SCAN_NFC",     "slot": "specialty_a", "tier": "T3", "label": "Scan the HORIZON CHART!",                "narrator_line": "Watch! Scan the horizon chart — what's out there?",         "value": "HORIZON_CHART",                            "timeout_ms": 10000 },
-      { "id": "sent_manifest",      "target_arch": "SENTINEL",  "action": "SCAN_NFC",     "slot": "specialty_a", "tier": "T3", "label": "Scan SHIP MANIFEST!",                    "narrator_line": "Ship manifest! Scan it — who's in these waters?",           "value": "SHIP_MANIFEST",                            "timeout_ms": 10000 },
-      { "id": "sent_seal_main",     "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "Door seal: MAIN entry!",                 "narrator_line": "Main door seal — position one! Lock it down!",              "value": 1,                                          "timeout_ms": 5000 },
-      { "id": "sent_seal_storm",    "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "Door seal: STORM port!",                 "narrator_line": "Storm port — position two! Reinforce that seal!",           "value": 2,                                          "timeout_ms": 5000 },
-      { "id": "sent_seal_tower",    "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "Door seal: TOWER hatch!",                "narrator_line": "Tower hatch — position three! Seal the top!",               "value": 3,                                          "timeout_ms": 5000 },
-      { "id": "sent_north_on",      "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "North watch — eyes out!",                "narrator_line": "North watch! Eyes open — check the sea state!",             "value": true,                                       "timeout_ms": 3000 },
-      { "id": "sent_north_off",     "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "North watch — stand down!",              "narrator_line": "North watch stand down — nothing on that bearing!",         "value": false,                                      "timeout_ms": 3000 },
-      { "id": "sent_south_on",      "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "South watch — eyes out!",                "narrator_line": "South! Watch the south — breakers on the rocks!",           "value": true,                                       "timeout_ms": 3000 },
-      { "id": "sent_south_off",     "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "South watch — stand down!",              "narrator_line": "South clear. Stand down on that bearing.",                  "value": false,                                      "timeout_ms": 3000 },
-      { "id": "sent_flare",         "target_arch": "SENTINEL",  "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "FIRE the flare!",                        "narrator_line": "Flare! Fire it! Let them know we're here!",                 "value": null,                                       "timeout_ms": 3000 },
-
-      { "id": "med_bandage_red",    "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": "specialty_a", "tier": "T3", "label": "First aid — RED bandage!",               "narrator_line": "Keeper's Mate! Red bandage — stop the bleeding!",           "value": [200,30,30],  "tolerance": 30,             "timeout_ms": 8000 },
-      { "id": "med_salve_green",    "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": "specialty_a", "tier": "T3", "label": "Green salve — burns!",                   "narrator_line": "Green salve — treat the steam burns! Quick!",               "value": [30,180,60],  "tolerance": 30,             "timeout_ms": 8000 },
-      { "id": "med_tonic_blue",     "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": "specialty_a", "tier": "T3", "label": "Blue tonic — cold!",                     "narrator_line": "Blue tonic! Warm them up — hypothermia setting in!",        "value": [30,80,200],  "tolerance": 30,             "timeout_ms": 8000 },
-      { "id": "med_warmth_high",    "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": "specialty_b", "tier": "T2", "label": "Warmth dial to 180!",                    "narrator_line": "Warmth dial to one-eighty — crank the stove up!",           "value": 180,                                        "timeout_ms": 6000 },
-      { "id": "med_warmth_med",     "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": "specialty_b", "tier": "T2", "label": "Warmth to 100 — steady!",                "narrator_line": "One hundred — steady heat. Conserve the fuel.",             "value": 100,                                        "timeout_ms": 6000 },
-      { "id": "med_warmth_low",     "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": "specialty_b", "tier": "T2", "label": "Warmth to 50 — conserve!",               "narrator_line": "Fifty — minimum warmth. We need the fuel for the lamp!",    "value": 50,                                         "timeout_ms": 6000 },
-      { "id": "med_bandage_on",     "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Apply bandage!",                         "narrator_line": "Bandage on! Wrap it tight — stop the bleeding!",            "value": true,                                       "timeout_ms": 3000 },
-      { "id": "med_bandage_off",    "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Remove bandage!",                        "narrator_line": "Old bandage off — rewrap it clean!",                        "value": false,                                      "timeout_ms": 3000 },
-      { "id": "med_blanket",        "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "Throw the blanket!",                     "narrator_line": "Blanket! Get it around them — they're shaking!",            "value": null,                                       "timeout_ms": 3000 },
-      { "id": "med_hotdrink",       "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": "button_2",    "tier": "T1", "label": "Hot drink — NOW!",                       "narrator_line": "Hot drink! Boil the kettle — someone needs warming!",       "value": null,                                       "timeout_ms": 3000 },
-
-      { "id": "ana_baro_1013",      "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": "specialty_a", "tier": "T3", "label": "Barometer: set 1-0-1-3!",                "narrator_line": "Weather Eye! Barometer to one-zero-one-three — calibrate!", "value": "1013",                                     "timeout_ms": 8000 },
-      { "id": "ana_baro_980",       "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": "specialty_a", "tier": "T3", "label": "Barometer: set 9-8-0!",                  "narrator_line": "Nine-eight-zero! The pressure's dropping — log it!",        "value": "980",                                      "timeout_ms": 7000 },
-      { "id": "ana_baro_960",       "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": "specialty_a", "tier": "T3", "label": "Barometer: set 9-6-0!",                  "narrator_line": "Nine-six-zero — catastrophic drop! This storm is a monster!","value": "960",                                      "timeout_ms": 7000 },
-      { "id": "ana_wind_gale",      "target_arch": "ANALYST",   "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "Wind gauge: GALE!",                      "narrator_line": "Wind gauge! Gale force — position three! Log it!",          "value": 3,                                          "timeout_ms": 5000 },
-      { "id": "ana_wind_hurricane", "target_arch": "ANALYST",   "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "Wind gauge: HURRICANE!",                 "narrator_line": "Hurricane force! Position five — off the scale!",           "value": 5,                                          "timeout_ms": 5000 },
-      { "id": "ana_wind_lull",      "target_arch": "ANALYST",   "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "Wind gauge: LULL!",                      "narrator_line": "Lull — position one! Eye of the storm? Log it!",            "value": 1,                                          "timeout_ms": 5000 },
-      { "id": "ana_storm_on",       "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Storm tracking — ON!",                   "narrator_line": "Storm tracking on! Plot the path — where's it heading?",    "value": true,                                       "timeout_ms": 3000 },
-      { "id": "ana_storm_off",      "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Storm tracking — OFF!",                  "narrator_line": "Tracking off — save the battery for the radio!",            "value": false,                                      "timeout_ms": 3000 },
-      { "id": "ana_tide_on",        "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Check the tide chart!",                  "narrator_line": "Tide chart! When's high tide — are we getting swamped?",    "value": true,                                       "timeout_ms": 3000 },
-      { "id": "ana_tide_off",       "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Tide chart — stow it!",                  "narrator_line": "Stow the chart — hold on to something!",                    "value": false,                                      "timeout_ms": 3000 },
-      { "id": "ana_log",            "target_arch": "ANALYST",   "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "Log entry — mark it!",                   "narrator_line": "Log it! Mark the time and conditions — for the record!",    "value": null,                                       "timeout_ms": 3000 },
-
-      { "id": "sco_wave_north",     "target_arch": "SCOUT",     "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Wave height — scan NORTH!",              "narrator_line": "Coast Watch! Scan north — big swells building!",            "value": {"x":0,"y":80},   "tolerance": {"x":20,"y":15}, "timeout_ms": 8000 },
-      { "id": "sco_wave_south",     "target_arch": "SCOUT",     "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Wave height — scan SOUTH!",              "narrator_line": "Scan south — massive swells from the open ocean!",          "value": {"x":0,"y":-80},  "tolerance": {"x":20,"y":15}, "timeout_ms": 8000 },
-      { "id": "sco_wave_east",      "target_arch": "SCOUT",     "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Wave — scan EAST reef!",                 "narrator_line": "East! Scan the reef — the breakers are enormous!",          "value": {"x":80,"y":0},   "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
-      { "id": "sco_wave_west",      "target_arch": "SCOUT",     "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Wave — scan WEST shore!",                "narrator_line": "West shore! Sweep for debris — something broke loose!",     "value": {"x":-80,"y":0},  "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
-      { "id": "sco_sea_green",      "target_arch": "SCOUT",     "action": "MATCH_COLOR",  "slot": "specialty_b", "tier": "T3", "label": "Sea state: match GREEN!",                "narrator_line": "Coast Watch! Green light — match the starboard marker!",    "value": [30,200,50],  "tolerance": 30,             "timeout_ms": 8000 },
-      { "id": "sco_sea_red",        "target_arch": "SCOUT",     "action": "MATCH_COLOR",  "slot": "specialty_b", "tier": "T3", "label": "Sea state: match RED!",                  "narrator_line": "Red! Match the port marker — that ship needs bearing!",     "value": [200,30,30],  "tolerance": 30,             "timeout_ms": 8000 },
-      { "id": "sco_sea_white",      "target_arch": "SCOUT",     "action": "MATCH_COLOR",  "slot": "specialty_b", "tier": "T3", "label": "Sea state: match WHITE!",                "narrator_line": "White light! Match it — signal the all-clear to the tanker!","value": [200,200,200],"tolerance": 30,             "timeout_ms": 8000 },
-      { "id": "sco_port_open",      "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Open the porthole!",                     "narrator_line": "Porthole! Open it — I need eyes on the water!",             "value": true,                                       "timeout_ms": 3000 },
-      { "id": "sco_port_close",     "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Close the porthole!",                    "narrator_line": "Shut the porthole! Wave incoming — SEAL IT!",               "value": false,                                      "timeout_ms": 3000 },
-      { "id": "sco_east_on",        "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "East shore — watch!",                    "narrator_line": "East shore! Eyes on it — the reef is breaking!",            "value": true,                                       "timeout_ms": 3000 },
-      { "id": "sco_east_off",       "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "East shore — stand down!",               "narrator_line": "East clear — shift your eyes elsewhere!",                   "value": false,                                      "timeout_ms": 3000 },
-      { "id": "sco_west_on",        "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": "toggle_3",    "tier": "T1", "label": "West shore — watch!",                    "narrator_line": "West shore! Report — any ships in distress?",               "value": true,                                       "timeout_ms": 3000 },
-      { "id": "sco_west_off",       "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": "toggle_3",    "tier": "T1", "label": "West shore — stand down!",               "narrator_line": "West clear — nothing on that bearing!",                     "value": false,                                      "timeout_ms": 3000 },
-      { "id": "sco_spyglass",       "target_arch": "SCOUT",     "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "Spyglass — look out!",                   "narrator_line": "Spyglass! Scan the horizon — what's out there?",            "value": null,                                       "timeout_ms": 3000 },
-
-      { "id": "cmd_patch_normal",   "target_arch": "COMMANDER", "action": "PLUG_JACK",    "slot": "specialty_a", "tier": "T2", "label": "Wire: normal operations!",               "narrator_line": "Head Keeper! Normal ops wiring — jacks in standard!",       "value": {"A":"1","B":"2","C":"3"},                  "timeout_ms": 6000 },
-      { "id": "cmd_patch_storm",    "target_arch": "COMMANDER", "action": "PLUG_JACK",    "slot": "specialty_a", "tier": "T2", "label": "Wire: storm protocol!",                  "narrator_line": "Storm wiring! Reroute those jacks — priority power!",       "value": {"A":"2","B":"3","C":"1"},                  "timeout_ms": 6000 },
-      { "id": "cmd_patch_emerg",    "target_arch": "COMMANDER", "action": "PLUG_JACK",    "slot": "specialty_a", "tier": "T2", "label": "Wire: EMERGENCY routing!",               "narrator_line": "Emergency routing! Swap those jacks — everything to lamp!", "value": {"A":"3","B":"1","C":"2"},                  "timeout_ms": 6000 },
-      { "id": "cmd_scan_logbook",   "target_arch": "COMMANDER", "action": "SCAN_NFC",     "slot": "specialty_b", "tier": "T3", "label": "Scan the STATION LOG!",                  "narrator_line": "Head Keeper! The station log — scan it! What's protocol?",  "value": "STATION_LOG",                              "timeout_ms": 10000 },
-      { "id": "cmd_scan_orders",    "target_arch": "COMMANDER", "action": "SCAN_NFC",     "slot": "specialty_b", "tier": "T3", "label": "Scan EMERGENCY ORDERS!",                 "narrator_line": "Emergency orders! Scan them — what does HQ say?",           "value": "EMERGENCY_ORDERS",                         "timeout_ms": 10000 },
-      { "id": "cmd_lockdown",       "target_arch": "COMMANDER", "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "LOCK DOWN the station!",                 "narrator_line": "Lockdown! Seal every door — ride this out!",                "value": true,                                       "timeout_ms": 3000 },
-      { "id": "cmd_lockdown_off",   "target_arch": "COMMANDER", "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "End lockdown!",                          "narrator_line": "Lockdown lifted! Open the hatches — we need air!",          "value": false,                                      "timeout_ms": 3000 },
-      { "id": "cmd_confirm",        "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "Confirm the order!",                     "narrator_line": "Confirm! Execute the order — NOW!",                         "value": null,                                       "timeout_ms": 3000 },
-      { "id": "cmd_allhands",       "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": "button_2",    "tier": "T1", "label": "ALL HANDS!",                             "narrator_line": "All hands! Everyone to stations — no rest!",                "value": null,                                       "timeout_ms": 3000 },
-      { "id": "cmd_mayday",         "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": "button_3",    "tier": "T1", "label": "MAYDAY! MAYDAY!",                        "narrator_line": "MAYDAY! Send the mayday! We're going under!",               "value": null,                                       "timeout_ms": 3000 }
+    "NAVIGATOR": [
+      "Left Shutter",
+      "Right Shutter",
+      "Backup Lamp",
+      "Ignite Lamp",
+      "Flash Signal",
+      "Wiper",
+      "Horn Blast",
+      "Lamp Bearing",
+      "Lamp Bright"
     ],
-
-    "cooperative": [
-      { "id": "coop_cmd_tell_nav_north",   "display_on": "COMMANDER", "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Tell Lamp: bearing NORTH!",            "narrator_line": "Head Keeper! Tell the Lamp Keeper — north bearing!",        "value": {"x":0,"y":80}, "tolerance": {"x":20,"y":15},  "timeout_ms": 12000 },
-      { "id": "coop_eng_tell_nav_full",    "display_on": "ENGINEER",  "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": "specialty_b", "tier": "T2", "label": "Tell Lamp: full brightness!",          "narrator_line": "Mechanic! Tell the Lamp Keeper — full brightness!",         "value": 100, "tolerance": 10,                           "timeout_ms": 10000 },
-      { "id": "coop_ana_tell_eng_full",    "display_on": "ANALYST",   "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": "specialty_a", "tier": "T2", "label": "Tell Mechanic: gen to full!",          "narrator_line": "Weather Eye! Tell the Mechanic — generator to full!",       "value": 100, "tolerance": 10,                           "timeout_ms": 10000 },
-      { "id": "coop_cmd_tell_eng_half",    "display_on": "COMMANDER", "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": "specialty_a", "tier": "T2", "label": "Tell Mechanic: gen to half!",          "narrator_line": "Head Keeper! Tell the Mechanic — half power!",              "value": 50,  "tolerance": 10,                           "timeout_ms": 10000 },
-      { "id": "coop_nav_tell_op_121",      "display_on": "NAVIGATOR", "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": "specialty_a", "tier": "T2", "label": "Tell Signals: freq 121!",              "narrator_line": "Lamp Keeper! Tell the Signalman — one-two-one!",            "value": 121,                                            "timeout_ms": 10000 },
-      { "id": "coop_sco_tell_op_156",      "display_on": "SCOUT",     "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": "specialty_a", "tier": "T2", "label": "Tell Signals: freq 156!",              "narrator_line": "Coast Watch! Tell the Signalman — one-five-six!",           "value": 156,                                            "timeout_ms": 10000 },
-      { "id": "coop_op_tell_sent_flare",   "display_on": "OPERATOR",  "target_arch": "SENTINEL",  "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "Tell Watch: fire flare!",              "narrator_line": "Signalman! Tell the Watch — fire a flare!",                 "value": null,                                           "timeout_ms": 6000 },
-      { "id": "coop_med_tell_sent_storm",  "display_on": "MEDIC",     "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "Tell Watch: storm port!",              "narrator_line": "Keeper's Mate! Tell the Watch — seal the storm port!",      "value": 2,                                              "timeout_ms": 8000 },
-      { "id": "coop_eng_tell_med_bandage", "display_on": "ENGINEER",  "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Tell Mate: apply bandage!",            "narrator_line": "Mechanic! Tell the Keeper's Mate — bandage that wound!",    "value": true,                                           "timeout_ms": 6000 },
-      { "id": "coop_sent_tell_med_drink",  "display_on": "SENTINEL",  "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": "button_2",    "tier": "T1", "label": "Tell Mate: hot drink!",                "narrator_line": "Watch! Tell the Keeper's Mate — hot drink, NOW!",           "value": null,                                           "timeout_ms": 6000 },
-      { "id": "coop_nav_tell_ana_1013",    "display_on": "NAVIGATOR", "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": "specialty_a", "tier": "T3", "label": "Tell Weather: baro 1-0-1-3!",          "narrator_line": "Lamp Keeper! Tell Weather Eye — baro one-zero-one-three!",  "value": "1013",                                         "timeout_ms": 12000 },
-      { "id": "coop_sent_tell_ana_wind",   "display_on": "SENTINEL",  "target_arch": "ANALYST",   "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "Tell Weather: wind hurricane!",        "narrator_line": "Watch! Tell Weather Eye — wind gauge to hurricane!",        "value": 5,                                              "timeout_ms": 8000 },
-      { "id": "coop_ana_tell_sco_north",   "display_on": "ANALYST",   "target_arch": "SCOUT",     "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Tell Coast: scan north!",              "narrator_line": "Weather Eye! Tell Coast Watch — scan north! Big swells!",   "value": {"x":0,"y":80}, "tolerance": {"x":20,"y":15},  "timeout_ms": 12000 },
-      { "id": "coop_op_tell_sco_port",     "display_on": "OPERATOR",  "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Tell Coast: open porthole!",           "narrator_line": "Signalman! Tell Coast Watch — eyes on the water!",          "value": true,                                           "timeout_ms": 6000 },
-      { "id": "coop_sco_tell_cmd_storm",   "display_on": "SCOUT",     "target_arch": "COMMANDER", "action": "PLUG_JACK",    "slot": "specialty_a", "tier": "T2", "label": "Tell Head: storm wiring!",             "narrator_line": "Coast Watch! Tell the Head Keeper — storm wiring!",         "value": {"A":"2","B":"3","C":"1"},                      "timeout_ms": 8000 },
-      { "id": "coop_med_tell_cmd_lockdown","display_on": "MEDIC",     "target_arch": "COMMANDER", "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Tell Head: lockdown!",                 "narrator_line": "Keeper's Mate! Tell the Head — lockdown NOW!",              "value": true,                                           "timeout_ms": 6000 }
+    "ENGINEER": [
+      "Fuel Valve",
+      "Oil Pressure",
+      "Wrench Turn",
+      "Pump Start",
+      "Belt Kick",
+      "Grease Gun",
+      "Kill Switch",
+      "Generator",
+      "Junction Box"
     ],
-
-    "open": [
-      { "id": "open_joystick_east",    "target": "ANY", "action": "SET_JOYSTICK",  "tier": "T3", "label": "Someone — scan EAST!",              "narrator_line": "Anyone with a scope — scan east! Something on the reef!",      "value": {"x":80,"y":0},   "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
-      { "id": "open_slider_full",      "target": "ANY", "action": "SET_SLIDER",    "tier": "T2", "label": "Anyone — full power!",              "narrator_line": "Whoever has a slider — full output! We need everything!",      "value": 100, "tolerance": 10,                            "timeout_ms": 5000 },
-      { "id": "open_encoder_121",      "target": "ANY", "action": "SET_ENCODER",   "tier": "T2", "label": "Quick — dial to 121!",              "narrator_line": "Any dial operator — one-two-one! Emergency frequency!",         "value": 121,                                              "timeout_ms": 6000 },
-      { "id": "open_color_red",        "target": "ANY", "action": "MATCH_COLOR",   "tier": "T3", "label": "Someone — match RED!",              "narrator_line": "Anyone with a color dial — red! Mark the danger zone!",        "value": [200,30,30], "tolerance": 30,                     "timeout_ms": 8000 },
-      { "id": "open_rotary_pos_2",     "target": "ANY", "action": "SET_ROTARY_SW", "tier": "T2", "label": "Anyone — position TWO!",            "narrator_line": "Whoever has a selector — position two! Storm protocol!",       "value": 2,                                                "timeout_ms": 5000 },
-      { "id": "open_code_121",         "target": "ANY", "action": "ENTER_CODE",    "tier": "T3", "label": "Someone — code 1-2-1!",             "narrator_line": "Anyone with a keypad — code one-two-one! Emergency override!", "value": "121",                                            "timeout_ms": 7000 }
+    "OPERATOR": [
+      "Foghorn On",
+      "Distress Sig",
+      "Antenna Aim",
+      "Storm Warn",
+      "Morse Key",
+      "Channel Scan",
+      "Beacon Ping",
+      "Radio Freq",
+      "Signal Code"
+    ],
+    "SENTINEL": [
+      "North Watch",
+      "South Watch",
+      "Lantern Hook",
+      "Flare Gun",
+      "Bell Ring",
+      "Bolt Lock",
+      "Wave Flag",
+      "Fog Horn Grip",
+      "Door Seal"
+    ],
+    "MEDIC": [
+      "Bandage",
+      "Tourniquet",
+      "Brace Splint",
+      "Blanket",
+      "Hot Drink",
+      "Smelling Salt",
+      "Dry Clothes",
+      "First Aid",
+      "Warmth Dial"
+    ],
+    "ANALYST": [
+      "Storm Track",
+      "Tide Chart",
+      "Log Book",
+      "Log Entry",
+      "Plot Course",
+      "Check Compass",
+      "Mark Chart",
+      "Barometer",
+      "Wind Gauge"
+    ],
+    "SCOUT": [
+      "Porthole",
+      "East Shore",
+      "West Shore",
+      "Spyglass",
+      "Scan Reef",
+      "Check Buoy",
+      "Count Masts",
+      "Wave Height",
+      "Sea State"
+    ],
+    "COMMANDER": [
+      "Lock Down",
+      "Storm Shutters",
+      "Muster Point",
+      "Confirm Order",
+      "All Hands",
+      "Mayday",
+      "Stand Down",
+      "Station Wires",
+      "Station Log"
     ]
   },
-
+  "command_pools": {
+    "direct": [
+      {
+        "id": "nav_lamp_north",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Lamp bearing — NORTH!",
+        "narrator_line": "Lamp Keeper! Swing the beam north — ship on the rocks!",
+        "value": {
+          "x": 0,
+          "y": 80
+        },
+        "tolerance": {
+          "x": 20,
+          "y": 15
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "nav_lamp_south",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Lamp bearing — SOUTH!",
+        "narrator_line": "South! The beam — south! Trawler in the channel!",
+        "value": {
+          "x": 0,
+          "y": -80
+        },
+        "tolerance": {
+          "x": 20,
+          "y": 15
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "nav_lamp_east",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Lamp bearing — EAST!",
+        "narrator_line": "East bearing! Sweep the reef — something's out there!",
+        "value": {
+          "x": 80,
+          "y": 0
+        },
+        "tolerance": {
+          "x": 15,
+          "y": 20
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "nav_lamp_west",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Lamp bearing — WEST!",
+        "narrator_line": "West! Point the lamp west — the headland!",
+        "value": {
+          "x": -80,
+          "y": 0
+        },
+        "tolerance": {
+          "x": 15,
+          "y": 20
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "nav_bright_full",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_SLIDER",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Full brightness!",
+        "narrator_line": "Full brightness! Max the beam — they can't see us!",
+        "value": 100,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "nav_bright_half",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_SLIDER",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Half brightness — save fuel!",
+        "narrator_line": "Half power — conserve the oil! We need it to last!",
+        "value": 50,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "nav_bright_low",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_SLIDER",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Low beam — emergency!",
+        "narrator_line": "Low beam only — the generator's struggling!",
+        "value": 20,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "nav_left_shutter",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Open left shutter!",
+        "narrator_line": "Left shutter — open it! Clear the lens!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "nav_left_close",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Close left shutter!",
+        "narrator_line": "Shut the left shutter — debris incoming!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "nav_right_shutter",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Open right shutter!",
+        "narrator_line": "Right shutter — get that side open!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "nav_right_close",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Close right shutter!",
+        "narrator_line": "Right side shut! The spray will kill the lens!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "nav_backup_on",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_3",
+        "tier": "T1",
+        "label": "Backup lamp — ON!",
+        "narrator_line": "Backup lamp on! The main might fail — be ready!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "nav_backup_off",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_3",
+        "tier": "T1",
+        "label": "Backup lamp — OFF!",
+        "narrator_line": "Kill the backup — it's drawing too much power!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "nav_ignite",
+        "target_arch": "NAVIGATOR",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "IGNITE the lamp!",
+        "narrator_line": "Ignite! Light that lamp — NOW!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "nav_flash",
+        "target_arch": "NAVIGATOR",
+        "action": "PRESS_BUTTON",
+        "slot": "button_2",
+        "tier": "T1",
+        "label": "Flash signal — three!",
+        "narrator_line": "Flash it! Three pulses — warn that trawler!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_gen_full",
+        "target_arch": "ENGINEER",
+        "action": "SET_SLIDER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Generator to FULL!",
+        "narrator_line": "Mechanic! Generator to full — we need every watt!",
+        "value": 100,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "eng_gen_half",
+        "target_arch": "ENGINEER",
+        "action": "SET_SLIDER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Generator to half!",
+        "narrator_line": "Half power on the genny — it's overheating!",
+        "value": 50,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "eng_gen_idle",
+        "target_arch": "ENGINEER",
+        "action": "SET_SLIDER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Generator to idle!",
+        "narrator_line": "Idle the generator! Cool it down before it seizes!",
+        "value": 10,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "eng_gen_off",
+        "target_arch": "ENGINEER",
+        "action": "SET_SLIDER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Kill the generator!",
+        "narrator_line": "Kill it! Shut the generator down — fire risk!",
+        "value": 0,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "eng_patch_main",
+        "target_arch": "ENGINEER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Wire: main power relay!",
+        "narrator_line": "Mechanic! Patch the main power relay — jacks in!",
+        "value": {
+          "A": "1",
+          "B": "2",
+          "C": "3"
+        },
+        "timeout_ms": 6000
+      },
+      {
+        "id": "eng_patch_backup",
+        "target_arch": "ENGINEER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Wire: backup generator!",
+        "narrator_line": "Backup generator wiring — swap those jacks NOW!",
+        "value": {
+          "A": "2",
+          "B": "3",
+          "C": "1"
+        },
+        "timeout_ms": 6000
+      },
+      {
+        "id": "eng_patch_foghorn",
+        "target_arch": "ENGINEER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Wire: foghorn circuit!",
+        "narrator_line": "Foghorn circuit! Reroute those jacks — it's dead!",
+        "value": {
+          "A": "3",
+          "B": "1",
+          "C": "2"
+        },
+        "timeout_ms": 6000
+      },
+      {
+        "id": "eng_fuel_on",
+        "target_arch": "ENGINEER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Open fuel valve!",
+        "narrator_line": "Fuel valve — open! Feed the generator!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_fuel_off",
+        "target_arch": "ENGINEER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Close fuel valve!",
+        "narrator_line": "Close the fuel! We're flooding the engine!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_oil_on",
+        "target_arch": "ENGINEER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Oil pressure — engage!",
+        "narrator_line": "Oil pressure! Engage the feed — bearings are dry!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_oil_off",
+        "target_arch": "ENGINEER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Oil pressure — release!",
+        "narrator_line": "Release the oil pressure — it's too high!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_wrench_on",
+        "target_arch": "ENGINEER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_3",
+        "tier": "T1",
+        "label": "Wrench — tighten coupling!",
+        "narrator_line": "Tighten that coupling! Wrench it shut — NOW!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_wrench_off",
+        "target_arch": "ENGINEER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_3",
+        "tier": "T1",
+        "label": "Loosen the coupling!",
+        "narrator_line": "Loosen the coupling — it's cross-threaded!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_pump",
+        "target_arch": "ENGINEER",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "Start the bilge pump!",
+        "narrator_line": "Pump! Start the bilge — water's coming in!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "op_freq_121",
+        "target_arch": "OPERATOR",
+        "action": "SET_ENCODER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Emergency freq 121!",
+        "narrator_line": "Signalman! Frequency one-two-one — emergency band!",
+        "value": 121,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "op_freq_156",
+        "target_arch": "OPERATOR",
+        "action": "SET_ENCODER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Coast Guard: freq 156!",
+        "narrator_line": "One-five-six — that's the Coast Guard! Hail them!",
+        "value": 156,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "op_freq_200",
+        "target_arch": "OPERATOR",
+        "action": "SET_ENCODER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Weather service: freq 200!",
+        "narrator_line": "Two hundred — weather service! Get the latest forecast!",
+        "value": 200,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "op_freq_80",
+        "target_arch": "OPERATOR",
+        "action": "SET_ENCODER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Ship channel: freq 80!",
+        "narrator_line": "Eighty — the shipping channel! Warn them off!",
+        "value": 80,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "op_code_2182",
+        "target_arch": "OPERATOR",
+        "action": "ENTER_CODE",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Distress code: 2-1-8-2!",
+        "narrator_line": "Signalman! Code two-one-eight-two — international distress!",
+        "value": "2182",
+        "timeout_ms": 8000
+      },
+      {
+        "id": "op_code_505",
+        "target_arch": "OPERATOR",
+        "action": "ENTER_CODE",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Relay code: 5-0-5!",
+        "narrator_line": "Five-zero-five — the relay station! Patch us through!",
+        "value": "505",
+        "timeout_ms": 7000
+      },
+      {
+        "id": "op_code_730",
+        "target_arch": "OPERATOR",
+        "action": "ENTER_CODE",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Station code: 7-3-0!",
+        "narrator_line": "Seven-three-zero — our station ID! Send it!",
+        "value": "730",
+        "timeout_ms": 7000
+      },
+      {
+        "id": "op_foghorn_on",
+        "target_arch": "OPERATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "FOGHORN — ON!",
+        "narrator_line": "Foghorn! Sound it — ships in the channel!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "op_foghorn_off",
+        "target_arch": "OPERATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Foghorn — OFF!",
+        "narrator_line": "Kill the foghorn — it's drawing too much power!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "op_distress_on",
+        "target_arch": "OPERATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Send distress signal!",
+        "narrator_line": "Distress signal! Broadcast it — we need help!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "op_distress_off",
+        "target_arch": "OPERATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Cancel distress!",
+        "narrator_line": "Cancel distress — false alarm! We've got it handled!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "op_storm_warn",
+        "target_arch": "OPERATOR",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "Broadcast storm warning!",
+        "narrator_line": "Storm warning! Broadcast it to all ships!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "op_morse",
+        "target_arch": "OPERATOR",
+        "action": "PRESS_BUTTON",
+        "slot": "button_2",
+        "tier": "T1",
+        "label": "Morse key — send SOS!",
+        "narrator_line": "Morse key! S-O-S — dit dit dit dah dah dah dit dit dit!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sent_horn_full",
+        "target_arch": "SENTINEL",
+        "action": "SET_TRIGGER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Fog horn — FULL BLAST!",
+        "narrator_line": "Watch! Fog horn to maximum — warn the ships!",
+        "value": 100,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "sent_horn_half",
+        "target_arch": "SENTINEL",
+        "action": "SET_TRIGGER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Fog horn — HALF POWER!",
+        "narrator_line": "Half power on the fog horn — conserve the air reserves!",
+        "value": 50,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "sent_seal_main",
+        "target_arch": "SENTINEL",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Door seal: MAIN entry!",
+        "narrator_line": "Main door seal — position one! Lock it down!",
+        "value": 1,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "sent_seal_storm",
+        "target_arch": "SENTINEL",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Door seal: STORM port!",
+        "narrator_line": "Storm port — position two! Reinforce that seal!",
+        "value": 2,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "sent_seal_tower",
+        "target_arch": "SENTINEL",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Door seal: TOWER hatch!",
+        "narrator_line": "Tower hatch — position three! Seal the top!",
+        "value": 3,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "sent_north_on",
+        "target_arch": "SENTINEL",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "North watch — eyes out!",
+        "narrator_line": "North watch! Eyes open — check the sea state!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sent_north_off",
+        "target_arch": "SENTINEL",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "North watch — stand down!",
+        "narrator_line": "North watch stand down — nothing on that bearing!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sent_south_on",
+        "target_arch": "SENTINEL",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "South watch — eyes out!",
+        "narrator_line": "South! Watch the south — breakers on the rocks!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sent_south_off",
+        "target_arch": "SENTINEL",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "South watch — stand down!",
+        "narrator_line": "South clear. Stand down on that bearing.",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sent_flare",
+        "target_arch": "SENTINEL",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "FIRE the flare!",
+        "narrator_line": "Flare! Fire it! Let them know we're here!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "med_bandage_red",
+        "target_arch": "MEDIC",
+        "action": "MATCH_COLOR",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "First aid — RED bandage!",
+        "narrator_line": "Keeper's Mate! Red bandage — stop the bleeding!",
+        "value": [
+          200,
+          30,
+          30
+        ],
+        "tolerance": 30,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "med_salve_green",
+        "target_arch": "MEDIC",
+        "action": "MATCH_COLOR",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Green salve — burns!",
+        "narrator_line": "Green salve — treat the steam burns! Quick!",
+        "value": [
+          30,
+          180,
+          60
+        ],
+        "tolerance": 30,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "med_tonic_blue",
+        "target_arch": "MEDIC",
+        "action": "MATCH_COLOR",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Blue tonic — cold!",
+        "narrator_line": "Blue tonic! Warm them up — hypothermia setting in!",
+        "value": [
+          30,
+          80,
+          200
+        ],
+        "tolerance": 30,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "med_warmth_high",
+        "target_arch": "MEDIC",
+        "action": "SET_ENCODER",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Warmth dial to 180!",
+        "narrator_line": "Warmth dial to one-eighty — crank the stove up!",
+        "value": 180,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "med_warmth_med",
+        "target_arch": "MEDIC",
+        "action": "SET_ENCODER",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Warmth to 100 — steady!",
+        "narrator_line": "One hundred — steady heat. Conserve the fuel.",
+        "value": 100,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "med_warmth_low",
+        "target_arch": "MEDIC",
+        "action": "SET_ENCODER",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Warmth to 50 — conserve!",
+        "narrator_line": "Fifty — minimum warmth. We need the fuel for the lamp!",
+        "value": 50,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "med_bandage_on",
+        "target_arch": "MEDIC",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Apply bandage!",
+        "narrator_line": "Bandage on! Wrap it tight — stop the bleeding!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "med_bandage_off",
+        "target_arch": "MEDIC",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Remove bandage!",
+        "narrator_line": "Old bandage off — rewrap it clean!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "med_blanket",
+        "target_arch": "MEDIC",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "Throw the blanket!",
+        "narrator_line": "Blanket! Get it around them — they're shaking!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "med_hotdrink",
+        "target_arch": "MEDIC",
+        "action": "PRESS_BUTTON",
+        "slot": "button_2",
+        "tier": "T1",
+        "label": "Hot drink — NOW!",
+        "narrator_line": "Hot drink! Boil the kettle — someone needs warming!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "ana_baro_1013",
+        "target_arch": "ANALYST",
+        "action": "ENTER_CODE",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Barometer: set 1-0-1-3!",
+        "narrator_line": "Weather Eye! Barometer to one-zero-one-three — calibrate!",
+        "value": "1013",
+        "timeout_ms": 8000
+      },
+      {
+        "id": "ana_baro_980",
+        "target_arch": "ANALYST",
+        "action": "ENTER_CODE",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Barometer: set 9-8-0!",
+        "narrator_line": "Nine-eight-zero! The pressure's dropping — log it!",
+        "value": "980",
+        "timeout_ms": 7000
+      },
+      {
+        "id": "ana_baro_960",
+        "target_arch": "ANALYST",
+        "action": "ENTER_CODE",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Barometer: set 9-6-0!",
+        "narrator_line": "Nine-six-zero — catastrophic drop! This storm is a monster!",
+        "value": "960",
+        "timeout_ms": 7000
+      },
+      {
+        "id": "ana_wind_gale",
+        "target_arch": "ANALYST",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Wind gauge: GALE!",
+        "narrator_line": "Wind gauge! Gale force — position three! Log it!",
+        "value": 3,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "ana_wind_hurricane",
+        "target_arch": "ANALYST",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Wind gauge: HURRICANE!",
+        "narrator_line": "Hurricane force! Position five — off the scale!",
+        "value": 5,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "ana_wind_lull",
+        "target_arch": "ANALYST",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Wind gauge: LULL!",
+        "narrator_line": "Lull — position one! Eye of the storm? Log it!",
+        "value": 1,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "ana_storm_on",
+        "target_arch": "ANALYST",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Storm tracking — ON!",
+        "narrator_line": "Storm tracking on! Plot the path — where's it heading?",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "ana_storm_off",
+        "target_arch": "ANALYST",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Storm tracking — OFF!",
+        "narrator_line": "Tracking off — save the battery for the radio!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "ana_tide_on",
+        "target_arch": "ANALYST",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Check the tide chart!",
+        "narrator_line": "Tide chart! When's high tide — are we getting swamped?",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "ana_tide_off",
+        "target_arch": "ANALYST",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Tide chart — stow it!",
+        "narrator_line": "Stow the chart — hold on to something!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "ana_log",
+        "target_arch": "ANALYST",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "Log entry — mark it!",
+        "narrator_line": "Log it! Mark the time and conditions — for the record!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_wave_north",
+        "target_arch": "SCOUT",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Wave height — scan NORTH!",
+        "narrator_line": "Coast Watch! Scan north — big swells building!",
+        "value": {
+          "x": 0,
+          "y": 80
+        },
+        "tolerance": {
+          "x": 20,
+          "y": 15
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "sco_wave_south",
+        "target_arch": "SCOUT",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Wave height — scan SOUTH!",
+        "narrator_line": "Scan south — massive swells from the open ocean!",
+        "value": {
+          "x": 0,
+          "y": -80
+        },
+        "tolerance": {
+          "x": 20,
+          "y": 15
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "sco_wave_east",
+        "target_arch": "SCOUT",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Wave — scan EAST reef!",
+        "narrator_line": "East! Scan the reef — the breakers are enormous!",
+        "value": {
+          "x": 80,
+          "y": 0
+        },
+        "tolerance": {
+          "x": 15,
+          "y": 20
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "sco_wave_west",
+        "target_arch": "SCOUT",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Wave — scan WEST shore!",
+        "narrator_line": "West shore! Sweep for debris — something broke loose!",
+        "value": {
+          "x": -80,
+          "y": 0
+        },
+        "tolerance": {
+          "x": 15,
+          "y": 20
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "sco_sea_green",
+        "target_arch": "SCOUT",
+        "action": "MATCH_COLOR",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Sea state: match GREEN!",
+        "narrator_line": "Coast Watch! Green light — match the starboard marker!",
+        "value": [
+          30,
+          200,
+          50
+        ],
+        "tolerance": 30,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "sco_sea_red",
+        "target_arch": "SCOUT",
+        "action": "MATCH_COLOR",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Sea state: match RED!",
+        "narrator_line": "Red! Match the port marker — that ship needs bearing!",
+        "value": [
+          200,
+          30,
+          30
+        ],
+        "tolerance": 30,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "sco_sea_white",
+        "target_arch": "SCOUT",
+        "action": "MATCH_COLOR",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Sea state: match WHITE!",
+        "narrator_line": "White light! Match it — signal the all-clear to the tanker!",
+        "value": [
+          200,
+          200,
+          200
+        ],
+        "tolerance": 30,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "sco_port_open",
+        "target_arch": "SCOUT",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Open the porthole!",
+        "narrator_line": "Porthole! Open it — I need eyes on the water!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_port_close",
+        "target_arch": "SCOUT",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Close the porthole!",
+        "narrator_line": "Shut the porthole! Wave incoming — SEAL IT!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_east_on",
+        "target_arch": "SCOUT",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "East shore — watch!",
+        "narrator_line": "East shore! Eyes on it — the reef is breaking!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_east_off",
+        "target_arch": "SCOUT",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "East shore — stand down!",
+        "narrator_line": "East clear — shift your eyes elsewhere!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_west_on",
+        "target_arch": "SCOUT",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_3",
+        "tier": "T1",
+        "label": "West shore — watch!",
+        "narrator_line": "West shore! Report — any ships in distress?",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_west_off",
+        "target_arch": "SCOUT",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_3",
+        "tier": "T1",
+        "label": "West shore — stand down!",
+        "narrator_line": "West clear — nothing on that bearing!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_spyglass",
+        "target_arch": "SCOUT",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "Spyglass — look out!",
+        "narrator_line": "Spyglass! Scan the horizon — what's out there?",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "cmd_patch_normal",
+        "target_arch": "COMMANDER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Wire: normal operations!",
+        "narrator_line": "Head Keeper! Normal ops wiring — jacks in standard!",
+        "value": {
+          "A": "1",
+          "B": "2",
+          "C": "3"
+        },
+        "timeout_ms": 6000
+      },
+      {
+        "id": "cmd_patch_storm",
+        "target_arch": "COMMANDER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Wire: storm protocol!",
+        "narrator_line": "Storm wiring! Reroute those jacks — priority power!",
+        "value": {
+          "A": "2",
+          "B": "3",
+          "C": "1"
+        },
+        "timeout_ms": 6000
+      },
+      {
+        "id": "cmd_patch_emerg",
+        "target_arch": "COMMANDER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Wire: EMERGENCY routing!",
+        "narrator_line": "Emergency routing! Swap those jacks — everything to lamp!",
+        "value": {
+          "A": "3",
+          "B": "1",
+          "C": "2"
+        },
+        "timeout_ms": 6000
+      },
+      {
+        "id": "cmd_scan_logbook",
+        "target_arch": "COMMANDER",
+        "action": "SCAN_NFC",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Scan the STATION LOG!",
+        "narrator_line": "Head Keeper! The station log — scan it! What's protocol?",
+        "value": "STATION_LOG",
+        "timeout_ms": 10000
+      },
+      {
+        "id": "cmd_scan_orders",
+        "target_arch": "COMMANDER",
+        "action": "SCAN_NFC",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Scan EMERGENCY ORDERS!",
+        "narrator_line": "Emergency orders! Scan them — what does HQ say?",
+        "value": "EMERGENCY_ORDERS",
+        "timeout_ms": 10000
+      },
+      {
+        "id": "cmd_lockdown",
+        "target_arch": "COMMANDER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "LOCK DOWN the station!",
+        "narrator_line": "Lockdown! Seal every door — ride this out!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "cmd_lockdown_off",
+        "target_arch": "COMMANDER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "End lockdown!",
+        "narrator_line": "Lockdown lifted! Open the hatches — we need air!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "cmd_confirm",
+        "target_arch": "COMMANDER",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "Confirm the order!",
+        "narrator_line": "Confirm! Execute the order — NOW!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "cmd_allhands",
+        "target_arch": "COMMANDER",
+        "action": "PRESS_BUTTON",
+        "slot": "button_2",
+        "tier": "T1",
+        "label": "ALL HANDS!",
+        "narrator_line": "All hands! Everyone to stations — no rest!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "cmd_mayday",
+        "target_arch": "COMMANDER",
+        "action": "PRESS_BUTTON",
+        "slot": "button_3",
+        "tier": "T1",
+        "label": "MAYDAY! MAYDAY!",
+        "narrator_line": "MAYDAY! Send the mayday! We're going under!",
+        "value": null,
+        "timeout_ms": 3000
+      }
+    ],
+    "cooperative": [
+      {
+        "id": "coop_cmd_tell_nav_north",
+        "display_on": "COMMANDER",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Tell Lamp: bearing NORTH!",
+        "narrator_line": "Head Keeper! Tell the Lamp Keeper — north bearing!",
+        "value": {
+          "x": 0,
+          "y": 80
+        },
+        "tolerance": {
+          "x": 20,
+          "y": 15
+        },
+        "timeout_ms": 12000
+      },
+      {
+        "id": "coop_eng_tell_nav_full",
+        "display_on": "ENGINEER",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_SLIDER",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Tell Lamp: full brightness!",
+        "narrator_line": "Mechanic! Tell the Lamp Keeper — full brightness!",
+        "value": 100,
+        "tolerance": 10,
+        "timeout_ms": 10000
+      },
+      {
+        "id": "coop_ana_tell_eng_full",
+        "display_on": "ANALYST",
+        "target_arch": "ENGINEER",
+        "action": "SET_SLIDER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Tell Mechanic: gen to full!",
+        "narrator_line": "Weather Eye! Tell the Mechanic — generator to full!",
+        "value": 100,
+        "tolerance": 10,
+        "timeout_ms": 10000
+      },
+      {
+        "id": "coop_cmd_tell_eng_half",
+        "display_on": "COMMANDER",
+        "target_arch": "ENGINEER",
+        "action": "SET_SLIDER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Tell Mechanic: gen to half!",
+        "narrator_line": "Head Keeper! Tell the Mechanic — half power!",
+        "value": 50,
+        "tolerance": 10,
+        "timeout_ms": 10000
+      },
+      {
+        "id": "coop_nav_tell_op_121",
+        "display_on": "NAVIGATOR",
+        "target_arch": "OPERATOR",
+        "action": "SET_ENCODER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Tell Signals: freq 121!",
+        "narrator_line": "Lamp Keeper! Tell the Signalman — one-two-one!",
+        "value": 121,
+        "timeout_ms": 10000
+      },
+      {
+        "id": "coop_sco_tell_op_156",
+        "display_on": "SCOUT",
+        "target_arch": "OPERATOR",
+        "action": "SET_ENCODER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Tell Signals: freq 156!",
+        "narrator_line": "Coast Watch! Tell the Signalman — one-five-six!",
+        "value": 156,
+        "timeout_ms": 10000
+      },
+      {
+        "id": "coop_op_tell_sent_flare",
+        "display_on": "OPERATOR",
+        "target_arch": "SENTINEL",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "Tell Watch: fire flare!",
+        "narrator_line": "Signalman! Tell the Watch — fire a flare!",
+        "value": null,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "coop_med_tell_sent_storm",
+        "display_on": "MEDIC",
+        "target_arch": "SENTINEL",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Tell Watch: storm port!",
+        "narrator_line": "Keeper's Mate! Tell the Watch — seal the storm port!",
+        "value": 2,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "coop_eng_tell_med_bandage",
+        "display_on": "ENGINEER",
+        "target_arch": "MEDIC",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Tell Mate: apply bandage!",
+        "narrator_line": "Mechanic! Tell the Keeper's Mate — bandage that wound!",
+        "value": true,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "coop_sent_tell_med_drink",
+        "display_on": "SENTINEL",
+        "target_arch": "MEDIC",
+        "action": "PRESS_BUTTON",
+        "slot": "button_2",
+        "tier": "T1",
+        "label": "Tell Mate: hot drink!",
+        "narrator_line": "Watch! Tell the Keeper's Mate — hot drink, NOW!",
+        "value": null,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "coop_nav_tell_ana_1013",
+        "display_on": "NAVIGATOR",
+        "target_arch": "ANALYST",
+        "action": "ENTER_CODE",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Tell Weather: baro 1-0-1-3!",
+        "narrator_line": "Lamp Keeper! Tell Weather Eye — baro one-zero-one-three!",
+        "value": "1013",
+        "timeout_ms": 12000
+      },
+      {
+        "id": "coop_sent_tell_ana_wind",
+        "display_on": "SENTINEL",
+        "target_arch": "ANALYST",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Tell Weather: wind hurricane!",
+        "narrator_line": "Watch! Tell Weather Eye — wind gauge to hurricane!",
+        "value": 5,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "coop_ana_tell_sco_north",
+        "display_on": "ANALYST",
+        "target_arch": "SCOUT",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Tell Coast: scan north!",
+        "narrator_line": "Weather Eye! Tell Coast Watch — scan north! Big swells!",
+        "value": {
+          "x": 0,
+          "y": 80
+        },
+        "tolerance": {
+          "x": 20,
+          "y": 15
+        },
+        "timeout_ms": 12000
+      },
+      {
+        "id": "coop_op_tell_sco_port",
+        "display_on": "OPERATOR",
+        "target_arch": "SCOUT",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Tell Coast: open porthole!",
+        "narrator_line": "Signalman! Tell Coast Watch — eyes on the water!",
+        "value": true,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "coop_sco_tell_cmd_storm",
+        "display_on": "SCOUT",
+        "target_arch": "COMMANDER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Tell Head: storm wiring!",
+        "narrator_line": "Coast Watch! Tell the Head Keeper — storm wiring!",
+        "value": {
+          "A": "2",
+          "B": "3",
+          "C": "1"
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "coop_med_tell_cmd_lockdown",
+        "display_on": "MEDIC",
+        "target_arch": "COMMANDER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Tell Head: lockdown!",
+        "narrator_line": "Keeper's Mate! Tell the Head — lockdown NOW!",
+        "value": true,
+        "timeout_ms": 6000
+      }
+    ],
+    "open": [
+      {
+        "id": "open_joystick_east",
+        "target": "ANY",
+        "action": "SET_JOYSTICK",
+        "tier": "T3",
+        "label": "Someone — scan EAST!",
+        "narrator_line": "Anyone with a scope — scan east! Something on the reef!",
+        "value": {
+          "x": 80,
+          "y": 0
+        },
+        "tolerance": {
+          "x": 15,
+          "y": 20
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "open_slider_full",
+        "target": "ANY",
+        "action": "SET_SLIDER",
+        "tier": "T2",
+        "label": "Anyone — full power!",
+        "narrator_line": "Whoever has a slider — full output! We need everything!",
+        "value": 100,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "open_encoder_121",
+        "target": "ANY",
+        "action": "SET_ENCODER",
+        "tier": "T2",
+        "label": "Quick — dial to 121!",
+        "narrator_line": "Any dial operator — one-two-one! Emergency frequency!",
+        "value": 121,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "open_color_red",
+        "target": "ANY",
+        "action": "MATCH_COLOR",
+        "tier": "T3",
+        "label": "Someone — match RED!",
+        "narrator_line": "Anyone with a color dial — red! Mark the danger zone!",
+        "value": [
+          200,
+          30,
+          30
+        ],
+        "tolerance": 30,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "open_rotary_pos_2",
+        "target": "ANY",
+        "action": "SET_ROTARY_SW",
+        "tier": "T2",
+        "label": "Anyone — position TWO!",
+        "narrator_line": "Whoever has a selector — position two! Storm protocol!",
+        "value": 2,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "open_code_121",
+        "target": "ANY",
+        "action": "ENTER_CODE",
+        "tier": "T3",
+        "label": "Someone — code 1-2-1!",
+        "narrator_line": "Anyone with a keypad — code one-two-one! Emergency override!",
+        "value": "121",
+        "timeout_ms": 7000
+      }
+    ]
+  },
   "crises": [
     {
       "id": "crisis_rogue_wave",
@@ -200,9 +1626,21 @@
       "label": "GENERATOR FIRE!",
       "narrator_line": "FIRE! Generator's burning! Mechanic — kill the fuel! Signalman — sound the alarm!",
       "actions": [
-        { "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": "toggle_1", "value": false },
-        { "target_arch": "OPERATOR",  "action": "PRESS_BUTTON", "slot": "button_1", "value": null },
-        { "rest": "CRISIS_BTN" }
+        {
+          "target_arch": "ENGINEER",
+          "action": "SET_TOGGLE",
+          "slot": "toggle_1",
+          "value": false
+        },
+        {
+          "target_arch": "OPERATOR",
+          "action": "PRESS_BUTTON",
+          "slot": "button_1",
+          "value": null
+        },
+        {
+          "rest": "CRISIS_BTN"
+        }
       ],
       "timeout_ms": 7000,
       "penalty": "health_major"
@@ -213,15 +1651,27 @@
       "label": "LAMP OUT!",
       "narrator_line": "THE LAMP IS OUT! Keeper — relight it! Mechanic — generator NOW! Ships will WRECK!",
       "actions": [
-        { "target_arch": "NAVIGATOR", "action": "PRESS_BUTTON", "slot": "button_1", "value": null },
-        { "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": "specialty_a", "value": 100, "tolerance": 10 },
-        { "rest": "CRISIS_BTN" }
+        {
+          "target_arch": "NAVIGATOR",
+          "action": "PRESS_BUTTON",
+          "slot": "button_1",
+          "value": null
+        },
+        {
+          "target_arch": "ENGINEER",
+          "action": "SET_SLIDER",
+          "slot": "specialty_a",
+          "value": 100,
+          "tolerance": 10
+        },
+        {
+          "rest": "CRISIS_BTN"
+        }
       ],
       "timeout_ms": 7000,
       "penalty": "health_minor"
     }
   ],
-
   "phases": [
     {
       "id": "intro",
@@ -235,7 +1685,6 @@
         "Here it comes."
       ]
     },
-
     {
       "id": "preflight",
       "type": "PREFLIGHT",
@@ -243,49 +1692,131 @@
       "narrator_intro": "Final check. Set your stations to starting positions. Green light when ready.",
       "init_commands": {
         "NAVIGATOR": [
-          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "toggle_2",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "toggle_3",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "specialty_b", "action": "SET_SLIDER",  "value": 0 }
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_2",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_3",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "specialty_b",
+            "action": "SET_SLIDER",
+            "value": 0
+          }
         ],
         "ENGINEER": [
-          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "toggle_2",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "toggle_3",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "specialty_a", "action": "SET_SLIDER",  "value": 0 }
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_2",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_3",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "specialty_a",
+            "action": "SET_SLIDER",
+            "value": 0
+          }
         ],
         "OPERATOR": [
-          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "toggle_2",    "action": "SET_TOGGLE", "value": false }
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_2",
+            "action": "SET_TOGGLE",
+            "value": false
+          }
         ],
         "SENTINEL": [
-          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "toggle_2",    "action": "SET_TOGGLE", "value": false }
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_2",
+            "action": "SET_TOGGLE",
+            "value": false
+          }
         ],
         "MEDIC": [
-          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false }
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          }
         ],
         "ANALYST": [
-          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "toggle_2",    "action": "SET_TOGGLE", "value": false }
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_2",
+            "action": "SET_TOGGLE",
+            "value": false
+          }
         ],
         "SCOUT": [
-          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "toggle_2",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "toggle_3",    "action": "SET_TOGGLE", "value": false }
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_2",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_3",
+            "action": "SET_TOGGLE",
+            "value": false
+          }
         ],
         "COMMANDER": [
-          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false }
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          }
         ]
       }
     },
-
     {
       "id": "frantic_1",
       "type": "FRANTIC",
       "duration_sec": 160,
-      "pools": ["direct", "cooperative", "open"],
-      "crises": ["crisis_window_breach", "crisis_lamp_extinguished"],
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_window_breach",
+        "crisis_lamp_extinguished"
+      ],
       "narrator_lines_ambient": [
         "Wind's picking up. Shutters rattling.",
         "The sea is turning grey. White caps everywhere.",
@@ -293,7 +1824,6 @@
         "First big swells hitting the base. Steady."
       ]
     },
-
     {
       "id": "branch_1",
       "type": "BRANCH",
@@ -314,13 +1844,20 @@
         "next_phase": "frantic_2_L"
       }
     },
-
     {
       "id": "frantic_2_W",
       "type": "FRANTIC",
       "duration_sec": 180,
-      "pools": ["direct", "cooperative", "open"],
-      "crises": ["crisis_rogue_wave", "crisis_window_breach", "crisis_generator_fire"],
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_rogue_wave",
+        "crisis_window_breach",
+        "crisis_generator_fire"
+      ],
       "narrator_lines_ambient": [
         "Full gale. The tower is swaying.",
         "A tanker on the radio — they're running blind without us!",
@@ -328,13 +1865,21 @@
         "The whole island is shaking. Hold your nerve."
       ]
     },
-
     {
       "id": "frantic_2_L",
       "type": "FRANTIC",
       "duration_sec": 170,
-      "pools": ["direct", "cooperative", "open"],
-      "crises": ["crisis_rogue_wave", "crisis_window_breach", "crisis_generator_fire", "crisis_lamp_extinguished"],
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_rogue_wave",
+        "crisis_window_breach",
+        "crisis_generator_fire",
+        "crisis_lamp_extinguished"
+      ],
       "narrator_lines_ambient": [
         "The generator's coughing. Oil pressure is wrong.",
         "Water in the lower level. The pumps can't keep up.",
@@ -342,7 +1887,6 @@
         "Everything is failing at once. Prioritise! PRIORITISE!"
       ]
     },
-
     {
       "id": "branch_2",
       "type": "BRANCH",
@@ -383,13 +1927,21 @@
         }
       }
     },
-
     {
       "id": "frantic_3_WW",
       "type": "FRANTIC",
       "duration_sec": 190,
-      "pools": ["direct", "cooperative", "open"],
-      "crises": ["crisis_rogue_wave", "crisis_window_breach", "crisis_generator_fire", "crisis_lamp_extinguished"],
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_rogue_wave",
+        "crisis_window_breach",
+        "crisis_generator_fire",
+        "crisis_lamp_extinguished"
+      ],
       "narrator_lines_ambient": [
         "The back wall hits. FULL FORCE.",
         "This is the worst of it. Everything you've got!",
@@ -397,13 +1949,21 @@
         "Dawn is coming. Hold on. HOLD ON!"
       ]
     },
-
     {
       "id": "frantic_3_WL",
       "type": "FRANTIC",
       "duration_sec": 180,
-      "pools": ["direct", "cooperative", "open"],
-      "crises": ["crisis_rogue_wave", "crisis_window_breach", "crisis_generator_fire", "crisis_lamp_extinguished"],
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_rogue_wave",
+        "crisis_window_breach",
+        "crisis_generator_fire",
+        "crisis_lamp_extinguished"
+      ],
       "narrator_lines_ambient": [
         "The back wall. Worse than the front.",
         "Water everywhere. The stairwell is a waterfall.",
@@ -411,13 +1971,21 @@
         "Almost through. Don't quit now!"
       ]
     },
-
     {
       "id": "frantic_3_LW",
       "type": "FRANTIC",
       "duration_sec": 180,
-      "pools": ["direct", "cooperative", "open"],
-      "crises": ["crisis_rogue_wave", "crisis_window_breach", "crisis_generator_fire", "crisis_lamp_extinguished"],
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_rogue_wave",
+        "crisis_window_breach",
+        "crisis_generator_fire",
+        "crisis_lamp_extinguished"
+      ],
       "narrator_lines_ambient": [
         "You've got the light back. Now KEEP it!",
         "Back wall hitting — the whole tower groans!",
@@ -425,13 +1993,21 @@
         "Sunrise is close. Just a little longer."
       ]
     },
-
     {
       "id": "frantic_3_LL",
       "type": "FRANTIC",
       "duration_sec": 170,
-      "pools": ["direct", "cooperative", "open"],
-      "crises": ["crisis_rogue_wave", "crisis_window_breach", "crisis_generator_fire", "crisis_lamp_extinguished"],
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_rogue_wave",
+        "crisis_window_breach",
+        "crisis_generator_fire",
+        "crisis_lamp_extinguished"
+      ],
       "narrator_lines_ambient": [
         "The lighthouse is groaning. Cracks in the wall.",
         "The light is barely visible through the spray.",
@@ -439,7 +2015,6 @@
         "If this tower holds, it'll be a miracle."
       ]
     },
-
     {
       "id": "branch_3",
       "type": "BRANCH",
@@ -447,7 +2022,6 @@
       "threshold": 0.55
     }
   ],
-
   "outcomes": {
     "WWW": {
       "tier": "TRIUMPH",
@@ -526,7 +2100,6 @@
       ]
     }
   },
-
   "narrator": {
     "voice": "weathered_sea_narrator",
     "tts_engine": "local",

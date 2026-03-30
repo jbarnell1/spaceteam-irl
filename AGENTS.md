@@ -59,6 +59,9 @@ Hub (1)  <──ESP-NOW──>  Tablets (up to 8)
 | `hardware/bom/` | Bills of Materials |
 | `app/` | Flutter companion app |
 | `missions/` | Mission Architect LLM templates, generated scenarios, and validation pipeline |
+| `missions/author_pipeline/` | Author pipeline: compile source format → materialized JSON ([docs](docs/author-pipeline.md)) |
+| `missions/scenarios-src/` | Source-format scenarios (`.src.json`) — what authors edit |
+| `missions/scenarios/` | Materialized runtime JSON — compiled output, Hub firmware input |
 | `docs/` | Protocol spec, tablet archetypes, manufacturing notes |
 
 ## Build and Test
@@ -101,6 +104,19 @@ uv run python -m missions.validate missions/scenarios/station_omega.json --analy
 
 # Emit resolved JSON with preset difficulty parameters filled in
 uv run python -m missions.validate missions/scenarios/station_omega.json --resolve
+```
+
+The **author pipeline** lives in `missions/author_pipeline/` and decouples scenario creative content from hardware specifics. Full docs: [`docs/author-pipeline.md`](docs/author-pipeline.md).
+
+```bash
+# Compile source format → materialized runtime JSON
+uv run python -m missions.author_pipeline compile missions/scenarios-src/station_omega.src.json -o missions/scenarios/station_omega.json
+
+# Decompile materialized → source format
+uv run python -m missions.author_pipeline decompile missions/scenarios/station_omega.json -o missions/scenarios-src/station_omega.src.json
+
+# Round-trip integrity check on all scenarios
+uv run python -m missions.author_pipeline roundtrip missions/scenarios/*.json
 ```
 
 The validation pipeline lives in `missions/validate/` and enforces every rule from `docs/scenario-schema.md`:

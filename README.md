@@ -101,14 +101,14 @@ Every archetype follows the same complexity curve: **1 signature control** (high
 | 1 | **Navigator** | Blue | Analog Joystick (2-axis) | Direction & course-plotting |
 | 2 | **Engineer** | Orange | Linear Slider (60mm) | Power & machinery |
 | 3 | **Operator** | Green | Rotary Encoder (infinite scroll + click) | Signals & communication |
-| 4 | **Sentinel** | Purple | NFC/RFID Scanner (RC522) | Security & defense |
+| 4 | **Sentinel** | Purple | Hall Effect Analog Trigger | Security & defense |
 | 5 | **Medic** | White | Color-Match Dial (pot + RGB LED) | Diagnostics & repair |
 | 6 | **Analyst** | Cyan | 4-Button Keypad | Data entry & research |
 | 7 | **Scout** | Yellow | LED Wave Dial (pot + NeoPixel ring) | Reconnaissance & detection |
 | 8 | **Commander** | Red | Multi-Position Rotary Switch (6-pos) | Authority & decisions |
 
 **Starter pack (4 tablets):** Navigator, Engineer, Operator, Sentinel — covers steering, power, comms, defense.
-**Expansion pack (4 tablets):** Medic, Analyst, Scout, Commander — adds color matching, NFC items, data entry, authority.
+**Expansion pack (4 tablets):** Medic, Analyst, Scout, Commander — adds color matching, NFC scanning, data entry, authority.
 
 ---
 

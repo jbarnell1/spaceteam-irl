@@ -443,7 +443,8 @@ The core gameplay message. Pushes a command to a tablet's command screen.
 | `SET_JOYSTICK` | Move joystick to position | `{"x": int8, "y": int8}` (-100 to 100 per axis) |
 | `MATCH_COLOR` | Match RGB dial to target | `[r,g,b]` |
 | `ENTER_CODE` | Type a code on number pad | `string` (e.g., `"4231"`) |
-| `SCAN_NFC` | Scan an NFC card (Sentinel/Commander) | `string` (expected card ID) |
+| `SCAN_NFC` | Scan an NFC card (Commander) | `string` (expected card ID) |
+| `SET_TRIGGER` | Squeeze hall trigger to position (Sentinel) | `uint8` (0–100 percent, spring-return) |
 | `CRISIS_BTN` | Press the crisis button | `null` |
 
 ---

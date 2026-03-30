@@ -163,22 +163,25 @@ Each archetype adds its unique 5-slot control loadout to the base tablet. See [t
 
 ### 4. Sentinel
 
-> Slots: NFC/RFID Scanner (RC522) · 3-Position Rotary Switch · Toggle · Toggle · Momentary
+> Slots: Hall Effect Analog Trigger (SS49E) · 3-Position Rotary Switch · Toggle · Toggle · Momentary
 >
-> Additional GPIO: 1 ADC + 7 digital = **8 pins** (NFC shares SPI bus with command screen)
+> Additional GPIO: 2 ADC + 5 digital = **7 pins**
 
 | # | Component | Qty | Slot | Interface | Est. Cost (1k+) | Notes |
 |---|---|---|---|---|---|---|
-| S1 | RC522 NFC/RFID Module | 1 | 1 (sig) | SPI (shared bus) + CS + IRQ | $1.50 | Shares SPI with command screen. Most expensive signature control. |
+| S1 | SS49E Linear Hall Sensor | 1 | 1 (sig) | 1 ADC | $0.25 | Reads magnet proximity via ADC. Same read path as slider/pot. |
+| S1b | Neodymium Magnet (6×3mm disc) | 1 | 1 (sig) | — | $0.10 | Mounted on trigger lever tip. |
+| S1c | Spring (compression, ~1 lbf) | 1 | 1 (sig) | — | $0.15 | Returns lever to zero position on release. |
+| S1d | Trigger Lever + Pivot (3D-printed / metal) | 1 | 1 (sig) | — | $0.50 | Lever arm with magnet mount; pivot pin through enclosure. |
 | S2 | 3-Position Rotary Switch | 1 | 2 (med) | 1 ADC (resistor ladder) | $0.50 | Discrete positions; no Submit needed. |
 | S3 | Toggle Switch (SPDT, mini) | 2 | 3, 4 | 2 GPIO | $0.40 | |
 | S4 | Momentary Pushbutton (12mm, tactile) | 1 | 5 | 1 GPIO | $0.10 | |
 | S5 | Resistor ladder (3× precision resistors) | 1 set | — | — | $0.03 | For rotary switch ADC reading. |
-| | **Sentinel Controls Total** | | | | **$2.53** | |
+| | **Sentinel Controls Total** | | | | **$2.03** | |
 
-**Sentinel Total COGS: ~$20.54**
+**Sentinel Total COGS: ~$20.44**
 
-> **Note:** The Sentinel also requires NFC "item cards" (clearance badges, key cards) included in game packs — see pack BOM, not tablet BOM.
+> **Note:** NFC "item cards" (clearance badges, key cards) are used by the **Commander** archetype and included in game packs — see pack BOM, not tablet BOM.
 
 ---
 
@@ -264,12 +267,12 @@ Each archetype adds its unique 5-slot control loadout to the base tablet. See [t
 | Navigator | $18.41 | $1.70 | **$20.11** | |
 | Engineer | $18.41 | $1.90 | **$20.31** | |
 | Operator | $18.41 | $1.40 | **$19.81** | Cheapest build |
-| Sentinel | $18.41 | $2.53 | **$20.94** | NFC module is cost driver |
+| Sentinel | $18.41 | $2.03 | **$20.44** | Hall trigger is simple + cheap |
 | Medic | $18.41 | $1.08 | **$19.49** | |
 | Analyst | $18.41 | $1.60 | **$20.01** | Highest GPIO usage (11 pins) |
 | Scout | $18.41 | $2.40 | **$20.81** | NeoPixel ring is cost driver |
 | Commander | $18.41 | $1.95 | **$20.36** | |
-| | | **Average** | **$20.23** | Slightly above $20 target — display sourcing is key lever |
+| | | **Average** | **$20.17** | Slightly above $20 target — display sourcing is key lever |
 
 > **Critical cost driver:** The 5× OLED displays ($6.25) and TFT command screen ($2.50) together represent ~$8.75 or ~44% of total COGS. Negotiating volume pricing on displays has the highest impact.
 
@@ -289,7 +292,7 @@ Each archetype adds its unique 5-slot control loadout to the base tablet. See [t
 | Guarded illuminated pushbutton | Alibaba or LCSC | Aircraft-style safety cover + LED momentary switch, panel-mount |
 | NeoPixel (WS2812B) | LCSC | Individual LEDs for SMD placement |
 | NeoPixel ring (8-LED) | Alibaba | Scout only — pre-assembled ring module |
-| RC522 NFC module | LCSC or Alibaba | Sentinel only |
+| RC522 NFC module | LCSC or Alibaba | Commander only |
 | Potentiometers & sliders | LCSC or Alibaba | Panel-mount for through-hole |
 | Rotary encoders (EC11) | LCSC | Through-hole, 20-detent preferred |
 | Arcade buttons (24mm) | Alibaba | Engineer & Commander — illuminated, LED included |

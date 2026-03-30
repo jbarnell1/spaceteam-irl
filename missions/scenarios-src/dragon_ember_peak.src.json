@@ -1,0 +1,1601 @@
+{
+  "schema_version": "1.0",
+  "meta": {
+    "id": "DRAGON_EMBER_PEAK_01",
+    "title": "The Dragon of Ember Peak",
+    "pack": "FANTASY_COLLECTION",
+    "theme": "fantasy",
+    "subject": "teamwork",
+    "age_rating": "8+",
+    "difficulty": "medium",
+    "player_count": {
+      "min": 3,
+      "max": 8
+    },
+    "duration_sec": {
+      "min": 840,
+      "max": 900
+    },
+    "adaptive_pacing": true,
+    "version": "2.0.0",
+    "author": "mission_architect"
+  },
+  "roles": {
+    "NAVIGATOR": "Ranger",
+    "ENGINEER": "Artificer",
+    "OPERATOR": "Herald",
+    "SENTINEL": "Knight",
+    "MEDIC": "Alchemist",
+    "ANALYST": "Lorekeeper",
+    "SCOUT": "Hawkeye",
+    "COMMANDER": "War Chief"
+  },
+  "oled_labels": {
+    "NAVIGATOR": [
+      "Left Flank",
+      "Right Flank",
+      "Torch Light",
+      "Signal Arrow",
+      "Quick March",
+      "Path Mark",
+      "Flare Shot",
+      "Trail Guide",
+      "Rope Winch"
+    ],
+    "ENGINEER": [
+      "Trap Arm",
+      "Shield Wall",
+      "Bellows Pump",
+      "Strike Anvil",
+      "Quench Forge",
+      "Weld Seam",
+      "Rivet Lock",
+      "Forge Heat",
+      "Rune Wires"
+    ],
+    "OPERATOR": [
+      "Banner Raise",
+      "Torch Signal",
+      "Flag Post",
+      "Rally Call",
+      "Sound Alarm",
+      "Drum Beat",
+      "Bell Ring",
+      "War Horn",
+      "Signal Code"
+    ],
+    "SENTINEL": [
+      "Draw Bridge",
+      "Port Gate",
+      "Arrow Slit",
+      "Raise Shield",
+      "Guard Post",
+      "Lance Ready",
+      "Horn Blast",
+      "Gate Lever",
+      "Stance Mode"
+    ],
+    "MEDIC": [
+      "Flame Ward",
+      "Herb Pouch",
+      "Ice Pack",
+      "Check Wounds",
+      "Healing Salve",
+      "Smelling Salt",
+      "Splint Set",
+      "Potion Brew",
+      "Elixir Dose"
+    ],
+    "ANALYST": [
+      "Scroll Open",
+      "Seal Rune",
+      "Tome Lock",
+      "Mark Omen",
+      "Star Chart",
+      "Ink Well",
+      "Quill Ready",
+      "Rune Cipher",
+      "Ley Reading"
+    ],
+    "SCOUT": [
+      "Eagle Eye",
+      "North Watch",
+      "South Watch",
+      "Wind Read",
+      "Trail Mark",
+      "Hawk Call",
+      "Snare Check",
+      "Dragon Track",
+      "Aura Lens"
+    ],
+    "COMMANDER": [
+      "King's Seal",
+      "Banner Post",
+      "Map Table",
+      "Confirm Plan",
+      "War Council",
+      "Sound Charge",
+      "Send Envoy",
+      "Battle Plan",
+      "Royal Signet"
+    ]
+  },
+  "command_pools": {
+    "direct": [
+      {
+        "id": "nav_path_left",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_a",
+        "label": "Take the left ravine! Go!",
+        "narrator_line": "Ranger! Left ravine — the right is blocked by fire!",
+        "value_preset": "WEST"
+      },
+      {
+        "id": "nav_path_right",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_a",
+        "label": "The right pass! Climb NOW!",
+        "narrator_line": "Right pass! The dragon circled north — move!",
+        "value_preset": "EAST"
+      },
+      {
+        "id": "nav_ascend",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_a",
+        "label": "Straight up the ridge!",
+        "narrator_line": "Ranger! Straight up the ridge — no time for switchbacks!",
+        "value_preset": "NORTH"
+      },
+      {
+        "id": "nav_descend",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_a",
+        "label": "Down the scree — SLIDE!",
+        "narrator_line": "Down the scree slope! Controlled slide — GO!",
+        "value": {
+          "x": 0,
+          "y": -80
+        },
+        "tolerance": {
+          "x": 20,
+          "y": 15
+        }
+      },
+      {
+        "id": "nav_rope_full",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_b",
+        "label": "Full rope — extend the line!",
+        "narrator_line": "Ranger! Full rope out — bridge that chasm!",
+        "value_preset": "MAX"
+      },
+      {
+        "id": "nav_rope_half",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_b",
+        "label": "Half rope — hold the slack!",
+        "narrator_line": "Half rope! Hold it taut — don't let them fall!",
+        "value_preset": "HALF"
+      },
+      {
+        "id": "nav_rope_reel",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_b",
+        "label": "Reel in the rope!",
+        "narrator_line": "Reel it in! Pull them up — fast!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "nav_left_on",
+        "target_arch": "NAVIGATOR",
+        "capability": "toggle_1",
+        "label": "Left flank — ADVANCE!",
+        "narrator_line": "Left flank advance! Push forward!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "nav_left_off",
+        "target_arch": "NAVIGATOR",
+        "capability": "toggle_1",
+        "label": "Left flank — HOLD!",
+        "narrator_line": "Left flank hold position!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "nav_right_on",
+        "target_arch": "NAVIGATOR",
+        "capability": "toggle_2",
+        "label": "Right flank — ADVANCE!",
+        "narrator_line": "Right flank — push up the slope!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "nav_right_off",
+        "target_arch": "NAVIGATOR",
+        "capability": "toggle_2",
+        "label": "Right flank — FALL BACK!",
+        "narrator_line": "Right flank fall back! Dragon incoming!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "nav_signal_arrow",
+        "target_arch": "NAVIGATOR",
+        "capability": "button_1",
+        "label": "Fire the signal arrow!",
+        "narrator_line": "Signal arrow! Light it and fire — mark our position!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "eng_forge_max",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_a",
+        "label": "Forge to maximum heat!",
+        "narrator_line": "Artificer! Forge to maximum — we need dragonbane steel!",
+        "value_preset": "MAX"
+      },
+      {
+        "id": "eng_forge_half",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_a",
+        "label": "Forge to half heat!",
+        "narrator_line": "Ease the forge to half — it's cracking the stone!",
+        "value_preset": "HALF"
+      },
+      {
+        "id": "eng_forge_low",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_a",
+        "label": "Bank the forge — low heat!",
+        "narrator_line": "Bank the forge! Low heat — save the bellows!",
+        "value_preset": "LOW"
+      },
+      {
+        "id": "eng_forge_off",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_a",
+        "label": "Quench the forge!",
+        "narrator_line": "Quench it! Kill the forge — dragon smells the smoke!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "eng_strike",
+        "target_arch": "ENGINEER",
+        "capability": "button_1",
+        "label": "STRIKE the anvil!",
+        "narrator_line": "Artificer! Strike now — shape the blade!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "eng_trap_on",
+        "target_arch": "ENGINEER",
+        "capability": "toggle_1",
+        "label": "Arm the snare trap!",
+        "narrator_line": "Arm the snare! Set it in the pass — hurry!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "eng_trap_off",
+        "target_arch": "ENGINEER",
+        "capability": "toggle_1",
+        "label": "Disarm the trap!",
+        "narrator_line": "Disarm that trap — it's in our path now!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "eng_shield_on",
+        "target_arch": "ENGINEER",
+        "capability": "toggle_2",
+        "label": "Raise the shield wall!",
+        "narrator_line": "Shield wall up! Protect the party!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "eng_shield_off",
+        "target_arch": "ENGINEER",
+        "capability": "toggle_2",
+        "label": "Drop the shield wall!",
+        "narrator_line": "Drop the shield wall — we need to move!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "eng_bellows_on",
+        "target_arch": "ENGINEER",
+        "capability": "toggle_3",
+        "label": "Pump the bellows!",
+        "narrator_line": "Bellows! Pump them — the forge is dying!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "eng_bellows_off",
+        "target_arch": "ENGINEER",
+        "capability": "toggle_3",
+        "label": "Stop the bellows!",
+        "narrator_line": "Stop pumping — the forge is too hot!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "eng_patch_main",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_b",
+        "label": "Patch: main forge wires!",
+        "narrator_line": "Artificer! Wire the main forge routing!",
+        "value_preset": "NORMAL"
+      },
+      {
+        "id": "eng_patch_backup",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_b",
+        "label": "Patch: backup heat links!",
+        "narrator_line": "Backup heat links — swap those rune wires!",
+        "value_preset": "BACKUP"
+      },
+      {
+        "id": "eng_patch_bypass",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_b",
+        "label": "Patch: emergency bypass!",
+        "narrator_line": "Emergency bypass — reroute the rune wires NOW!",
+        "value_preset": "BYPASS"
+      },
+      {
+        "id": "op_horn_rally",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_a",
+        "label": "War horn to rally — code 88!",
+        "narrator_line": "Herald! Sound code eighty-eight — rally to me!",
+        "value": 88
+      },
+      {
+        "id": "op_horn_retreat",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_a",
+        "label": "Sound retreat — code 42!",
+        "narrator_line": "Herald! Code forty-two — sound the retreat!",
+        "value": 42
+      },
+      {
+        "id": "op_horn_charge",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_a",
+        "label": "Horn: charge signal 150!",
+        "narrator_line": "Herald! Code one-fifty — CHARGE SIGNAL!",
+        "value": 150
+      },
+      {
+        "id": "op_horn_warning",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_a",
+        "label": "Dragon warning — code 200!",
+        "narrator_line": "Dragon sighted! Code two hundred — warning blast!",
+        "value": 200
+      },
+      {
+        "id": "op_banner_up",
+        "target_arch": "OPERATOR",
+        "capability": "toggle_1",
+        "label": "Raise the war banner!",
+        "narrator_line": "Raise the banner! Show them we stand!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "op_banner_down",
+        "target_arch": "OPERATOR",
+        "capability": "toggle_1",
+        "label": "Lower the banner — hide!",
+        "narrator_line": "Lower the banner — the dragon hunts by sight!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "op_torch_on",
+        "target_arch": "OPERATOR",
+        "capability": "toggle_2",
+        "label": "Light the torch signal!",
+        "narrator_line": "Light the signal torch — guide the rear party!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "op_torch_off",
+        "target_arch": "OPERATOR",
+        "capability": "toggle_2",
+        "label": "Douse the torches!",
+        "narrator_line": "Kill the torches! Darkness is our only cover!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "op_rally",
+        "target_arch": "OPERATOR",
+        "capability": "button_1",
+        "label": "Sound the rally call!",
+        "narrator_line": "Rally call! Bring them together — NOW!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "op_alarm",
+        "target_arch": "OPERATOR",
+        "capability": "button_2",
+        "label": "SOUND THE ALARM!",
+        "narrator_line": "Alarm! The dragon is coming — ALARM!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "op_code_583",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_b",
+        "label": "Signal code: 5-8-3!",
+        "narrator_line": "Herald! Enter signal code five-eight-three!",
+        "value": "583",
+        "timeout_ms": 7000
+      },
+      {
+        "id": "op_code_777",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_b",
+        "label": "Emergency code: 7-7-7!",
+        "narrator_line": "Herald! Emergency code — triple seven! NOW!",
+        "value": "777",
+        "timeout_ms": 7000
+      },
+      {
+        "id": "op_code_2461",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_b",
+        "label": "War code: 2-4-6-1!",
+        "narrator_line": "Herald! War code two-four-six-one — transmit it!",
+        "value": "2461"
+      },
+      {
+        "id": "sent_gate_hold",
+        "target_arch": "SENTINEL",
+        "capability": "specialty_a",
+        "label": "Hold the GATE — FIRM!",
+        "narrator_line": "Knight! Hold the portcullis lever at seventy — do not release!",
+        "value_preset": "FIRM"
+      },
+      {
+        "id": "sent_gate_full",
+        "target_arch": "SENTINEL",
+        "capability": "specialty_a",
+        "label": "Gate lever — FULL LOCK!",
+        "narrator_line": "Full lock on the gate lever! The dragon is charging!",
+        "value_preset": "FULL"
+      },
+      {
+        "id": "sent_defend",
+        "target_arch": "SENTINEL",
+        "capability": "specialty_b",
+        "label": "Stance: DEFEND!",
+        "narrator_line": "Knight! Defensive stance — position one!",
+        "value_preset": "POS_1"
+      },
+      {
+        "id": "sent_attack",
+        "target_arch": "SENTINEL",
+        "capability": "specialty_b",
+        "label": "Stance: ATTACK!",
+        "narrator_line": "Attack stance! Position two — press the assault!",
+        "value_preset": "POS_2"
+      },
+      {
+        "id": "sent_guard",
+        "target_arch": "SENTINEL",
+        "capability": "specialty_b",
+        "label": "Stance: GUARD!",
+        "narrator_line": "Guard stance — position three! Protect the Alchemist!",
+        "value_preset": "POS_3"
+      },
+      {
+        "id": "sent_bridge_on",
+        "target_arch": "SENTINEL",
+        "capability": "toggle_1",
+        "label": "Lower the drawbridge!",
+        "narrator_line": "Lower the drawbridge! Let the party cross!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "sent_bridge_off",
+        "target_arch": "SENTINEL",
+        "capability": "toggle_1",
+        "label": "Raise the drawbridge!",
+        "narrator_line": "Raise the bridge! Cut them off behind us!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "sent_gate_on",
+        "target_arch": "SENTINEL",
+        "capability": "toggle_2",
+        "label": "Open the portcullis!",
+        "narrator_line": "Open the portcullis — move through!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "sent_gate_off",
+        "target_arch": "SENTINEL",
+        "capability": "toggle_2",
+        "label": "Drop the portcullis!",
+        "narrator_line": "Drop the gate! Seal the passage!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "sent_shield",
+        "target_arch": "SENTINEL",
+        "capability": "button_1",
+        "label": "SHIELDS UP!",
+        "narrator_line": "Shields up! Dragonfire incoming — COVER!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "med_blue_potion",
+        "target_arch": "MEDIC",
+        "capability": "specialty_a",
+        "label": "Brew BLUE frost potion!",
+        "narrator_line": "Alchemist! Blue frost potion — we need cold against fire!",
+        "value_preset": "BLUE"
+      },
+      {
+        "id": "med_red_potion",
+        "target_arch": "MEDIC",
+        "capability": "specialty_a",
+        "label": "Brew RED strength potion!",
+        "narrator_line": "Red potion! Strength brew — the Knight needs it!",
+        "value_preset": "RED"
+      },
+      {
+        "id": "med_green_potion",
+        "target_arch": "MEDIC",
+        "capability": "specialty_a",
+        "label": "Brew GREEN antidote!",
+        "narrator_line": "Green antidote — the dragon's venom! Brew it fast!",
+        "value_preset": "GREEN"
+      },
+      {
+        "id": "med_elixir_150",
+        "target_arch": "MEDIC",
+        "capability": "specialty_b",
+        "label": "Elixir potency to 150!",
+        "narrator_line": "Alchemist! Elixir to one-fifty — full strength dose!",
+        "value": 150
+      },
+      {
+        "id": "med_elixir_80",
+        "target_arch": "MEDIC",
+        "capability": "specialty_b",
+        "label": "Reduce elixir to 80!",
+        "narrator_line": "Ease to eighty — too much will burn the blood!",
+        "value": 80
+      },
+      {
+        "id": "med_elixir_250",
+        "target_arch": "MEDIC",
+        "capability": "specialty_b",
+        "label": "Emergency elixir — 250!",
+        "narrator_line": "Maximum dose! Two-fifty — it's the only chance!",
+        "value": 250
+      },
+      {
+        "id": "med_ward_on",
+        "target_arch": "MEDIC",
+        "capability": "toggle_1",
+        "label": "Activate Flame Ward!",
+        "narrator_line": "Flame Ward on! Protect the party from dragonfire!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "med_ward_off",
+        "target_arch": "MEDIC",
+        "capability": "toggle_1",
+        "label": "Drop the Flame Ward!",
+        "narrator_line": "Drop the ward — we need to conserve magic!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "med_wounds",
+        "target_arch": "MEDIC",
+        "capability": "button_1",
+        "label": "Tend the wounded!",
+        "narrator_line": "Alchemist! Tend the wounded — they can't walk!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "med_salve",
+        "target_arch": "MEDIC",
+        "capability": "button_2",
+        "label": "Apply healing salve!",
+        "narrator_line": "Healing salve — that burn is bad! Treat it NOW!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "ana_rune_742",
+        "target_arch": "ANALYST",
+        "capability": "specialty_a",
+        "label": "Rune cipher: 7-4-2!",
+        "narrator_line": "Lorekeeper! Rune sequence seven-four-two — the ward gate!",
+        "value": "742",
+        "timeout_ms": 7000
+      },
+      {
+        "id": "ana_rune_3196",
+        "target_arch": "ANALYST",
+        "capability": "specialty_a",
+        "label": "Ancient code: 3-1-9-6!",
+        "narrator_line": "Ancient code three-one-nine-six — the Crown seal!",
+        "value": "3196"
+      },
+      {
+        "id": "ana_rune_508",
+        "target_arch": "ANALYST",
+        "capability": "specialty_a",
+        "label": "Enter binding rune: 5-0-8!",
+        "narrator_line": "Binding rune five-zero-eight — speak it to the stone!",
+        "value": "508",
+        "timeout_ms": 7000
+      },
+      {
+        "id": "ana_ley_3",
+        "target_arch": "ANALYST",
+        "capability": "specialty_b",
+        "label": "Ley reading — position THREE!",
+        "narrator_line": "Lorekeeper! Ley line to position three — tap the power!",
+        "value_preset": "POS_3"
+      },
+      {
+        "id": "ana_ley_5",
+        "target_arch": "ANALYST",
+        "capability": "specialty_b",
+        "label": "Ley reading — position FIVE!",
+        "narrator_line": "Ley surge! Position five — channel it NOW!",
+        "value_preset": "POS_5"
+      },
+      {
+        "id": "ana_ley_1",
+        "target_arch": "ANALYST",
+        "capability": "specialty_b",
+        "label": "Ley line — position ONE!",
+        "narrator_line": "Faint ley line! Position one — trace it!",
+        "value_preset": "POS_1"
+      },
+      {
+        "id": "ana_scroll_on",
+        "target_arch": "ANALYST",
+        "capability": "toggle_1",
+        "label": "Open the dragon scroll!",
+        "narrator_line": "Open the scroll — what are the dragon's weaknesses?",
+        "value_preset": "ON"
+      },
+      {
+        "id": "ana_scroll_off",
+        "target_arch": "ANALYST",
+        "capability": "toggle_1",
+        "label": "Seal the scroll!",
+        "narrator_line": "Seal the scroll before the fire catches it!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "ana_seal_on",
+        "target_arch": "ANALYST",
+        "capability": "toggle_2",
+        "label": "Activate the seal rune!",
+        "narrator_line": "Activate the seal! Hold the dragon back!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "ana_seal_off",
+        "target_arch": "ANALYST",
+        "capability": "toggle_2",
+        "label": "Break the seal rune!",
+        "narrator_line": "Break the seal — we need that passage open!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "ana_mark",
+        "target_arch": "ANALYST",
+        "capability": "button_1",
+        "label": "Mark the omen!",
+        "narrator_line": "That omen — mark it! The stars are shifting!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "sco_track_right",
+        "target_arch": "SCOUT",
+        "capability": "specialty_a",
+        "label": "Track right and DOWN!",
+        "narrator_line": "Hawkeye! Track the dragon — right and down!",
+        "value": {
+          "x": 80,
+          "y": -60
+        }
+      },
+      {
+        "id": "sco_track_left",
+        "target_arch": "SCOUT",
+        "capability": "specialty_a",
+        "label": "Track left and DOWN!",
+        "narrator_line": "Left and down! It's circling — keep eyes on it!",
+        "value": {
+          "x": -80,
+          "y": -60
+        }
+      },
+      {
+        "id": "sco_track_up",
+        "target_arch": "SCOUT",
+        "capability": "specialty_a",
+        "label": "Track right and UP!",
+        "narrator_line": "Right and up — it's swooping! TRACK IT!",
+        "value": {
+          "x": 60,
+          "y": 80
+        },
+        "tolerance": {
+          "x": 20,
+          "y": 15
+        }
+      },
+      {
+        "id": "sco_eagle_on",
+        "target_arch": "SCOUT",
+        "capability": "toggle_1",
+        "label": "Eagle eye — scan the peak!",
+        "narrator_line": "Eagle eye! Scan Ember Peak — where is the lair?",
+        "value_preset": "ON"
+      },
+      {
+        "id": "sco_eagle_off",
+        "target_arch": "SCOUT",
+        "capability": "toggle_1",
+        "label": "Eyes down — take cover!",
+        "narrator_line": "Eyes down! Take cover — it's diving!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "sco_north_on",
+        "target_arch": "SCOUT",
+        "capability": "toggle_2",
+        "label": "North watch — report!",
+        "narrator_line": "Hawkeye! North watch — what's moving up there?",
+        "value_preset": "ON"
+      },
+      {
+        "id": "sco_north_off",
+        "target_arch": "SCOUT",
+        "capability": "toggle_2",
+        "label": "North watch — stand down!",
+        "narrator_line": "North watch clear — stand down and regroup!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "sco_south_on",
+        "target_arch": "SCOUT",
+        "capability": "toggle_3",
+        "label": "South watch — NOW!",
+        "narrator_line": "South watch! Check the tree line — movement!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "sco_south_off",
+        "target_arch": "SCOUT",
+        "capability": "toggle_3",
+        "label": "South watch — stand down!",
+        "narrator_line": "South watch all clear — stand down!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "sco_wind",
+        "target_arch": "SCOUT",
+        "capability": "button_1",
+        "label": "Read the wind!",
+        "narrator_line": "Read the wind — which way will the fire blow?",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "sco_color_red",
+        "target_arch": "SCOUT",
+        "capability": "specialty_b",
+        "label": "Match RED fire marker!",
+        "narrator_line": "Hawkeye! Dial to red — mark the fire line!",
+        "value_preset": "RED"
+      },
+      {
+        "id": "sco_color_blue",
+        "target_arch": "SCOUT",
+        "capability": "specialty_b",
+        "label": "Match BLUE ice signal!",
+        "narrator_line": "Blue signal — the frost barrier is active!",
+        "value_preset": "DEEP_BLUE"
+      },
+      {
+        "id": "sco_color_green",
+        "target_arch": "SCOUT",
+        "capability": "specialty_b",
+        "label": "Match GREEN safe zone!",
+        "narrator_line": "Green zone confirmed — mark the safe path!",
+        "value_preset": "GREEN"
+      },
+      {
+        "id": "cmd_advance",
+        "target_arch": "COMMANDER",
+        "capability": "specialty_a",
+        "label": "Patch: ADVANCE orders!",
+        "narrator_line": "War Chief! Patch the advance order — set the routing!",
+        "value_preset": "NORMAL"
+      },
+      {
+        "id": "cmd_hold",
+        "target_arch": "COMMANDER",
+        "capability": "specialty_a",
+        "label": "Patch: HOLD POSITION!",
+        "narrator_line": "War Chief! Hold position — reroute the leads!",
+        "value_preset": "LOCKDOWN"
+      },
+      {
+        "id": "cmd_flank",
+        "target_arch": "COMMANDER",
+        "capability": "specialty_a",
+        "label": "Patch: FLANK LEFT!",
+        "narrator_line": "Flank left! Patch it — circle the beast!",
+        "value_preset": "BACKUP"
+      },
+      {
+        "id": "cmd_retreat",
+        "target_arch": "COMMANDER",
+        "capability": "specialty_a",
+        "label": "Patch: FALL BACK!",
+        "narrator_line": "Fall back! Patch the retreat routing!",
+        "value_preset": "BYPASS"
+      },
+      {
+        "id": "cmd_confirm",
+        "target_arch": "COMMANDER",
+        "capability": "button_1",
+        "label": "CONFIRM the plan!",
+        "narrator_line": "Confirm the battle plan! Sound it out!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "cmd_seal_on",
+        "target_arch": "COMMANDER",
+        "capability": "toggle_1",
+        "label": "Stamp the King's Seal!",
+        "narrator_line": "The King's Seal! Stamp the order — make it official!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "cmd_seal_off",
+        "target_arch": "COMMANDER",
+        "capability": "toggle_1",
+        "label": "Lift the King's Seal!",
+        "narrator_line": "Lift the seal — new orders incoming!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "cmd_council",
+        "target_arch": "COMMANDER",
+        "capability": "button_2",
+        "label": "Call a WAR COUNCIL!",
+        "narrator_line": "War council! All leaders — report status!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "cmd_charge",
+        "target_arch": "COMMANDER",
+        "capability": "button_3",
+        "label": "Sound the CHARGE!",
+        "narrator_line": "CHARGE! Into the lair! For Ashenmere!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "cmd_auth_crown",
+        "target_arch": "COMMANDER",
+        "capability": "specialty_b",
+        "label": "Scan the CROWN seal!",
+        "narrator_line": "War Chief! Scan the Dragon Crown authorization seal!",
+        "value": "CMD_CROWN"
+      },
+      {
+        "id": "cmd_auth_war",
+        "target_arch": "COMMANDER",
+        "capability": "specialty_b",
+        "label": "Scan the WAR seal!",
+        "narrator_line": "War Chief! The War Seal — scan it NOW!",
+        "value": "CMD_WAR"
+      }
+    ],
+    "cooperative": [
+      {
+        "id": "coop_cmd_tell_nav_left",
+        "display_on": "COMMANDER",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_a",
+        "label": "Tell Ranger: left ravine!",
+        "narrator_line": "War Chief! Tell the Ranger — left ravine, NOW!",
+        "value_preset": "WEST"
+      },
+      {
+        "id": "coop_eng_tell_nav_rope",
+        "display_on": "ENGINEER",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_b",
+        "label": "Tell Ranger: full rope out!",
+        "narrator_line": "Artificer! Shout to the Ranger — full rope!",
+        "value_preset": "MAX"
+      },
+      {
+        "id": "coop_ana_tell_eng_max",
+        "display_on": "ANALYST",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_a",
+        "label": "Tell Artificer: forge to max!",
+        "narrator_line": "Lorekeeper! Tell the Artificer — forge to maximum!",
+        "value_preset": "MAX"
+      },
+      {
+        "id": "coop_cmd_tell_eng_half",
+        "display_on": "COMMANDER",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_a",
+        "label": "Tell Artificer: half forge!",
+        "narrator_line": "War Chief! Shout to the forge — half heat!",
+        "value_preset": "HALF"
+      },
+      {
+        "id": "coop_nav_tell_op_88",
+        "display_on": "NAVIGATOR",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_a",
+        "label": "Tell Herald: rally code 88!",
+        "narrator_line": "Ranger! Tell the Herald — code eighty-eight!",
+        "value": 88
+      },
+      {
+        "id": "coop_sco_tell_op_42",
+        "display_on": "SCOUT",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_a",
+        "label": "Tell Herald: retreat code 42!",
+        "narrator_line": "Hawkeye! Shout to the Herald — code forty-two!",
+        "value": 42
+      },
+      {
+        "id": "coop_op_tell_sent_shield",
+        "display_on": "OPERATOR",
+        "target_arch": "SENTINEL",
+        "capability": "button_1",
+        "label": "Tell Knight: shields up!",
+        "narrator_line": "Herald! Tell the Knight — raise shields!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "coop_med_tell_sent_defend",
+        "display_on": "MEDIC",
+        "target_arch": "SENTINEL",
+        "capability": "specialty_b",
+        "label": "Tell Knight: defend stance!",
+        "narrator_line": "Alchemist! Shout to the Knight — defensive stance!",
+        "value_preset": "POS_1"
+      },
+      {
+        "id": "coop_eng_tell_med_ward",
+        "display_on": "ENGINEER",
+        "target_arch": "MEDIC",
+        "capability": "toggle_1",
+        "label": "Tell Alchemist: Flame Ward!",
+        "narrator_line": "Artificer! Tell the Alchemist — Flame Ward NOW!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "coop_sent_tell_med_salve",
+        "display_on": "SENTINEL",
+        "target_arch": "MEDIC",
+        "capability": "button_2",
+        "label": "Tell Alchemist: healing salve!",
+        "narrator_line": "Knight! Shout to the Alchemist — salve, quickly!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "coop_nav_tell_ana_742",
+        "display_on": "NAVIGATOR",
+        "target_arch": "ANALYST",
+        "capability": "specialty_a",
+        "label": "Tell Lore: rune 7-4-2!",
+        "narrator_line": "Ranger! Tell the Lorekeeper — rune seven-four-two!",
+        "value": "742"
+      },
+      {
+        "id": "coop_sent_tell_ana_ley",
+        "display_on": "SENTINEL",
+        "target_arch": "ANALYST",
+        "capability": "specialty_b",
+        "label": "Tell Lore: ley reading FOUR!",
+        "narrator_line": "Knight! Shout to the Lorekeeper — ley position four!",
+        "value_preset": "POS_4"
+      },
+      {
+        "id": "coop_ana_tell_sco_right",
+        "display_on": "ANALYST",
+        "target_arch": "SCOUT",
+        "capability": "specialty_a",
+        "label": "Tell Hawkeye: track right!",
+        "narrator_line": "Lorekeeper! Tell Hawkeye — track right and down!",
+        "value": {
+          "x": 80,
+          "y": -60
+        }
+      },
+      {
+        "id": "coop_op_tell_sco_eagle",
+        "display_on": "OPERATOR",
+        "target_arch": "SCOUT",
+        "capability": "toggle_1",
+        "label": "Tell Hawkeye: scan the peak!",
+        "narrator_line": "Herald! Tell Hawkeye — eagle eye on the peak!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "coop_sco_tell_cmd_advance",
+        "display_on": "SCOUT",
+        "target_arch": "COMMANDER",
+        "capability": "specialty_a",
+        "label": "Tell Chief: advance routing!",
+        "narrator_line": "Hawkeye! Tell the War Chief — patch advance orders!",
+        "value_preset": "NORMAL"
+      },
+      {
+        "id": "coop_med_tell_cmd_seal",
+        "display_on": "MEDIC",
+        "target_arch": "COMMANDER",
+        "capability": "toggle_1",
+        "label": "Tell Chief: stamp the seal!",
+        "narrator_line": "Alchemist! Shout to the War Chief — King's Seal!",
+        "value_preset": "ON"
+      }
+    ],
+    "open": [
+      {
+        "id": "open_joystick_track",
+        "target": "ANY",
+        "action": "SET_JOYSTICK",
+        "label": "Someone — track hard RIGHT!",
+        "narrator_line": "Anyone with a tracker — hard right NOW!",
+        "value_preset": "EAST"
+      },
+      {
+        "id": "open_slider_full",
+        "target": "ANY",
+        "action": "SET_SLIDER",
+        "label": "Anyone — full power!",
+        "narrator_line": "Whoever has a lever — full power NOW!",
+        "value_preset": "MAX"
+      },
+      {
+        "id": "open_encoder_99",
+        "target": "ANY",
+        "action": "SET_ENCODER",
+        "label": "Quick — dial to 99!",
+        "narrator_line": "Any dial operator — spin to ninety-nine!",
+        "value": 99
+      },
+      {
+        "id": "open_color_yellow",
+        "target": "ANY",
+        "action": "MATCH_COLOR",
+        "label": "Someone — match YELLOW!",
+        "narrator_line": "Anyone with a color dial — match yellow NOW!",
+        "value_preset": "YELLOW"
+      },
+      {
+        "id": "open_rotary_pos_3",
+        "target": "ANY",
+        "action": "SET_ROTARY_SW",
+        "label": "Anyone — dial to position 3!",
+        "narrator_line": "Whoever has a selector — position three!",
+        "value_preset": "POS_3"
+      },
+      {
+        "id": "open_code_911",
+        "target": "ANY",
+        "action": "ENTER_CODE",
+        "label": "Someone — enter code 9-1-1!",
+        "narrator_line": "Anyone with a keypad — emergency code nine-one-one!",
+        "value": "911",
+        "timeout_ms": 7000
+      }
+    ]
+  },
+  "crises": [
+    {
+      "id": "crisis_dragonfire",
+      "type": "CRISIS_ALL",
+      "label": "DRAGONFIRE! TAKE COVER!",
+      "narrator_line": "DRAGONFIRE! EVERYONE DOWN! COVER YOUR HEADS!",
+      "required_count": "all",
+      "timeout_ms": 5000,
+      "penalty": "health_major"
+    },
+    {
+      "id": "crisis_rockslide",
+      "type": "CRISIS_THRESHOLD",
+      "label": "ROCKSLIDE!",
+      "narrator_line": "THE MOUNTAIN IS COMING DOWN! At least four of you — brace the rocks!",
+      "required_count": 4,
+      "timeout_ms": 6000,
+      "penalty": "health_minor"
+    },
+    {
+      "id": "crisis_wyvern_attack",
+      "type": "MULTI_ACTION",
+      "label": "WYVERN SWARM INCOMING!",
+      "narrator_line": "WYVERNS! A whole swarm! Artificer — arm the traps! Hawkeye — track the lead one! Everyone else — DUCK!",
+      "actions": [
+        {
+          "target_arch": "ENGINEER",
+          "capability": "toggle_1",
+          "value_preset": "ON"
+        },
+        {
+          "target_arch": "SCOUT",
+          "capability": "specialty_a",
+          "value": {
+            "x": 80,
+            "y": -60
+          }
+        },
+        {
+          "rest": "CRISIS_BTN"
+        }
+      ],
+      "timeout_ms": 7000,
+      "penalty": "health_major"
+    },
+    {
+      "id": "crisis_cave_in",
+      "type": "MULTI_ACTION",
+      "label": "CAVE-IN! THE CEILING!",
+      "narrator_line": "THE CEILING IS COLLAPSING! Knight — hold the gate! Alchemist — seal the ward! MOVE!",
+      "actions": [
+        {
+          "target_arch": "SENTINEL",
+          "capability": "toggle_2",
+          "value_preset": "ON"
+        },
+        {
+          "target_arch": "MEDIC",
+          "capability": "toggle_1",
+          "value_preset": "ON"
+        },
+        {
+          "rest": "CRISIS_BTN"
+        }
+      ],
+      "timeout_ms": 7000,
+      "penalty": "health_minor"
+    }
+  ],
+  "phases": [
+    {
+      "id": "intro",
+      "type": "NARRATION",
+      "duration_sec": 60,
+      "narrator_lines": [
+        "The village of Ashenmere burns.",
+        "Cinderwing — the ancient dragon of Ember Peak — has awoken after three hundred years of slumber.",
+        "The elders say there is one chance. On the summit lies the Dragon Crown — forged by the old kings to bind the great wyrms.",
+        "Your company of eight has been chosen. Rangers, knights, scholars, and healers alike.",
+        "Ascend Ember Peak. Find the Crown. Bind the dragon — or slay it if you must.",
+        "Move out. Ashenmere is counting on you."
+      ]
+    },
+    {
+      "id": "preflight",
+      "type": "PREFLIGHT",
+      "duration_sec": 45,
+      "narrator_intro": "All company members, set your gear to starting positions. Confirm each control when your display lights green.",
+      "init_commands": {
+        "NAVIGATOR": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_2",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "specialty_b",
+            "value_preset": "OFF"
+          }
+        ],
+        "ENGINEER": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_2",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_3",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "specialty_a",
+            "value_preset": "OFF"
+          }
+        ],
+        "OPERATOR": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_2",
+            "value_preset": "OFF"
+          }
+        ],
+        "SENTINEL": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_2",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "specialty_b",
+            "value_preset": "POS_1"
+          }
+        ],
+        "MEDIC": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          }
+        ],
+        "ANALYST": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_2",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "specialty_b",
+            "value_preset": "POS_1"
+          }
+        ],
+        "SCOUT": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_2",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_3",
+            "value_preset": "OFF"
+          }
+        ],
+        "COMMANDER": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          }
+        ]
+      }
+    },
+    {
+      "id": "frantic_1",
+      "type": "FRANTIC",
+      "duration_sec": 240,
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_rockslide",
+        "crisis_wyvern_attack"
+      ],
+      "narrator_lines_ambient": [
+        "Up the mountain path. Stay together.",
+        "The air grows thin. Watch your footing on the scree.",
+        "Smoke rising from the peak. Cinderwing knows we're coming.",
+        "Watch the ridgeline — wyvern scouts nesting in the crags."
+      ]
+    },
+    {
+      "id": "branch_1",
+      "type": "BRANCH",
+      "evaluate": "frantic_1",
+      "threshold": 0.55,
+      "win": {
+        "narrator_lines": [
+          "The outer approaches are clear! The wyvern nests are behind us.",
+          "Ahead — the Ember Gate. The entrance to Cinderwing's domain. Steel yourselves."
+        ],
+        "next_phase": "frantic_2_W"
+      },
+      "lose": {
+        "narrator_lines": [
+          "Too slow! Cinderwing spotted us on the open slope — the path ahead is scorched.",
+          "We'll have to go through the old mines. Darker, tighter, more dangerous."
+        ],
+        "next_phase": "frantic_2_L"
+      }
+    },
+    {
+      "id": "frantic_2_W",
+      "type": "FRANTIC",
+      "duration_sec": 270,
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_dragonfire",
+        "crisis_rockslide",
+        "crisis_cave_in"
+      ],
+      "narrator_lines_ambient": [
+        "The Ember Gate is open. Ancient runes glow on the walls.",
+        "The heat is unbearable — the dragon's lair is close.",
+        "There! The Crown Chamber — but it's guarded by wards!",
+        "The Lorekeeper needs to break the seal! Protect them!"
+      ]
+    },
+    {
+      "id": "frantic_2_L",
+      "type": "FRANTIC",
+      "duration_sec": 250,
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_dragonfire",
+        "crisis_rockslide",
+        "crisis_cave_in",
+        "crisis_wyvern_attack"
+      ],
+      "narrator_lines_ambient": [
+        "These mines haven't been walked in a century. The timbers are rotten.",
+        "Dragon's breath seeps through the cracks — stay low!",
+        "Wyvern hatchlings in the tunnels! They're small but vicious!",
+        "We must reach the Crown before Cinderwing brings the mountain down on us!"
+      ]
+    },
+    {
+      "id": "branch_2",
+      "type": "BRANCH",
+      "evaluate": "current",
+      "threshold": 0.55,
+      "condition_per_path": {
+        "W": {
+          "win": {
+            "narrator_lines": [
+              "The Crown! The Dragon Crown is in your hands — glowing with ancient power!",
+              "Now to the summit. Cinderwing awaits. Use the Crown to bind the beast!"
+            ],
+            "next_phase": "frantic_3_WW"
+          },
+          "lose": {
+            "narrator_lines": [
+              "The wards shattered the Crown case — but the Crown is cracked. Damaged.",
+              "It may still work. Or it may not. Either way, the dragon is coming. Fight!"
+            ],
+            "next_phase": "frantic_3_WL"
+          }
+        },
+        "L": {
+          "win": {
+            "narrator_lines": [
+              "A hidden passage — the mines led to a back entrance to the Crown vault!",
+              "The Crown is yours! Battered and bruised, but armed. To the summit!"
+            ],
+            "next_phase": "frantic_3_LW"
+          },
+          "lose": {
+            "narrator_lines": [
+              "No Crown. The vault is collapsed. You'll have to face Cinderwing with steel alone.",
+              "On to the summit. If we cannot bind the dragon, we slay it — or die trying."
+            ],
+            "next_phase": "frantic_3_LL"
+          }
+        }
+      }
+    },
+    {
+      "id": "frantic_3_WW",
+      "type": "FRANTIC",
+      "duration_sec": 270,
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_dragonfire",
+        "crisis_rockslide",
+        "crisis_wyvern_attack",
+        "crisis_cave_in"
+      ],
+      "narrator_lines_ambient": [
+        "The summit! Cinderwing is HERE — wings spread, fire in its throat!",
+        "Use the Crown! Channel the binding spell! Everyone — hold the line!",
+        "The dragon thrashes! The Crown is working — DON'T LET GO!",
+        "Ancient words in the stone! Read them, Lorekeeper! Finish the binding!"
+      ]
+    },
+    {
+      "id": "frantic_3_WL",
+      "type": "FRANTIC",
+      "duration_sec": 250,
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_dragonfire",
+        "crisis_rockslide",
+        "crisis_wyvern_attack",
+        "crisis_cave_in"
+      ],
+      "narrator_lines_ambient": [
+        "The cracked Crown flickers — the binding is unstable!",
+        "Cinderwing senses the weakness — it's attacking harder!",
+        "Pour everything into the Crown! Alchemist — more power!",
+        "If this fails, it's lances and prayers! HOLD!"
+      ]
+    },
+    {
+      "id": "frantic_3_LW",
+      "type": "FRANTIC",
+      "duration_sec": 250,
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_dragonfire",
+        "crisis_rockslide",
+        "crisis_wyvern_attack",
+        "crisis_cave_in"
+      ],
+      "narrator_lines_ambient": [
+        "Battered, bleeding, but the Crown is in hand! Use it NOW!",
+        "Cinderwing roars — the mountain shakes!",
+        "The binding spell is fighting us — we came through the wrong path!",
+        "Force it! More ley energy! Everyone — PUSH!"
+      ]
+    },
+    {
+      "id": "frantic_3_LL",
+      "type": "FRANTIC",
+      "duration_sec": 240,
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_dragonfire",
+        "crisis_rockslide",
+        "crisis_wyvern_attack",
+        "crisis_cave_in"
+      ],
+      "narrator_lines_ambient": [
+        "No Crown. No magic. Just steel, courage, and eight souls on a burning mountain.",
+        "Cinderwing lands! It's massive — older and more terrible than the legends!",
+        "Aim for the eyes! The joints! The throat — its fire glands!",
+        "FOR ASHENMERE! Stand and fight! Stand and FIGHT!"
+      ]
+    },
+    {
+      "id": "branch_3",
+      "type": "BRANCH",
+      "evaluate": "current",
+      "threshold": 0.55
+    }
+  ],
+  "outcomes": {
+    "WWW": {
+      "tier": "TRIUMPH",
+      "title": "The Dragon Bound",
+      "narrator_lines": [
+        "The Dragon Crown blazes with golden light! Cinderwing screams — and bows its ancient head.",
+        "The binding holds. Three hundred years of sleep called back upon the beast.",
+        "Ember Peak falls silent. The fires die. Ashenmere is saved.",
+        "Bards will sing of this day for a thousand years. You are legends — every one of you."
+      ]
+    },
+    "WWL": {
+      "tier": "SUCCESS",
+      "title": "Fitful Sleep",
+      "narrator_lines": [
+        "The cracked Crown flickers, fails, then catches — barely. Cinderwing shudders.",
+        "The binding is imperfect. The dragon sleeps, but fitfully. It may wake in a century, not three.",
+        "But Ashenmere is safe today. That is enough. Well fought, company."
+      ]
+    },
+    "WLW": {
+      "tier": "SUCCESS",
+      "title": "Stubborn Victory",
+      "narrator_lines": [
+        "A brutal fight — the dragon nearly broke free. But the Crown held.",
+        "Cinderwing is bound in stone and sleep. The mountain cools.",
+        "Your company is battered and burned, but alive. The scholars will study this Crown for generations."
+      ]
+    },
+    "WLL": {
+      "tier": "SURVIVE",
+      "title": "Shattered Crown",
+      "sub_analysis": true,
+      "narrator_lines": [
+        "The Crown shattered in the final moment. But the blast wounded Cinderwing terribly.",
+        "The dragon retreats into the deep caverns, too injured to hunt.",
+        "Ashenmere has a reprieve — years, maybe decades. But the dragon lives."
+      ]
+    },
+    "LWW": {
+      "tier": "SUCCESS",
+      "title": "Against All Odds",
+      "narrator_lines": [
+        "Against all odds! Through the mines, through fire, the Crown was claimed and the binding cast.",
+        "Cinderwing sleeps. The mountain sighs. Your company earned this victory the hard way.",
+        "From the worst possible start, you found a legendary finish. Magnificent."
+      ]
+    },
+    "LWL": {
+      "tier": "SURVIVE",
+      "title": "Wounded Beast",
+      "sub_analysis": true,
+      "narrator_lines": [
+        "The Crown could not hold against Cinderwing's full fury. The binding failed.",
+        "But you wounded the beast. It limps back to its lair, weakened and wary.",
+        "The valley is safe — for now. The next company will have an easier task."
+      ]
+    },
+    "LLW": {
+      "tier": "SURVIVE",
+      "title": "Steel and Courage",
+      "narrator_lines": [
+        "No Crown. No magic. But eight heroes with steel nerves and sharp blades.",
+        "Cinderwing is driven off the peak, bleeding from a hundred wounds.",
+        "It will not return this generation. Ashenmere survives by sheer, stubborn courage."
+      ]
+    },
+    "LLL": {
+      "tier": "FAILURE",
+      "title": "The Age of Fire",
+      "sub_analysis": true,
+      "narrator_lines": [
+        "Ember Peak is lost. Cinderwing stands victorious on the burning summit.",
+        "The company retreats down the mountain, carrying their wounded.",
+        "Ashenmere must evacuate. The valley belongs to the dragon now.",
+        "But you live. And while you live, there is always another dawn."
+      ]
+    }
+  },
+  "narrator": {
+    "voice": "fantasy_chronicle_narrator",
+    "tts_engine": "local",
+    "between_commands_lines": [
+      "Move, heroes! The fire draws closer!",
+      "By the old kings — faster!",
+      "Cinderwing circles above!",
+      "Stay together! Strength in unity!",
+      "The mountain trembles!",
+      "Do not falter now!",
+      "For Ashenmere! For the valley!",
+      "The dragon's eyes are upon you!"
+    ]
+  }
+}

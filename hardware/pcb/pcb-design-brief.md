@@ -138,7 +138,7 @@ The full definition of every slot across all 8 archetypes is in [tablet-archetyp
 | Navigator | Analog Joystick | VCC, GND, X (ADC), Y (ADC), Click (GPIO) — 5 pins |
 | Engineer | 60mm Slide Pot | VCC, GND, Wiper (ADC) — 3 pins |
 | Operator | Rotary Encoder (EC11) | A (GPIO), B (GPIO), Click (GPIO), GND — 4 pins |
-| Sentinel | RC522 NFC Module | VCC, GND, SPI (MOSI, MISO, SCK shared), CS (GPIO), IRQ (GPIO), RST (GPIO) — 5 dedicated pins |
+| Sentinel | SS49E Hall Sensor (ADC) | VCC, GND, Output (ADC) — 3 pins |
 | Medic | Pot + NeoPixel | VCC, GND, Wiper (ADC), NeoPixel Data (GPIO) — 4 pins |
 | Analyst | 4-Button Keypad | 4× GPIO, GND — 5 pins |
 | Scout | Pot + NeoPixel Ring | VCC, GND, Wiper (ADC), NeoPixel Data (GPIO) — 4 pins |
@@ -202,15 +202,15 @@ ESP32-S3 SDA/SCL
 
 ```
 ESP32-S3 SPI Bus (HSPI or VSPI)
-  MOSI ──┬── Command Screen (TFT)
+  MOSI ──── Command Screen (TFT)
   MISO ──┤      CS_TFT (GPIO)
   SCK  ──┤
-         └── RC522 NFC (Sentinel only)
+         └── RC522 NFC (Commander only)
                 CS_NFC (GPIO)
 ```
 
 - SPI bus is shared. Each device has its own CS (chip select) line.
-- On non-Sentinel archetypes, the NFC CS pin is unused (leave as GPIO or NC).
+- On non-Commander archetypes, the NFC CS pin is unused (leave as GPIO or NC).
 - SPI clock: 10–40MHz for TFT, 10MHz max for RC522.
 - TFT also needs DC (data/command), RST, and backlight (BL) GPIO lines.
 
@@ -225,7 +225,7 @@ Total available on ESP32-S3: ~36 usable GPIO (excluding strapping pins, flash/PS
 | I2C (SDA, SCL) | 2 | Shared bus to TCA9548A mux |
 | SPI (MOSI, MISO, SCK) | 3 | Shared bus: TFT + NFC |
 | TFT CS, DC, RST, BL | 4 | Command screen |
-| NFC CS, IRQ, RST | 3 | Sentinel only (2 pins reusable on other archetypes) |
+| NFC CS, IRQ, RST | 3 | Commander only (2 pins reusable on other archetypes) |
 | TM1637 (CLK, DIO) | 2 | 7-segment display |
 | NeoPixel Status LED | 1 | WS2812B data |
 | Speaker PWM | 1 | Piezo |
@@ -293,5 +293,5 @@ What we need from the PCB designer:
 
 1. **Base circuit first.** Get the ESP32-S3 + power + displays + feedback working on a rev 1 board.
 2. **Navigator archetype second.** It has the most complex signature control (joystick = 3 ADC + 1 digital). If Navigator works, all others are simpler.
-3. **Sentinel archetype third.** Tests SPI bus sharing (NFC + TFT on same bus).
-4. **Remaining 6 archetypes** are mostly variations of simpler controls (toggles, buttons, pots, encoders).
+3. **Commander archetype third.** Tests SPI bus sharing (NFC + TFT on same bus).
+4. **Remaining 6 archetypes** are mostly variations of simpler controls (toggles, buttons, pots, encoders, hall sensor ADC).

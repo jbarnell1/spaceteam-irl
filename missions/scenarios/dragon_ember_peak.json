@@ -8,170 +8,1562 @@
     "subject": "teamwork",
     "age_rating": "8+",
     "difficulty": "medium",
-    "player_count": { "min": 3, "max": 8 },
-    "duration_sec": { "min": 840, "max": 900 },
+    "player_count": {
+      "min": 3,
+      "max": 8
+    },
+    "duration_sec": {
+      "min": 840,
+      "max": 900
+    },
     "adaptive_pacing": true,
     "version": "2.0.0",
     "author": "mission_architect"
   },
-
   "roles": {
-    "NAVIGATOR":  "Ranger",
-    "ENGINEER":   "Artificer",
-    "OPERATOR":   "Herald",
-    "SENTINEL":   "Knight",
-    "MEDIC":      "Alchemist",
-    "ANALYST":    "Lorekeeper",
-    "SCOUT":      "Hawkeye",
-    "COMMANDER":  "War Chief"
+    "NAVIGATOR": "Ranger",
+    "ENGINEER": "Artificer",
+    "OPERATOR": "Herald",
+    "SENTINEL": "Knight",
+    "MEDIC": "Alchemist",
+    "ANALYST": "Lorekeeper",
+    "SCOUT": "Hawkeye",
+    "COMMANDER": "War Chief"
   },
-
   "oled_labels": {
-    "NAVIGATOR": ["Left Flank",    "Right Flank",   "Torch Light",   "Signal Arrow",   "Quick March",    "Path Mark",      "Flare Shot",     "Trail Guide",    "Rope Winch"],
-    "ENGINEER":  ["Trap Arm",      "Shield Wall",   "Bellows Pump",  "Strike Anvil",   "Quench Forge",   "Weld Seam",      "Rivet Lock",     "Forge Heat",     "Rune Wires"],
-    "OPERATOR":  ["Banner Raise",  "Torch Signal",  "Flag Post",     "Rally Call",     "Sound Alarm",    "Drum Beat",      "Bell Ring",      "War Horn",       "Signal Code"],
-    "SENTINEL":  ["Draw Bridge",   "Port Gate",     "Arrow Slit",    "Raise Shield",   "Guard Post",     "Lance Ready",    "Horn Blast",     "Vault Key",      "Stance Mode"],
-    "MEDIC":     ["Flame Ward",    "Herb Pouch",    "Ice Pack",      "Check Wounds",   "Healing Salve",  "Smelling Salt",  "Splint Set",     "Potion Brew",    "Elixir Dose"],
-    "ANALYST":   ["Scroll Open",   "Seal Rune",     "Tome Lock",     "Mark Omen",      "Star Chart",     "Ink Well",       "Quill Ready",    "Rune Cipher",    "Ley Reading"],
-    "SCOUT":     ["Eagle Eye",     "North Watch",   "South Watch",   "Wind Read",      "Trail Mark",     "Hawk Call",      "Snare Check",    "Dragon Track",   "Aura Lens"],
-    "COMMANDER": ["King's Seal",   "Banner Post",   "Map Table",     "Confirm Plan",   "War Council",    "Sound Charge",   "Send Envoy",     "Battle Plan",    "Royal Signet"]
-  },
-
-  "command_pools": {
-    "direct": [
-
-      { "id": "nav_path_left",     "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Take the left ravine! Go!",              "narrator_line": "Ranger! Left ravine — the right is blocked by fire!",       "value": {"x":-80,"y":0},  "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
-      { "id": "nav_path_right",    "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "The right pass! Climb NOW!",              "narrator_line": "Right pass! The dragon circled north — move!",              "value": {"x":80,"y":0},   "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
-      { "id": "nav_ascend",        "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Straight up the ridge!",                  "narrator_line": "Ranger! Straight up the ridge — no time for switchbacks!",  "value": {"x":0,"y":80},   "tolerance": {"x":20,"y":15}, "timeout_ms": 8000 },
-      { "id": "nav_descend",       "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Down the scree — SLIDE!",                 "narrator_line": "Down the scree slope! Controlled slide — GO!",              "value": {"x":0,"y":-80},  "tolerance": {"x":20,"y":15}, "timeout_ms": 8000 },
-      { "id": "nav_rope_full",     "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": "specialty_b", "tier": "T2", "label": "Full rope — extend the line!",            "narrator_line": "Ranger! Full rope out — bridge that chasm!",                "value": 100,  "tolerance": 10,                         "timeout_ms": 5000 },
-      { "id": "nav_rope_half",     "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": "specialty_b", "tier": "T2", "label": "Half rope — hold the slack!",             "narrator_line": "Half rope! Hold it taut — don't let them fall!",            "value": 50,   "tolerance": 10,                         "timeout_ms": 5000 },
-      { "id": "nav_rope_reel",     "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": "specialty_b", "tier": "T2", "label": "Reel in the rope!",                       "narrator_line": "Reel it in! Pull them up — fast!",                          "value": 0,    "tolerance": 10,                         "timeout_ms": 5000 },
-      { "id": "nav_left_on",       "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Left flank — ADVANCE!",                   "narrator_line": "Left flank advance! Push forward!",                         "value": true,                                            "timeout_ms": 3000 },
-      { "id": "nav_left_off",      "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Left flank — HOLD!",                      "narrator_line": "Left flank hold position!",                                 "value": false,                                           "timeout_ms": 3000 },
-      { "id": "nav_right_on",      "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Right flank — ADVANCE!",                  "narrator_line": "Right flank — push up the slope!",                          "value": true,                                            "timeout_ms": 3000 },
-      { "id": "nav_right_off",     "target_arch": "NAVIGATOR", "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Right flank — FALL BACK!",                "narrator_line": "Right flank fall back! Dragon incoming!",                   "value": false,                                           "timeout_ms": 3000 },
-      { "id": "nav_signal_arrow",  "target_arch": "NAVIGATOR", "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "Fire the signal arrow!",                  "narrator_line": "Signal arrow! Light it and fire — mark our position!",      "value": null,                                            "timeout_ms": 3000 },
-
-      { "id": "eng_forge_max",     "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": "specialty_a", "tier": "T2", "label": "Forge to maximum heat!",                  "narrator_line": "Artificer! Forge to maximum — we need dragonbane steel!",   "value": 100, "tolerance": 10,                      "timeout_ms": 5000 },
-      { "id": "eng_forge_half",    "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": "specialty_a", "tier": "T2", "label": "Forge to half heat!",                     "narrator_line": "Ease the forge to half — it's cracking the stone!",         "value": 50,  "tolerance": 10,                      "timeout_ms": 5000 },
-      { "id": "eng_forge_low",     "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": "specialty_a", "tier": "T2", "label": "Bank the forge — low heat!",              "narrator_line": "Bank the forge! Low heat — save the bellows!",              "value": 20,  "tolerance": 10,                      "timeout_ms": 5000 },
-      { "id": "eng_forge_off",     "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": "specialty_a", "tier": "T2", "label": "Quench the forge!",                       "narrator_line": "Quench it! Kill the forge — dragon smells the smoke!",      "value": 0,   "tolerance": 10,                      "timeout_ms": 5000 },
-      { "id": "eng_strike",        "target_arch": "ENGINEER",  "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "STRIKE the anvil!",                       "narrator_line": "Artificer! Strike now — shape the blade!",                  "value": null,                                      "timeout_ms": 3000 },
-      { "id": "eng_trap_on",       "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Arm the snare trap!",                     "narrator_line": "Arm the snare! Set it in the pass — hurry!",                "value": true,                                      "timeout_ms": 3000 },
-      { "id": "eng_trap_off",      "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Disarm the trap!",                        "narrator_line": "Disarm that trap — it's in our path now!",                  "value": false,                                     "timeout_ms": 3000 },
-      { "id": "eng_shield_on",     "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Raise the shield wall!",                  "narrator_line": "Shield wall up! Protect the party!",                        "value": true,                                      "timeout_ms": 3000 },
-      { "id": "eng_shield_off",    "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Drop the shield wall!",                   "narrator_line": "Drop the shield wall — we need to move!",                   "value": false,                                     "timeout_ms": 3000 },
-      { "id": "eng_bellows_on",    "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": "toggle_3",    "tier": "T1", "label": "Pump the bellows!",                       "narrator_line": "Bellows! Pump them — the forge is dying!",                  "value": true,                                      "timeout_ms": 3000 },
-      { "id": "eng_bellows_off",   "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": "toggle_3",    "tier": "T1", "label": "Stop the bellows!",                       "narrator_line": "Stop pumping — the forge is too hot!",                      "value": false,                                     "timeout_ms": 3000 },
-      { "id": "eng_patch_main",    "target_arch": "ENGINEER",  "action": "PLUG_JACK",    "slot": "specialty_b", "tier": "T2", "label": "Patch: main forge wires!",                "narrator_line": "Artificer! Wire the main forge routing!",                   "value": {"A":"1","B":"2","C":"3"},                 "timeout_ms": 6000 },
-      { "id": "eng_patch_backup",  "target_arch": "ENGINEER",  "action": "PLUG_JACK",    "slot": "specialty_b", "tier": "T2", "label": "Patch: backup heat links!",               "narrator_line": "Backup heat links — swap those rune wires!",                "value": {"A":"2","B":"3","C":"1"},                 "timeout_ms": 6000 },
-      { "id": "eng_patch_bypass",  "target_arch": "ENGINEER",  "action": "PLUG_JACK",    "slot": "specialty_b", "tier": "T2", "label": "Patch: emergency bypass!",                "narrator_line": "Emergency bypass — reroute the rune wires NOW!",            "value": {"A":"3","B":"1","C":"2"},                 "timeout_ms": 6000 },
-
-      { "id": "op_horn_rally",     "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": "specialty_a", "tier": "T2", "label": "War horn to rally — code 88!",            "narrator_line": "Herald! Sound code eighty-eight — rally to me!",            "value": 88,                                        "timeout_ms": 6000 },
-      { "id": "op_horn_retreat",   "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": "specialty_a", "tier": "T2", "label": "Sound retreat — code 42!",                "narrator_line": "Herald! Code forty-two — sound the retreat!",               "value": 42,                                        "timeout_ms": 6000 },
-      { "id": "op_horn_charge",    "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": "specialty_a", "tier": "T2", "label": "Horn: charge signal 150!",                "narrator_line": "Herald! Code one-fifty — CHARGE SIGNAL!",                   "value": 150,                                       "timeout_ms": 6000 },
-      { "id": "op_horn_warning",   "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": "specialty_a", "tier": "T2", "label": "Dragon warning — code 200!",              "narrator_line": "Dragon sighted! Code two hundred — warning blast!",         "value": 200,                                       "timeout_ms": 6000 },
-      { "id": "op_banner_up",      "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Raise the war banner!",                   "narrator_line": "Raise the banner! Show them we stand!",                     "value": true,                                      "timeout_ms": 3000 },
-      { "id": "op_banner_down",    "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Lower the banner — hide!",                "narrator_line": "Lower the banner — the dragon hunts by sight!",             "value": false,                                     "timeout_ms": 3000 },
-      { "id": "op_torch_on",       "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Light the torch signal!",                 "narrator_line": "Light the signal torch — guide the rear party!",            "value": true,                                      "timeout_ms": 3000 },
-      { "id": "op_torch_off",      "target_arch": "OPERATOR",  "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Douse the torches!",                      "narrator_line": "Kill the torches! Darkness is our only cover!",             "value": false,                                     "timeout_ms": 3000 },
-      { "id": "op_rally",          "target_arch": "OPERATOR",  "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "Sound the rally call!",                   "narrator_line": "Rally call! Bring them together — NOW!",                    "value": null,                                      "timeout_ms": 3000 },
-      { "id": "op_alarm",          "target_arch": "OPERATOR",  "action": "PRESS_BUTTON", "slot": "button_2",    "tier": "T1", "label": "SOUND THE ALARM!",                        "narrator_line": "Alarm! The dragon is coming — ALARM!",                      "value": null,                                      "timeout_ms": 3000 },
-      { "id": "op_code_583",       "target_arch": "OPERATOR",  "action": "ENTER_CODE",   "slot": "specialty_b", "tier": "T3", "label": "Signal code: 5-8-3!",                     "narrator_line": "Herald! Enter signal code five-eight-three!",               "value": "583",                                     "timeout_ms": 7000 },
-      { "id": "op_code_777",       "target_arch": "OPERATOR",  "action": "ENTER_CODE",   "slot": "specialty_b", "tier": "T3", "label": "Emergency code: 7-7-7!",                  "narrator_line": "Herald! Emergency code — triple seven! NOW!",               "value": "777",                                     "timeout_ms": 7000 },
-      { "id": "op_code_2461",      "target_arch": "OPERATOR",  "action": "ENTER_CODE",   "slot": "specialty_b", "tier": "T3", "label": "War code: 2-4-6-1!",                      "narrator_line": "Herald! War code two-four-six-one — transmit it!",          "value": "2461",                                    "timeout_ms": 8000 },
-
-      { "id": "sent_vault_open",   "target_arch": "SENTINEL",  "action": "SCAN_NFC",     "slot": "specialty_a", "tier": "T3", "label": "Unlock the WEAPON VAULT!",                "narrator_line": "Knight! Unlock the weapon vault — we need the lances!",     "value": "VAULT_KEY",                                "timeout_ms": 10000 },
-      { "id": "sent_crown_case",   "target_arch": "SENTINEL",  "action": "SCAN_NFC",     "slot": "specialty_a", "tier": "T3", "label": "Open the CROWN CASE!",                    "narrator_line": "The Dragon Crown case! Open it — the key, Knight!",         "value": "CROWN_KEY",                                "timeout_ms": 10000 },
-      { "id": "sent_defend",       "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "Stance: DEFEND!",                         "narrator_line": "Knight! Defensive stance — position one!",                  "value": 1,                                         "timeout_ms": 5000 },
-      { "id": "sent_attack",       "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "Stance: ATTACK!",                         "narrator_line": "Attack stance! Position two — press the assault!",          "value": 2,                                         "timeout_ms": 5000 },
-      { "id": "sent_guard",        "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "Stance: GUARD!",                          "narrator_line": "Guard stance — position three! Protect the Alchemist!",     "value": 3,                                         "timeout_ms": 5000 },
-      { "id": "sent_bridge_on",    "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Lower the drawbridge!",                   "narrator_line": "Lower the drawbridge! Let the party cross!",                "value": true,                                      "timeout_ms": 3000 },
-      { "id": "sent_bridge_off",   "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Raise the drawbridge!",                   "narrator_line": "Raise the bridge! Cut them off behind us!",                 "value": false,                                     "timeout_ms": 3000 },
-      { "id": "sent_gate_on",      "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Open the portcullis!",                    "narrator_line": "Open the portcullis — move through!",                       "value": true,                                      "timeout_ms": 3000 },
-      { "id": "sent_gate_off",     "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Drop the portcullis!",                    "narrator_line": "Drop the gate! Seal the passage!",                          "value": false,                                     "timeout_ms": 3000 },
-      { "id": "sent_shield",       "target_arch": "SENTINEL",  "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "SHIELDS UP!",                             "narrator_line": "Shields up! Dragonfire incoming — COVER!",                  "value": null,                                      "timeout_ms": 3000 },
-
-      { "id": "med_blue_potion",   "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": "specialty_a", "tier": "T3", "label": "Brew BLUE frost potion!",                 "narrator_line": "Alchemist! Blue frost potion — we need cold against fire!", "value": [0,80,200],   "tolerance": 30,              "timeout_ms": 8000 },
-      { "id": "med_red_potion",    "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": "specialty_a", "tier": "T3", "label": "Brew RED strength potion!",               "narrator_line": "Red potion! Strength brew — the Knight needs it!",          "value": [200,30,30],  "tolerance": 30,              "timeout_ms": 8000 },
-      { "id": "med_green_potion",  "target_arch": "MEDIC",     "action": "MATCH_COLOR",  "slot": "specialty_a", "tier": "T3", "label": "Brew GREEN antidote!",                    "narrator_line": "Green antidote — the dragon's venom! Brew it fast!",        "value": [30,200,50],  "tolerance": 30,              "timeout_ms": 8000 },
-      { "id": "med_elixir_150",    "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": "specialty_b", "tier": "T2", "label": "Elixir potency to 150!",                  "narrator_line": "Alchemist! Elixir to one-fifty — full strength dose!",      "value": 150,                                       "timeout_ms": 6000 },
-      { "id": "med_elixir_80",     "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": "specialty_b", "tier": "T2", "label": "Reduce elixir to 80!",                    "narrator_line": "Ease to eighty — too much will burn the blood!",            "value": 80,                                        "timeout_ms": 6000 },
-      { "id": "med_elixir_250",    "target_arch": "MEDIC",     "action": "SET_ENCODER",  "slot": "specialty_b", "tier": "T2", "label": "Emergency elixir — 250!",                 "narrator_line": "Maximum dose! Two-fifty — it's the only chance!",           "value": 250,                                       "timeout_ms": 6000 },
-      { "id": "med_ward_on",       "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Activate Flame Ward!",                    "narrator_line": "Flame Ward on! Protect the party from dragonfire!",         "value": true,                                      "timeout_ms": 3000 },
-      { "id": "med_ward_off",      "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Drop the Flame Ward!",                    "narrator_line": "Drop the ward — we need to conserve magic!",                "value": false,                                     "timeout_ms": 3000 },
-      { "id": "med_wounds",        "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "Tend the wounded!",                       "narrator_line": "Alchemist! Tend the wounded — they can't walk!",            "value": null,                                      "timeout_ms": 3000 },
-      { "id": "med_salve",         "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": "button_2",    "tier": "T1", "label": "Apply healing salve!",                    "narrator_line": "Healing salve — that burn is bad! Treat it NOW!",           "value": null,                                      "timeout_ms": 3000 },
-
-      { "id": "ana_rune_742",      "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": "specialty_a", "tier": "T3", "label": "Rune cipher: 7-4-2!",                     "narrator_line": "Lorekeeper! Rune sequence seven-four-two — the ward gate!", "value": "742",                                     "timeout_ms": 7000 },
-      { "id": "ana_rune_3196",     "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": "specialty_a", "tier": "T3", "label": "Ancient code: 3-1-9-6!",                  "narrator_line": "Ancient code three-one-nine-six — the Crown seal!",         "value": "3196",                                    "timeout_ms": 8000 },
-      { "id": "ana_rune_508",      "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": "specialty_a", "tier": "T3", "label": "Enter binding rune: 5-0-8!",              "narrator_line": "Binding rune five-zero-eight — speak it to the stone!",     "value": "508",                                     "timeout_ms": 7000 },
-      { "id": "ana_ley_3",         "target_arch": "ANALYST",   "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "Ley reading — position THREE!",           "narrator_line": "Lorekeeper! Ley line to position three — tap the power!",   "value": 3,                                         "timeout_ms": 5000 },
-      { "id": "ana_ley_5",         "target_arch": "ANALYST",   "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "Ley reading — position FIVE!",            "narrator_line": "Ley surge! Position five — channel it NOW!",                "value": 5,                                         "timeout_ms": 5000 },
-      { "id": "ana_ley_1",         "target_arch": "ANALYST",   "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "Ley line — position ONE!",                "narrator_line": "Faint ley line! Position one — trace it!",                  "value": 1,                                         "timeout_ms": 5000 },
-      { "id": "ana_scroll_on",     "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Open the dragon scroll!",                 "narrator_line": "Open the scroll — what are the dragon's weaknesses?",       "value": true,                                      "timeout_ms": 3000 },
-      { "id": "ana_scroll_off",    "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Seal the scroll!",                        "narrator_line": "Seal the scroll before the fire catches it!",               "value": false,                                     "timeout_ms": 3000 },
-      { "id": "ana_seal_on",       "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Activate the seal rune!",                 "narrator_line": "Activate the seal! Hold the dragon back!",                  "value": true,                                      "timeout_ms": 3000 },
-      { "id": "ana_seal_off",      "target_arch": "ANALYST",   "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "Break the seal rune!",                    "narrator_line": "Break the seal — we need that passage open!",               "value": false,                                     "timeout_ms": 3000 },
-      { "id": "ana_mark",          "target_arch": "ANALYST",   "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "Mark the omen!",                          "narrator_line": "That omen — mark it! The stars are shifting!",              "value": null,                                      "timeout_ms": 3000 },
-
-      { "id": "sco_track_right",   "target_arch": "SCOUT",     "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Track right and DOWN!",                   "narrator_line": "Hawkeye! Track the dragon — right and down!",               "value": {"x":80,"y":-60},  "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
-      { "id": "sco_track_left",    "target_arch": "SCOUT",     "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Track left and DOWN!",                    "narrator_line": "Left and down! It's circling — keep eyes on it!",           "value": {"x":-80,"y":-60}, "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
-      { "id": "sco_track_up",      "target_arch": "SCOUT",     "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Track right and UP!",                     "narrator_line": "Right and up — it's swooping! TRACK IT!",                   "value": {"x":60,"y":80},   "tolerance": {"x":20,"y":15}, "timeout_ms": 8000 },
-      { "id": "sco_eagle_on",      "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Eagle eye — scan the peak!",              "narrator_line": "Eagle eye! Scan Ember Peak — where is the lair?",           "value": true,                                      "timeout_ms": 3000 },
-      { "id": "sco_eagle_off",     "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Eyes down — take cover!",                 "narrator_line": "Eyes down! Take cover — it's diving!",                      "value": false,                                     "timeout_ms": 3000 },
-      { "id": "sco_north_on",      "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "North watch — report!",                   "narrator_line": "Hawkeye! North watch — what's moving up there?",            "value": true,                                      "timeout_ms": 3000 },
-      { "id": "sco_north_off",     "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": "toggle_2",    "tier": "T1", "label": "North watch — stand down!",               "narrator_line": "North watch clear — stand down and regroup!",               "value": false,                                     "timeout_ms": 3000 },
-      { "id": "sco_south_on",      "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": "toggle_3",    "tier": "T1", "label": "South watch — NOW!",                      "narrator_line": "South watch! Check the tree line — movement!",              "value": true,                                      "timeout_ms": 3000 },
-      { "id": "sco_south_off",     "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": "toggle_3",    "tier": "T1", "label": "South watch — stand down!",               "narrator_line": "South watch all clear — stand down!",                       "value": false,                                     "timeout_ms": 3000 },
-      { "id": "sco_wind",          "target_arch": "SCOUT",     "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "Read the wind!",                          "narrator_line": "Read the wind — which way will the fire blow?",             "value": null,                                      "timeout_ms": 3000 },
-      { "id": "sco_color_red",     "target_arch": "SCOUT",     "action": "MATCH_COLOR",  "slot": "specialty_b", "tier": "T3", "label": "Match RED fire marker!",                  "narrator_line": "Hawkeye! Dial to red — mark the fire line!",                "value": [200,30,30],  "tolerance": 30,               "timeout_ms": 8000 },
-      { "id": "sco_color_blue",    "target_arch": "SCOUT",     "action": "MATCH_COLOR",  "slot": "specialty_b", "tier": "T3", "label": "Match BLUE ice signal!",                  "narrator_line": "Blue signal — the frost barrier is active!",                "value": [30,60,200],  "tolerance": 30,               "timeout_ms": 8000 },
-      { "id": "sco_color_green",   "target_arch": "SCOUT",     "action": "MATCH_COLOR",  "slot": "specialty_b", "tier": "T3", "label": "Match GREEN safe zone!",                  "narrator_line": "Green zone confirmed — mark the safe path!",                "value": [30,200,50],  "tolerance": 30,               "timeout_ms": 8000 },
-
-      { "id": "cmd_advance",       "target_arch": "COMMANDER", "action": "PLUG_JACK",    "slot": "specialty_a", "tier": "T2", "label": "Patch: ADVANCE orders!",                  "narrator_line": "War Chief! Patch the advance order — set the routing!",     "value": {"A":"1","B":"2","C":"3"},                 "timeout_ms": 6000 },
-      { "id": "cmd_hold",          "target_arch": "COMMANDER", "action": "PLUG_JACK",    "slot": "specialty_a", "tier": "T2", "label": "Patch: HOLD POSITION!",                   "narrator_line": "War Chief! Hold position — reroute the leads!",             "value": {"A":"2","B":"1","C":"3"},                 "timeout_ms": 6000 },
-      { "id": "cmd_flank",         "target_arch": "COMMANDER", "action": "PLUG_JACK",    "slot": "specialty_a", "tier": "T2", "label": "Patch: FLANK LEFT!",                      "narrator_line": "Flank left! Patch it — circle the beast!",                  "value": {"A":"2","B":"3","C":"1"},                 "timeout_ms": 6000 },
-      { "id": "cmd_retreat",       "target_arch": "COMMANDER", "action": "PLUG_JACK",    "slot": "specialty_a", "tier": "T2", "label": "Patch: FALL BACK!",                       "narrator_line": "Fall back! Patch the retreat routing!",                     "value": {"A":"3","B":"1","C":"2"},                 "timeout_ms": 6000 },
-      { "id": "cmd_confirm",       "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "CONFIRM the plan!",                       "narrator_line": "Confirm the battle plan! Sound it out!",                    "value": null,                                      "timeout_ms": 3000 },
-      { "id": "cmd_seal_on",       "target_arch": "COMMANDER", "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Stamp the King's Seal!",                  "narrator_line": "The King's Seal! Stamp the order — make it official!",      "value": true,                                      "timeout_ms": 3000 },
-      { "id": "cmd_seal_off",      "target_arch": "COMMANDER", "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Lift the King's Seal!",                   "narrator_line": "Lift the seal — new orders incoming!",                      "value": false,                                     "timeout_ms": 3000 },
-      { "id": "cmd_council",       "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": "button_2",    "tier": "T1", "label": "Call a WAR COUNCIL!",                     "narrator_line": "War council! All leaders — report status!",                 "value": null,                                      "timeout_ms": 3000 },
-      { "id": "cmd_charge",        "target_arch": "COMMANDER", "action": "PRESS_BUTTON", "slot": "button_3",    "tier": "T1", "label": "Sound the CHARGE!",                       "narrator_line": "CHARGE! Into the lair! For Ashenmere!",                     "value": null,                                      "timeout_ms": 3000 },
-      { "id": "cmd_auth_crown",    "target_arch": "COMMANDER", "action": "SCAN_NFC",     "slot": "specialty_b", "tier": "T3", "label": "Scan the CROWN seal!",                    "narrator_line": "War Chief! Scan the Dragon Crown authorization seal!",      "value": "CMD_CROWN",                               "timeout_ms": 10000 },
-      { "id": "cmd_auth_war",      "target_arch": "COMMANDER", "action": "SCAN_NFC",     "slot": "specialty_b", "tier": "T3", "label": "Scan the WAR seal!",                      "narrator_line": "War Chief! The War Seal — scan it NOW!",                    "value": "CMD_WAR",                                 "timeout_ms": 10000 }
+    "NAVIGATOR": [
+      "Left Flank",
+      "Right Flank",
+      "Torch Light",
+      "Signal Arrow",
+      "Quick March",
+      "Path Mark",
+      "Flare Shot",
+      "Trail Guide",
+      "Rope Winch"
     ],
-
-    "cooperative": [
-      { "id": "coop_cmd_tell_nav_left",    "display_on": "COMMANDER", "target_arch": "NAVIGATOR", "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Tell Ranger: left ravine!",              "narrator_line": "War Chief! Tell the Ranger — left ravine, NOW!",            "value": {"x":-80,"y":0}, "tolerance": {"x":15,"y":20}, "timeout_ms": 12000 },
-      { "id": "coop_eng_tell_nav_rope",    "display_on": "ENGINEER",  "target_arch": "NAVIGATOR", "action": "SET_SLIDER",   "slot": "specialty_b", "tier": "T2", "label": "Tell Ranger: full rope out!",            "narrator_line": "Artificer! Shout to the Ranger — full rope!",               "value": 100, "tolerance": 10,                           "timeout_ms": 8000 },
-      { "id": "coop_ana_tell_eng_max",     "display_on": "ANALYST",   "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": "specialty_a", "tier": "T2", "label": "Tell Artificer: forge to max!",          "narrator_line": "Lorekeeper! Tell the Artificer — forge to maximum!",        "value": 100, "tolerance": 10,                           "timeout_ms": 8000 },
-      { "id": "coop_cmd_tell_eng_half",    "display_on": "COMMANDER", "target_arch": "ENGINEER",  "action": "SET_SLIDER",   "slot": "specialty_a", "tier": "T2", "label": "Tell Artificer: half forge!",            "narrator_line": "War Chief! Shout to the forge — half heat!",                "value": 50,  "tolerance": 10,                           "timeout_ms": 8000 },
-      { "id": "coop_nav_tell_op_88",       "display_on": "NAVIGATOR", "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": "specialty_a", "tier": "T2", "label": "Tell Herald: rally code 88!",            "narrator_line": "Ranger! Tell the Herald — code eighty-eight!",              "value": 88,                                             "timeout_ms": 8000 },
-      { "id": "coop_sco_tell_op_42",       "display_on": "SCOUT",     "target_arch": "OPERATOR",  "action": "SET_ENCODER",  "slot": "specialty_a", "tier": "T2", "label": "Tell Herald: retreat code 42!",          "narrator_line": "Hawkeye! Shout to the Herald — code forty-two!",            "value": 42,                                             "timeout_ms": 8000 },
-      { "id": "coop_op_tell_sent_shield",  "display_on": "OPERATOR",  "target_arch": "SENTINEL",  "action": "PRESS_BUTTON", "slot": "button_1",    "tier": "T1", "label": "Tell Knight: shields up!",               "narrator_line": "Herald! Tell the Knight — raise shields!",                  "value": null,                                           "timeout_ms": 5000 },
-      { "id": "coop_med_tell_sent_defend", "display_on": "MEDIC",     "target_arch": "SENTINEL",  "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "Tell Knight: defend stance!",            "narrator_line": "Alchemist! Shout to the Knight — defensive stance!",        "value": 1,                                              "timeout_ms": 8000 },
-      { "id": "coop_eng_tell_med_ward",    "display_on": "ENGINEER",  "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Tell Alchemist: Flame Ward!",            "narrator_line": "Artificer! Tell the Alchemist — Flame Ward NOW!",           "value": true,                                           "timeout_ms": 5000 },
-      { "id": "coop_sent_tell_med_salve",  "display_on": "SENTINEL",  "target_arch": "MEDIC",     "action": "PRESS_BUTTON", "slot": "button_2",    "tier": "T1", "label": "Tell Alchemist: healing salve!",         "narrator_line": "Knight! Shout to the Alchemist — salve, quickly!",          "value": null,                                           "timeout_ms": 5000 },
-      { "id": "coop_nav_tell_ana_742",     "display_on": "NAVIGATOR", "target_arch": "ANALYST",   "action": "ENTER_CODE",   "slot": "specialty_a", "tier": "T3", "label": "Tell Lore: rune 7-4-2!",                "narrator_line": "Ranger! Tell the Lorekeeper — rune seven-four-two!",        "value": "742",                                          "timeout_ms": 12000 },
-      { "id": "coop_sent_tell_ana_ley",    "display_on": "SENTINEL",  "target_arch": "ANALYST",   "action": "SET_ROTARY_SW","slot": "specialty_b", "tier": "T2", "label": "Tell Lore: ley reading FOUR!",           "narrator_line": "Knight! Shout to the Lorekeeper — ley position four!",      "value": 4,                                              "timeout_ms": 8000 },
-      { "id": "coop_ana_tell_sco_right",   "display_on": "ANALYST",   "target_arch": "SCOUT",     "action": "SET_JOYSTICK", "slot": "specialty_a", "tier": "T3", "label": "Tell Hawkeye: track right!",             "narrator_line": "Lorekeeper! Tell Hawkeye — track right and down!",          "value": {"x":80,"y":-60},  "tolerance": {"x":15,"y":20}, "timeout_ms": 12000 },
-      { "id": "coop_op_tell_sco_eagle",    "display_on": "OPERATOR",  "target_arch": "SCOUT",     "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Tell Hawkeye: scan the peak!",           "narrator_line": "Herald! Tell Hawkeye — eagle eye on the peak!",             "value": true,                                           "timeout_ms": 5000 },
-      { "id": "coop_sco_tell_cmd_advance", "display_on": "SCOUT",     "target_arch": "COMMANDER", "action": "PLUG_JACK",    "slot": "specialty_a", "tier": "T2", "label": "Tell Chief: advance routing!",           "narrator_line": "Hawkeye! Tell the War Chief — patch advance orders!",       "value": {"A":"1","B":"2","C":"3"},                      "timeout_ms": 8000 },
-      { "id": "coop_med_tell_cmd_seal",    "display_on": "MEDIC",     "target_arch": "COMMANDER", "action": "SET_TOGGLE",   "slot": "toggle_1",    "tier": "T1", "label": "Tell Chief: stamp the seal!",            "narrator_line": "Alchemist! Shout to the War Chief — King's Seal!",          "value": true,                                           "timeout_ms": 5000 }
+    "ENGINEER": [
+      "Trap Arm",
+      "Shield Wall",
+      "Bellows Pump",
+      "Strike Anvil",
+      "Quench Forge",
+      "Weld Seam",
+      "Rivet Lock",
+      "Forge Heat",
+      "Rune Wires"
     ],
-
-    "open": [
-      { "id": "open_joystick_track",  "target": "ANY", "action": "SET_JOYSTICK",  "tier": "T3", "label": "Someone — track hard RIGHT!",    "narrator_line": "Anyone with a tracker — hard right NOW!",                  "value": {"x":80,"y":0},   "tolerance": {"x":15,"y":20}, "timeout_ms": 8000 },
-      { "id": "open_slider_full",     "target": "ANY", "action": "SET_SLIDER",    "tier": "T2", "label": "Anyone — full power!",            "narrator_line": "Whoever has a lever — full power NOW!",                    "value": 100, "tolerance": 10,                            "timeout_ms": 5000 },
-      { "id": "open_encoder_99",      "target": "ANY", "action": "SET_ENCODER",   "tier": "T2", "label": "Quick — dial to 99!",             "narrator_line": "Any dial operator — spin to ninety-nine!",                 "value": 99,                                              "timeout_ms": 6000 },
-      { "id": "open_color_yellow",    "target": "ANY", "action": "MATCH_COLOR",   "tier": "T3", "label": "Someone — match YELLOW!",         "narrator_line": "Anyone with a color dial — match yellow NOW!",              "value": [200,200,30], "tolerance": 30,                    "timeout_ms": 8000 },
-      { "id": "open_rotary_pos_3",    "target": "ANY", "action": "SET_ROTARY_SW", "tier": "T2", "label": "Anyone — dial to position 3!",    "narrator_line": "Whoever has a selector — position three!",                  "value": 3,                                               "timeout_ms": 5000 },
-      { "id": "open_code_911",        "target": "ANY", "action": "ENTER_CODE",    "tier": "T3", "label": "Someone — enter code 9-1-1!",     "narrator_line": "Anyone with a keypad — emergency code nine-one-one!",       "value": "911",                                           "timeout_ms": 7000 }
+    "OPERATOR": [
+      "Banner Raise",
+      "Torch Signal",
+      "Flag Post",
+      "Rally Call",
+      "Sound Alarm",
+      "Drum Beat",
+      "Bell Ring",
+      "War Horn",
+      "Signal Code"
+    ],
+    "SENTINEL": [
+      "Draw Bridge",
+      "Port Gate",
+      "Arrow Slit",
+      "Raise Shield",
+      "Guard Post",
+      "Lance Ready",
+      "Horn Blast",
+      "Gate Lever",
+      "Stance Mode"
+    ],
+    "MEDIC": [
+      "Flame Ward",
+      "Herb Pouch",
+      "Ice Pack",
+      "Check Wounds",
+      "Healing Salve",
+      "Smelling Salt",
+      "Splint Set",
+      "Potion Brew",
+      "Elixir Dose"
+    ],
+    "ANALYST": [
+      "Scroll Open",
+      "Seal Rune",
+      "Tome Lock",
+      "Mark Omen",
+      "Star Chart",
+      "Ink Well",
+      "Quill Ready",
+      "Rune Cipher",
+      "Ley Reading"
+    ],
+    "SCOUT": [
+      "Eagle Eye",
+      "North Watch",
+      "South Watch",
+      "Wind Read",
+      "Trail Mark",
+      "Hawk Call",
+      "Snare Check",
+      "Dragon Track",
+      "Aura Lens"
+    ],
+    "COMMANDER": [
+      "King's Seal",
+      "Banner Post",
+      "Map Table",
+      "Confirm Plan",
+      "War Council",
+      "Sound Charge",
+      "Send Envoy",
+      "Battle Plan",
+      "Royal Signet"
     ]
   },
-
+  "command_pools": {
+    "direct": [
+      {
+        "id": "nav_path_left",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Take the left ravine! Go!",
+        "narrator_line": "Ranger! Left ravine — the right is blocked by fire!",
+        "value": {
+          "x": -80,
+          "y": 0
+        },
+        "tolerance": {
+          "x": 15,
+          "y": 20
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "nav_path_right",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "The right pass! Climb NOW!",
+        "narrator_line": "Right pass! The dragon circled north — move!",
+        "value": {
+          "x": 80,
+          "y": 0
+        },
+        "tolerance": {
+          "x": 15,
+          "y": 20
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "nav_ascend",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Straight up the ridge!",
+        "narrator_line": "Ranger! Straight up the ridge — no time for switchbacks!",
+        "value": {
+          "x": 0,
+          "y": 80
+        },
+        "tolerance": {
+          "x": 20,
+          "y": 15
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "nav_descend",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Down the scree — SLIDE!",
+        "narrator_line": "Down the scree slope! Controlled slide — GO!",
+        "value": {
+          "x": 0,
+          "y": -80
+        },
+        "tolerance": {
+          "x": 20,
+          "y": 15
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "nav_rope_full",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_SLIDER",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Full rope — extend the line!",
+        "narrator_line": "Ranger! Full rope out — bridge that chasm!",
+        "value": 100,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "nav_rope_half",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_SLIDER",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Half rope — hold the slack!",
+        "narrator_line": "Half rope! Hold it taut — don't let them fall!",
+        "value": 50,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "nav_rope_reel",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_SLIDER",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Reel in the rope!",
+        "narrator_line": "Reel it in! Pull them up — fast!",
+        "value": 0,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "nav_left_on",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Left flank — ADVANCE!",
+        "narrator_line": "Left flank advance! Push forward!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "nav_left_off",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Left flank — HOLD!",
+        "narrator_line": "Left flank hold position!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "nav_right_on",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Right flank — ADVANCE!",
+        "narrator_line": "Right flank — push up the slope!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "nav_right_off",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Right flank — FALL BACK!",
+        "narrator_line": "Right flank fall back! Dragon incoming!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "nav_signal_arrow",
+        "target_arch": "NAVIGATOR",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "Fire the signal arrow!",
+        "narrator_line": "Signal arrow! Light it and fire — mark our position!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_forge_max",
+        "target_arch": "ENGINEER",
+        "action": "SET_SLIDER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Forge to maximum heat!",
+        "narrator_line": "Artificer! Forge to maximum — we need dragonbane steel!",
+        "value": 100,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "eng_forge_half",
+        "target_arch": "ENGINEER",
+        "action": "SET_SLIDER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Forge to half heat!",
+        "narrator_line": "Ease the forge to half — it's cracking the stone!",
+        "value": 50,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "eng_forge_low",
+        "target_arch": "ENGINEER",
+        "action": "SET_SLIDER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Bank the forge — low heat!",
+        "narrator_line": "Bank the forge! Low heat — save the bellows!",
+        "value": 20,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "eng_forge_off",
+        "target_arch": "ENGINEER",
+        "action": "SET_SLIDER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Quench the forge!",
+        "narrator_line": "Quench it! Kill the forge — dragon smells the smoke!",
+        "value": 0,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "eng_strike",
+        "target_arch": "ENGINEER",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "STRIKE the anvil!",
+        "narrator_line": "Artificer! Strike now — shape the blade!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_trap_on",
+        "target_arch": "ENGINEER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Arm the snare trap!",
+        "narrator_line": "Arm the snare! Set it in the pass — hurry!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_trap_off",
+        "target_arch": "ENGINEER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Disarm the trap!",
+        "narrator_line": "Disarm that trap — it's in our path now!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_shield_on",
+        "target_arch": "ENGINEER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Raise the shield wall!",
+        "narrator_line": "Shield wall up! Protect the party!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_shield_off",
+        "target_arch": "ENGINEER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Drop the shield wall!",
+        "narrator_line": "Drop the shield wall — we need to move!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_bellows_on",
+        "target_arch": "ENGINEER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_3",
+        "tier": "T1",
+        "label": "Pump the bellows!",
+        "narrator_line": "Bellows! Pump them — the forge is dying!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_bellows_off",
+        "target_arch": "ENGINEER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_3",
+        "tier": "T1",
+        "label": "Stop the bellows!",
+        "narrator_line": "Stop pumping — the forge is too hot!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "eng_patch_main",
+        "target_arch": "ENGINEER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Patch: main forge wires!",
+        "narrator_line": "Artificer! Wire the main forge routing!",
+        "value": {
+          "A": "1",
+          "B": "2",
+          "C": "3"
+        },
+        "timeout_ms": 6000
+      },
+      {
+        "id": "eng_patch_backup",
+        "target_arch": "ENGINEER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Patch: backup heat links!",
+        "narrator_line": "Backup heat links — swap those rune wires!",
+        "value": {
+          "A": "2",
+          "B": "3",
+          "C": "1"
+        },
+        "timeout_ms": 6000
+      },
+      {
+        "id": "eng_patch_bypass",
+        "target_arch": "ENGINEER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Patch: emergency bypass!",
+        "narrator_line": "Emergency bypass — reroute the rune wires NOW!",
+        "value": {
+          "A": "3",
+          "B": "1",
+          "C": "2"
+        },
+        "timeout_ms": 6000
+      },
+      {
+        "id": "op_horn_rally",
+        "target_arch": "OPERATOR",
+        "action": "SET_ENCODER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "War horn to rally — code 88!",
+        "narrator_line": "Herald! Sound code eighty-eight — rally to me!",
+        "value": 88,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "op_horn_retreat",
+        "target_arch": "OPERATOR",
+        "action": "SET_ENCODER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Sound retreat — code 42!",
+        "narrator_line": "Herald! Code forty-two — sound the retreat!",
+        "value": 42,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "op_horn_charge",
+        "target_arch": "OPERATOR",
+        "action": "SET_ENCODER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Horn: charge signal 150!",
+        "narrator_line": "Herald! Code one-fifty — CHARGE SIGNAL!",
+        "value": 150,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "op_horn_warning",
+        "target_arch": "OPERATOR",
+        "action": "SET_ENCODER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Dragon warning — code 200!",
+        "narrator_line": "Dragon sighted! Code two hundred — warning blast!",
+        "value": 200,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "op_banner_up",
+        "target_arch": "OPERATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Raise the war banner!",
+        "narrator_line": "Raise the banner! Show them we stand!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "op_banner_down",
+        "target_arch": "OPERATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Lower the banner — hide!",
+        "narrator_line": "Lower the banner — the dragon hunts by sight!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "op_torch_on",
+        "target_arch": "OPERATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Light the torch signal!",
+        "narrator_line": "Light the signal torch — guide the rear party!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "op_torch_off",
+        "target_arch": "OPERATOR",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Douse the torches!",
+        "narrator_line": "Kill the torches! Darkness is our only cover!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "op_rally",
+        "target_arch": "OPERATOR",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "Sound the rally call!",
+        "narrator_line": "Rally call! Bring them together — NOW!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "op_alarm",
+        "target_arch": "OPERATOR",
+        "action": "PRESS_BUTTON",
+        "slot": "button_2",
+        "tier": "T1",
+        "label": "SOUND THE ALARM!",
+        "narrator_line": "Alarm! The dragon is coming — ALARM!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "op_code_583",
+        "target_arch": "OPERATOR",
+        "action": "ENTER_CODE",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Signal code: 5-8-3!",
+        "narrator_line": "Herald! Enter signal code five-eight-three!",
+        "value": "583",
+        "timeout_ms": 7000
+      },
+      {
+        "id": "op_code_777",
+        "target_arch": "OPERATOR",
+        "action": "ENTER_CODE",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Emergency code: 7-7-7!",
+        "narrator_line": "Herald! Emergency code — triple seven! NOW!",
+        "value": "777",
+        "timeout_ms": 7000
+      },
+      {
+        "id": "op_code_2461",
+        "target_arch": "OPERATOR",
+        "action": "ENTER_CODE",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "War code: 2-4-6-1!",
+        "narrator_line": "Herald! War code two-four-six-one — transmit it!",
+        "value": "2461",
+        "timeout_ms": 8000
+      },
+      {
+        "id": "sent_gate_hold",
+        "target_arch": "SENTINEL",
+        "action": "SET_TRIGGER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Hold the GATE — FIRM!",
+        "narrator_line": "Knight! Hold the portcullis lever at seventy — do not release!",
+        "value": 70,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "sent_gate_full",
+        "target_arch": "SENTINEL",
+        "action": "SET_TRIGGER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Gate lever — FULL LOCK!",
+        "narrator_line": "Full lock on the gate lever! The dragon is charging!",
+        "value": 100,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "sent_defend",
+        "target_arch": "SENTINEL",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Stance: DEFEND!",
+        "narrator_line": "Knight! Defensive stance — position one!",
+        "value": 1,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "sent_attack",
+        "target_arch": "SENTINEL",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Stance: ATTACK!",
+        "narrator_line": "Attack stance! Position two — press the assault!",
+        "value": 2,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "sent_guard",
+        "target_arch": "SENTINEL",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Stance: GUARD!",
+        "narrator_line": "Guard stance — position three! Protect the Alchemist!",
+        "value": 3,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "sent_bridge_on",
+        "target_arch": "SENTINEL",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Lower the drawbridge!",
+        "narrator_line": "Lower the drawbridge! Let the party cross!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sent_bridge_off",
+        "target_arch": "SENTINEL",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Raise the drawbridge!",
+        "narrator_line": "Raise the bridge! Cut them off behind us!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sent_gate_on",
+        "target_arch": "SENTINEL",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Open the portcullis!",
+        "narrator_line": "Open the portcullis — move through!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sent_gate_off",
+        "target_arch": "SENTINEL",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Drop the portcullis!",
+        "narrator_line": "Drop the gate! Seal the passage!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sent_shield",
+        "target_arch": "SENTINEL",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "SHIELDS UP!",
+        "narrator_line": "Shields up! Dragonfire incoming — COVER!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "med_blue_potion",
+        "target_arch": "MEDIC",
+        "action": "MATCH_COLOR",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Brew BLUE frost potion!",
+        "narrator_line": "Alchemist! Blue frost potion — we need cold against fire!",
+        "value": [
+          0,
+          80,
+          200
+        ],
+        "tolerance": 30,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "med_red_potion",
+        "target_arch": "MEDIC",
+        "action": "MATCH_COLOR",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Brew RED strength potion!",
+        "narrator_line": "Red potion! Strength brew — the Knight needs it!",
+        "value": [
+          200,
+          30,
+          30
+        ],
+        "tolerance": 30,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "med_green_potion",
+        "target_arch": "MEDIC",
+        "action": "MATCH_COLOR",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Brew GREEN antidote!",
+        "narrator_line": "Green antidote — the dragon's venom! Brew it fast!",
+        "value": [
+          30,
+          200,
+          50
+        ],
+        "tolerance": 30,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "med_elixir_150",
+        "target_arch": "MEDIC",
+        "action": "SET_ENCODER",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Elixir potency to 150!",
+        "narrator_line": "Alchemist! Elixir to one-fifty — full strength dose!",
+        "value": 150,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "med_elixir_80",
+        "target_arch": "MEDIC",
+        "action": "SET_ENCODER",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Reduce elixir to 80!",
+        "narrator_line": "Ease to eighty — too much will burn the blood!",
+        "value": 80,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "med_elixir_250",
+        "target_arch": "MEDIC",
+        "action": "SET_ENCODER",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Emergency elixir — 250!",
+        "narrator_line": "Maximum dose! Two-fifty — it's the only chance!",
+        "value": 250,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "med_ward_on",
+        "target_arch": "MEDIC",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Activate Flame Ward!",
+        "narrator_line": "Flame Ward on! Protect the party from dragonfire!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "med_ward_off",
+        "target_arch": "MEDIC",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Drop the Flame Ward!",
+        "narrator_line": "Drop the ward — we need to conserve magic!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "med_wounds",
+        "target_arch": "MEDIC",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "Tend the wounded!",
+        "narrator_line": "Alchemist! Tend the wounded — they can't walk!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "med_salve",
+        "target_arch": "MEDIC",
+        "action": "PRESS_BUTTON",
+        "slot": "button_2",
+        "tier": "T1",
+        "label": "Apply healing salve!",
+        "narrator_line": "Healing salve — that burn is bad! Treat it NOW!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "ana_rune_742",
+        "target_arch": "ANALYST",
+        "action": "ENTER_CODE",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Rune cipher: 7-4-2!",
+        "narrator_line": "Lorekeeper! Rune sequence seven-four-two — the ward gate!",
+        "value": "742",
+        "timeout_ms": 7000
+      },
+      {
+        "id": "ana_rune_3196",
+        "target_arch": "ANALYST",
+        "action": "ENTER_CODE",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Ancient code: 3-1-9-6!",
+        "narrator_line": "Ancient code three-one-nine-six — the Crown seal!",
+        "value": "3196",
+        "timeout_ms": 8000
+      },
+      {
+        "id": "ana_rune_508",
+        "target_arch": "ANALYST",
+        "action": "ENTER_CODE",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Enter binding rune: 5-0-8!",
+        "narrator_line": "Binding rune five-zero-eight — speak it to the stone!",
+        "value": "508",
+        "timeout_ms": 7000
+      },
+      {
+        "id": "ana_ley_3",
+        "target_arch": "ANALYST",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Ley reading — position THREE!",
+        "narrator_line": "Lorekeeper! Ley line to position three — tap the power!",
+        "value": 3,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "ana_ley_5",
+        "target_arch": "ANALYST",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Ley reading — position FIVE!",
+        "narrator_line": "Ley surge! Position five — channel it NOW!",
+        "value": 5,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "ana_ley_1",
+        "target_arch": "ANALYST",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Ley line — position ONE!",
+        "narrator_line": "Faint ley line! Position one — trace it!",
+        "value": 1,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "ana_scroll_on",
+        "target_arch": "ANALYST",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Open the dragon scroll!",
+        "narrator_line": "Open the scroll — what are the dragon's weaknesses?",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "ana_scroll_off",
+        "target_arch": "ANALYST",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Seal the scroll!",
+        "narrator_line": "Seal the scroll before the fire catches it!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "ana_seal_on",
+        "target_arch": "ANALYST",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Activate the seal rune!",
+        "narrator_line": "Activate the seal! Hold the dragon back!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "ana_seal_off",
+        "target_arch": "ANALYST",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "Break the seal rune!",
+        "narrator_line": "Break the seal — we need that passage open!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "ana_mark",
+        "target_arch": "ANALYST",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "Mark the omen!",
+        "narrator_line": "That omen — mark it! The stars are shifting!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_track_right",
+        "target_arch": "SCOUT",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Track right and DOWN!",
+        "narrator_line": "Hawkeye! Track the dragon — right and down!",
+        "value": {
+          "x": 80,
+          "y": -60
+        },
+        "tolerance": {
+          "x": 15,
+          "y": 20
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "sco_track_left",
+        "target_arch": "SCOUT",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Track left and DOWN!",
+        "narrator_line": "Left and down! It's circling — keep eyes on it!",
+        "value": {
+          "x": -80,
+          "y": -60
+        },
+        "tolerance": {
+          "x": 15,
+          "y": 20
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "sco_track_up",
+        "target_arch": "SCOUT",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Track right and UP!",
+        "narrator_line": "Right and up — it's swooping! TRACK IT!",
+        "value": {
+          "x": 60,
+          "y": 80
+        },
+        "tolerance": {
+          "x": 20,
+          "y": 15
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "sco_eagle_on",
+        "target_arch": "SCOUT",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Eagle eye — scan the peak!",
+        "narrator_line": "Eagle eye! Scan Ember Peak — where is the lair?",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_eagle_off",
+        "target_arch": "SCOUT",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Eyes down — take cover!",
+        "narrator_line": "Eyes down! Take cover — it's diving!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_north_on",
+        "target_arch": "SCOUT",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "North watch — report!",
+        "narrator_line": "Hawkeye! North watch — what's moving up there?",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_north_off",
+        "target_arch": "SCOUT",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_2",
+        "tier": "T1",
+        "label": "North watch — stand down!",
+        "narrator_line": "North watch clear — stand down and regroup!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_south_on",
+        "target_arch": "SCOUT",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_3",
+        "tier": "T1",
+        "label": "South watch — NOW!",
+        "narrator_line": "South watch! Check the tree line — movement!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_south_off",
+        "target_arch": "SCOUT",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_3",
+        "tier": "T1",
+        "label": "South watch — stand down!",
+        "narrator_line": "South watch all clear — stand down!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_wind",
+        "target_arch": "SCOUT",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "Read the wind!",
+        "narrator_line": "Read the wind — which way will the fire blow?",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "sco_color_red",
+        "target_arch": "SCOUT",
+        "action": "MATCH_COLOR",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Match RED fire marker!",
+        "narrator_line": "Hawkeye! Dial to red — mark the fire line!",
+        "value": [
+          200,
+          30,
+          30
+        ],
+        "tolerance": 30,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "sco_color_blue",
+        "target_arch": "SCOUT",
+        "action": "MATCH_COLOR",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Match BLUE ice signal!",
+        "narrator_line": "Blue signal — the frost barrier is active!",
+        "value": [
+          30,
+          60,
+          200
+        ],
+        "tolerance": 30,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "sco_color_green",
+        "target_arch": "SCOUT",
+        "action": "MATCH_COLOR",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Match GREEN safe zone!",
+        "narrator_line": "Green zone confirmed — mark the safe path!",
+        "value": [
+          30,
+          200,
+          50
+        ],
+        "tolerance": 30,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "cmd_advance",
+        "target_arch": "COMMANDER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Patch: ADVANCE orders!",
+        "narrator_line": "War Chief! Patch the advance order — set the routing!",
+        "value": {
+          "A": "1",
+          "B": "2",
+          "C": "3"
+        },
+        "timeout_ms": 6000
+      },
+      {
+        "id": "cmd_hold",
+        "target_arch": "COMMANDER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Patch: HOLD POSITION!",
+        "narrator_line": "War Chief! Hold position — reroute the leads!",
+        "value": {
+          "A": "2",
+          "B": "1",
+          "C": "3"
+        },
+        "timeout_ms": 6000
+      },
+      {
+        "id": "cmd_flank",
+        "target_arch": "COMMANDER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Patch: FLANK LEFT!",
+        "narrator_line": "Flank left! Patch it — circle the beast!",
+        "value": {
+          "A": "2",
+          "B": "3",
+          "C": "1"
+        },
+        "timeout_ms": 6000
+      },
+      {
+        "id": "cmd_retreat",
+        "target_arch": "COMMANDER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Patch: FALL BACK!",
+        "narrator_line": "Fall back! Patch the retreat routing!",
+        "value": {
+          "A": "3",
+          "B": "1",
+          "C": "2"
+        },
+        "timeout_ms": 6000
+      },
+      {
+        "id": "cmd_confirm",
+        "target_arch": "COMMANDER",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "CONFIRM the plan!",
+        "narrator_line": "Confirm the battle plan! Sound it out!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "cmd_seal_on",
+        "target_arch": "COMMANDER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Stamp the King's Seal!",
+        "narrator_line": "The King's Seal! Stamp the order — make it official!",
+        "value": true,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "cmd_seal_off",
+        "target_arch": "COMMANDER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Lift the King's Seal!",
+        "narrator_line": "Lift the seal — new orders incoming!",
+        "value": false,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "cmd_council",
+        "target_arch": "COMMANDER",
+        "action": "PRESS_BUTTON",
+        "slot": "button_2",
+        "tier": "T1",
+        "label": "Call a WAR COUNCIL!",
+        "narrator_line": "War council! All leaders — report status!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "cmd_charge",
+        "target_arch": "COMMANDER",
+        "action": "PRESS_BUTTON",
+        "slot": "button_3",
+        "tier": "T1",
+        "label": "Sound the CHARGE!",
+        "narrator_line": "CHARGE! Into the lair! For Ashenmere!",
+        "value": null,
+        "timeout_ms": 3000
+      },
+      {
+        "id": "cmd_auth_crown",
+        "target_arch": "COMMANDER",
+        "action": "SCAN_NFC",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Scan the CROWN seal!",
+        "narrator_line": "War Chief! Scan the Dragon Crown authorization seal!",
+        "value": "CMD_CROWN",
+        "timeout_ms": 10000
+      },
+      {
+        "id": "cmd_auth_war",
+        "target_arch": "COMMANDER",
+        "action": "SCAN_NFC",
+        "slot": "specialty_b",
+        "tier": "T3",
+        "label": "Scan the WAR seal!",
+        "narrator_line": "War Chief! The War Seal — scan it NOW!",
+        "value": "CMD_WAR",
+        "timeout_ms": 10000
+      }
+    ],
+    "cooperative": [
+      {
+        "id": "coop_cmd_tell_nav_left",
+        "display_on": "COMMANDER",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Tell Ranger: left ravine!",
+        "narrator_line": "War Chief! Tell the Ranger — left ravine, NOW!",
+        "value": {
+          "x": -80,
+          "y": 0
+        },
+        "tolerance": {
+          "x": 15,
+          "y": 20
+        },
+        "timeout_ms": 12000
+      },
+      {
+        "id": "coop_eng_tell_nav_rope",
+        "display_on": "ENGINEER",
+        "target_arch": "NAVIGATOR",
+        "action": "SET_SLIDER",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Tell Ranger: full rope out!",
+        "narrator_line": "Artificer! Shout to the Ranger — full rope!",
+        "value": 100,
+        "tolerance": 10,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "coop_ana_tell_eng_max",
+        "display_on": "ANALYST",
+        "target_arch": "ENGINEER",
+        "action": "SET_SLIDER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Tell Artificer: forge to max!",
+        "narrator_line": "Lorekeeper! Tell the Artificer — forge to maximum!",
+        "value": 100,
+        "tolerance": 10,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "coop_cmd_tell_eng_half",
+        "display_on": "COMMANDER",
+        "target_arch": "ENGINEER",
+        "action": "SET_SLIDER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Tell Artificer: half forge!",
+        "narrator_line": "War Chief! Shout to the forge — half heat!",
+        "value": 50,
+        "tolerance": 10,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "coop_nav_tell_op_88",
+        "display_on": "NAVIGATOR",
+        "target_arch": "OPERATOR",
+        "action": "SET_ENCODER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Tell Herald: rally code 88!",
+        "narrator_line": "Ranger! Tell the Herald — code eighty-eight!",
+        "value": 88,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "coop_sco_tell_op_42",
+        "display_on": "SCOUT",
+        "target_arch": "OPERATOR",
+        "action": "SET_ENCODER",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Tell Herald: retreat code 42!",
+        "narrator_line": "Hawkeye! Shout to the Herald — code forty-two!",
+        "value": 42,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "coop_op_tell_sent_shield",
+        "display_on": "OPERATOR",
+        "target_arch": "SENTINEL",
+        "action": "PRESS_BUTTON",
+        "slot": "button_1",
+        "tier": "T1",
+        "label": "Tell Knight: shields up!",
+        "narrator_line": "Herald! Tell the Knight — raise shields!",
+        "value": null,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "coop_med_tell_sent_defend",
+        "display_on": "MEDIC",
+        "target_arch": "SENTINEL",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Tell Knight: defend stance!",
+        "narrator_line": "Alchemist! Shout to the Knight — defensive stance!",
+        "value": 1,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "coop_eng_tell_med_ward",
+        "display_on": "ENGINEER",
+        "target_arch": "MEDIC",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Tell Alchemist: Flame Ward!",
+        "narrator_line": "Artificer! Tell the Alchemist — Flame Ward NOW!",
+        "value": true,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "coop_sent_tell_med_salve",
+        "display_on": "SENTINEL",
+        "target_arch": "MEDIC",
+        "action": "PRESS_BUTTON",
+        "slot": "button_2",
+        "tier": "T1",
+        "label": "Tell Alchemist: healing salve!",
+        "narrator_line": "Knight! Shout to the Alchemist — salve, quickly!",
+        "value": null,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "coop_nav_tell_ana_742",
+        "display_on": "NAVIGATOR",
+        "target_arch": "ANALYST",
+        "action": "ENTER_CODE",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Tell Lore: rune 7-4-2!",
+        "narrator_line": "Ranger! Tell the Lorekeeper — rune seven-four-two!",
+        "value": "742",
+        "timeout_ms": 12000
+      },
+      {
+        "id": "coop_sent_tell_ana_ley",
+        "display_on": "SENTINEL",
+        "target_arch": "ANALYST",
+        "action": "SET_ROTARY_SW",
+        "slot": "specialty_b",
+        "tier": "T2",
+        "label": "Tell Lore: ley reading FOUR!",
+        "narrator_line": "Knight! Shout to the Lorekeeper — ley position four!",
+        "value": 4,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "coop_ana_tell_sco_right",
+        "display_on": "ANALYST",
+        "target_arch": "SCOUT",
+        "action": "SET_JOYSTICK",
+        "slot": "specialty_a",
+        "tier": "T3",
+        "label": "Tell Hawkeye: track right!",
+        "narrator_line": "Lorekeeper! Tell Hawkeye — track right and down!",
+        "value": {
+          "x": 80,
+          "y": -60
+        },
+        "tolerance": {
+          "x": 15,
+          "y": 20
+        },
+        "timeout_ms": 12000
+      },
+      {
+        "id": "coop_op_tell_sco_eagle",
+        "display_on": "OPERATOR",
+        "target_arch": "SCOUT",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Tell Hawkeye: scan the peak!",
+        "narrator_line": "Herald! Tell Hawkeye — eagle eye on the peak!",
+        "value": true,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "coop_sco_tell_cmd_advance",
+        "display_on": "SCOUT",
+        "target_arch": "COMMANDER",
+        "action": "PLUG_JACK",
+        "slot": "specialty_a",
+        "tier": "T2",
+        "label": "Tell Chief: advance routing!",
+        "narrator_line": "Hawkeye! Tell the War Chief — patch advance orders!",
+        "value": {
+          "A": "1",
+          "B": "2",
+          "C": "3"
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "coop_med_tell_cmd_seal",
+        "display_on": "MEDIC",
+        "target_arch": "COMMANDER",
+        "action": "SET_TOGGLE",
+        "slot": "toggle_1",
+        "tier": "T1",
+        "label": "Tell Chief: stamp the seal!",
+        "narrator_line": "Alchemist! Shout to the War Chief — King's Seal!",
+        "value": true,
+        "timeout_ms": 5000
+      }
+    ],
+    "open": [
+      {
+        "id": "open_joystick_track",
+        "target": "ANY",
+        "action": "SET_JOYSTICK",
+        "tier": "T3",
+        "label": "Someone — track hard RIGHT!",
+        "narrator_line": "Anyone with a tracker — hard right NOW!",
+        "value": {
+          "x": 80,
+          "y": 0
+        },
+        "tolerance": {
+          "x": 15,
+          "y": 20
+        },
+        "timeout_ms": 8000
+      },
+      {
+        "id": "open_slider_full",
+        "target": "ANY",
+        "action": "SET_SLIDER",
+        "tier": "T2",
+        "label": "Anyone — full power!",
+        "narrator_line": "Whoever has a lever — full power NOW!",
+        "value": 100,
+        "tolerance": 10,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "open_encoder_99",
+        "target": "ANY",
+        "action": "SET_ENCODER",
+        "tier": "T2",
+        "label": "Quick — dial to 99!",
+        "narrator_line": "Any dial operator — spin to ninety-nine!",
+        "value": 99,
+        "timeout_ms": 6000
+      },
+      {
+        "id": "open_color_yellow",
+        "target": "ANY",
+        "action": "MATCH_COLOR",
+        "tier": "T3",
+        "label": "Someone — match YELLOW!",
+        "narrator_line": "Anyone with a color dial — match yellow NOW!",
+        "value": [
+          200,
+          200,
+          30
+        ],
+        "tolerance": 30,
+        "timeout_ms": 8000
+      },
+      {
+        "id": "open_rotary_pos_3",
+        "target": "ANY",
+        "action": "SET_ROTARY_SW",
+        "tier": "T2",
+        "label": "Anyone — dial to position 3!",
+        "narrator_line": "Whoever has a selector — position three!",
+        "value": 3,
+        "timeout_ms": 5000
+      },
+      {
+        "id": "open_code_911",
+        "target": "ANY",
+        "action": "ENTER_CODE",
+        "tier": "T3",
+        "label": "Someone — enter code 9-1-1!",
+        "narrator_line": "Anyone with a keypad — emergency code nine-one-one!",
+        "value": "911",
+        "timeout_ms": 7000
+      }
+    ]
+  },
   "crises": [
     {
       "id": "crisis_dragonfire",
@@ -197,9 +1589,28 @@
       "label": "WYVERN SWARM INCOMING!",
       "narrator_line": "WYVERNS! A whole swarm! Artificer — arm the traps! Hawkeye — track the lead one! Everyone else — DUCK!",
       "actions": [
-        { "target_arch": "ENGINEER",  "action": "SET_TOGGLE",   "slot": "toggle_1", "value": true },
-        { "target_arch": "SCOUT",     "action": "SET_JOYSTICK", "slot": "specialty_a", "value": {"x":80,"y":-60}, "tolerance": {"x":15,"y":20} },
-        { "rest": "CRISIS_BTN" }
+        {
+          "target_arch": "ENGINEER",
+          "action": "SET_TOGGLE",
+          "slot": "toggle_1",
+          "value": true
+        },
+        {
+          "target_arch": "SCOUT",
+          "action": "SET_JOYSTICK",
+          "slot": "specialty_a",
+          "value": {
+            "x": 80,
+            "y": -60
+          },
+          "tolerance": {
+            "x": 15,
+            "y": 20
+          }
+        },
+        {
+          "rest": "CRISIS_BTN"
+        }
       ],
       "timeout_ms": 7000,
       "penalty": "health_major"
@@ -210,15 +1621,26 @@
       "label": "CAVE-IN! THE CEILING!",
       "narrator_line": "THE CEILING IS COLLAPSING! Knight — hold the gate! Alchemist — seal the ward! MOVE!",
       "actions": [
-        { "target_arch": "SENTINEL",  "action": "SET_TOGGLE",   "slot": "toggle_2", "value": true },
-        { "target_arch": "MEDIC",     "action": "SET_TOGGLE",   "slot": "toggle_1", "value": true },
-        { "rest": "CRISIS_BTN" }
+        {
+          "target_arch": "SENTINEL",
+          "action": "SET_TOGGLE",
+          "slot": "toggle_2",
+          "value": true
+        },
+        {
+          "target_arch": "MEDIC",
+          "action": "SET_TOGGLE",
+          "slot": "toggle_1",
+          "value": true
+        },
+        {
+          "rest": "CRISIS_BTN"
+        }
       ],
       "timeout_ms": 7000,
       "penalty": "health_minor"
     }
   ],
-
   "phases": [
     {
       "id": "intro",
@@ -233,7 +1655,6 @@
         "Move out. Ashenmere is counting on you."
       ]
     },
-
     {
       "id": "preflight",
       "type": "PREFLIGHT",
@@ -241,50 +1662,136 @@
       "narrator_intro": "All company members, set your gear to starting positions. Confirm each control when your display lights green.",
       "init_commands": {
         "NAVIGATOR": [
-          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "toggle_2",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "specialty_b", "action": "SET_SLIDER",  "value": 0 }
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_2",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "specialty_b",
+            "action": "SET_SLIDER",
+            "value": 0
+          }
         ],
         "ENGINEER": [
-          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "toggle_2",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "toggle_3",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "specialty_a", "action": "SET_SLIDER",  "value": 0 }
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_2",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_3",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "specialty_a",
+            "action": "SET_SLIDER",
+            "value": 0
+          }
         ],
         "OPERATOR": [
-          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "toggle_2",    "action": "SET_TOGGLE", "value": false }
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_2",
+            "action": "SET_TOGGLE",
+            "value": false
+          }
         ],
         "SENTINEL": [
-          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "toggle_2",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "specialty_b", "action": "SET_ROTARY_SW", "value": 1 }
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_2",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "specialty_b",
+            "action": "SET_ROTARY_SW",
+            "value": 1
+          }
         ],
         "MEDIC": [
-          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false }
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          }
         ],
         "ANALYST": [
-          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "toggle_2",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "specialty_b", "action": "SET_ROTARY_SW", "value": 1 }
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_2",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "specialty_b",
+            "action": "SET_ROTARY_SW",
+            "value": 1
+          }
         ],
         "SCOUT": [
-          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "toggle_2",    "action": "SET_TOGGLE", "value": false },
-          { "slot": "toggle_3",    "action": "SET_TOGGLE", "value": false }
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_2",
+            "action": "SET_TOGGLE",
+            "value": false
+          },
+          {
+            "slot": "toggle_3",
+            "action": "SET_TOGGLE",
+            "value": false
+          }
         ],
         "COMMANDER": [
-          { "slot": "toggle_1",    "action": "SET_TOGGLE", "value": false }
+          {
+            "slot": "toggle_1",
+            "action": "SET_TOGGLE",
+            "value": false
+          }
         ]
       }
     },
-
     {
       "id": "frantic_1",
       "type": "FRANTIC",
       "duration_sec": 240,
-      "pools": ["direct", "cooperative", "open"],
-      "crises": ["crisis_rockslide", "crisis_wyvern_attack"],
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_rockslide",
+        "crisis_wyvern_attack"
+      ],
       "narrator_lines_ambient": [
         "Up the mountain path. Stay together.",
         "The air grows thin. Watch your footing on the scree.",
@@ -292,7 +1799,6 @@
         "Watch the ridgeline — wyvern scouts nesting in the crags."
       ]
     },
-
     {
       "id": "branch_1",
       "type": "BRANCH",
@@ -313,13 +1819,20 @@
         "next_phase": "frantic_2_L"
       }
     },
-
     {
       "id": "frantic_2_W",
       "type": "FRANTIC",
       "duration_sec": 270,
-      "pools": ["direct", "cooperative", "open"],
-      "crises": ["crisis_dragonfire", "crisis_rockslide", "crisis_cave_in"],
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_dragonfire",
+        "crisis_rockslide",
+        "crisis_cave_in"
+      ],
       "narrator_lines_ambient": [
         "The Ember Gate is open. Ancient runes glow on the walls.",
         "The heat is unbearable — the dragon's lair is close.",
@@ -327,13 +1840,21 @@
         "The Lorekeeper needs to break the seal! Protect them!"
       ]
     },
-
     {
       "id": "frantic_2_L",
       "type": "FRANTIC",
       "duration_sec": 250,
-      "pools": ["direct", "cooperative", "open"],
-      "crises": ["crisis_dragonfire", "crisis_rockslide", "crisis_cave_in", "crisis_wyvern_attack"],
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_dragonfire",
+        "crisis_rockslide",
+        "crisis_cave_in",
+        "crisis_wyvern_attack"
+      ],
       "narrator_lines_ambient": [
         "These mines haven't been walked in a century. The timbers are rotten.",
         "Dragon's breath seeps through the cracks — stay low!",
@@ -341,7 +1862,6 @@
         "We must reach the Crown before Cinderwing brings the mountain down on us!"
       ]
     },
-
     {
       "id": "branch_2",
       "type": "BRANCH",
@@ -382,13 +1902,21 @@
         }
       }
     },
-
     {
       "id": "frantic_3_WW",
       "type": "FRANTIC",
       "duration_sec": 270,
-      "pools": ["direct", "cooperative", "open"],
-      "crises": ["crisis_dragonfire", "crisis_rockslide", "crisis_wyvern_attack", "crisis_cave_in"],
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_dragonfire",
+        "crisis_rockslide",
+        "crisis_wyvern_attack",
+        "crisis_cave_in"
+      ],
       "narrator_lines_ambient": [
         "The summit! Cinderwing is HERE — wings spread, fire in its throat!",
         "Use the Crown! Channel the binding spell! Everyone — hold the line!",
@@ -396,13 +1924,21 @@
         "Ancient words in the stone! Read them, Lorekeeper! Finish the binding!"
       ]
     },
-
     {
       "id": "frantic_3_WL",
       "type": "FRANTIC",
       "duration_sec": 250,
-      "pools": ["direct", "cooperative", "open"],
-      "crises": ["crisis_dragonfire", "crisis_rockslide", "crisis_wyvern_attack", "crisis_cave_in"],
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_dragonfire",
+        "crisis_rockslide",
+        "crisis_wyvern_attack",
+        "crisis_cave_in"
+      ],
       "narrator_lines_ambient": [
         "The cracked Crown flickers — the binding is unstable!",
         "Cinderwing senses the weakness — it's attacking harder!",
@@ -410,13 +1946,21 @@
         "If this fails, it's lances and prayers! HOLD!"
       ]
     },
-
     {
       "id": "frantic_3_LW",
       "type": "FRANTIC",
       "duration_sec": 250,
-      "pools": ["direct", "cooperative", "open"],
-      "crises": ["crisis_dragonfire", "crisis_rockslide", "crisis_wyvern_attack", "crisis_cave_in"],
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_dragonfire",
+        "crisis_rockslide",
+        "crisis_wyvern_attack",
+        "crisis_cave_in"
+      ],
       "narrator_lines_ambient": [
         "Battered, bleeding, but the Crown is in hand! Use it NOW!",
         "Cinderwing roars — the mountain shakes!",
@@ -424,13 +1968,21 @@
         "Force it! More ley energy! Everyone — PUSH!"
       ]
     },
-
     {
       "id": "frantic_3_LL",
       "type": "FRANTIC",
       "duration_sec": 240,
-      "pools": ["direct", "cooperative", "open"],
-      "crises": ["crisis_dragonfire", "crisis_rockslide", "crisis_wyvern_attack", "crisis_cave_in"],
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_dragonfire",
+        "crisis_rockslide",
+        "crisis_wyvern_attack",
+        "crisis_cave_in"
+      ],
       "narrator_lines_ambient": [
         "No Crown. No magic. Just steel, courage, and eight souls on a burning mountain.",
         "Cinderwing lands! It's massive — older and more terrible than the legends!",
@@ -438,7 +1990,6 @@
         "FOR ASHENMERE! Stand and fight! Stand and FIGHT!"
       ]
     },
-
     {
       "id": "branch_3",
       "type": "BRANCH",
@@ -446,7 +1997,6 @@
       "threshold": 0.55
     }
   ],
-
   "outcomes": {
     "WWW": {
       "tier": "TRIUMPH",
@@ -526,7 +2076,6 @@
       ]
     }
   },
-
   "narrator": {
     "voice": "fantasy_chronicle_narrator",
     "tts_engine": "local",

@@ -1,0 +1,1585 @@
+{
+  "schema_version": "1.0",
+  "meta": {
+    "id": "LAST_BASTION_01",
+    "title": "The Last Bastion",
+    "pack": "MEDIEVAL_COLLECTION",
+    "theme": "medieval",
+    "subject": "teamwork",
+    "age_rating": "8+",
+    "difficulty": "medium",
+    "player_count": {
+      "min": 3,
+      "max": 8
+    },
+    "duration_sec": {
+      "min": 840,
+      "max": 900
+    },
+    "adaptive_pacing": true,
+    "version": "2.0.0",
+    "author": "mission_architect"
+  },
+  "roles": {
+    "NAVIGATOR": "Gatekeeper",
+    "ENGINEER": "Mason",
+    "OPERATOR": "Herald",
+    "SENTINEL": "Captain of Guard",
+    "MEDIC": "Apothecary",
+    "ANALYST": "Scribe",
+    "SCOUT": "Watchman",
+    "COMMANDER": "Castellan"
+  },
+  "oled_labels": {
+    "NAVIGATOR": [
+      "Outer Gate",
+      "Inner Gate",
+      "Gate Winch",
+      "Fire Ballista",
+      "Volley Order",
+      "Arrow Supply",
+      "Tar Bucket",
+      "Ballista Aim",
+      "Draw Chain"
+    ],
+    "ENGINEER": [
+      "Scaffolding",
+      "Buttress",
+      "Stone Hoist",
+      "Pour Mortar",
+      "Quick Patch",
+      "Drop Rubble",
+      "Ram Block",
+      "Wall Brace",
+      "Stone Route"
+    ],
+    "OPERATOR": [
+      "Battle Standard",
+      "War Drums",
+      "Torch Signal",
+      "Sound Retreat",
+      "Rally Cry",
+      "Call Reserves",
+      "Parley Flag",
+      "Signal Horn",
+      "Gate Cipher"
+    ],
+    "SENTINEL": [
+      "Dungeon Lock",
+      "Sally Port",
+      "Watch Tower",
+      "Raise Alarm",
+      "Guard Shift",
+      "Chain Gate",
+      "Drop Portcullis",
+      "Drawbridge Grip",
+      "Guard Post"
+    ],
+    "MEDIC": [
+      "Water Ration",
+      "Fever Ward",
+      "Leech Jar",
+      "Bind Wounds",
+      "Smelling Salt",
+      "Boil Poultice",
+      "Bone Splint",
+      "Herbal Remedy",
+      "Tonic Dose"
+    ],
+    "ANALYST": [
+      "War Ledger",
+      "Spy Report",
+      "Signal Lamp",
+      "Seal Message",
+      "Copy Scroll",
+      "Mark Map",
+      "Archive Order",
+      "Cipher Wheel",
+      "Map Bearing"
+    ],
+    "SCOUT": [
+      "Fire Beacon",
+      "East Watch",
+      "West Watch",
+      "Arrow Slit",
+      "Spot Flank",
+      "Oil Pot",
+      "Warning Shot",
+      "Tower Sweep",
+      "War Paint"
+    ],
+    "COMMANDER": [
+      "Lord's Seal",
+      "Drawbridge Ord",
+      "Banner Choice",
+      "Confirm Order",
+      "Toll Bell",
+      "War Council",
+      "Muster Call",
+      "Castle Orders",
+      "Royal Decree"
+    ]
+  },
+  "command_pools": {
+    "direct": [
+      {
+        "id": "nav_aim_left",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_a",
+        "label": "Ballista LEFT — west wall!",
+        "narrator_line": "Gatekeeper! Aim the ballista left — they're massing on the west wall!",
+        "value_preset": "WEST"
+      },
+      {
+        "id": "nav_aim_right",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_a",
+        "label": "Ballista RIGHT — east approach!",
+        "narrator_line": "Swing the ballista right — siege tower on the east approach!",
+        "value_preset": "EAST"
+      },
+      {
+        "id": "nav_aim_high",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_a",
+        "label": "Elevation HIGH — the ridge!",
+        "narrator_line": "Gatekeeper! Elevation high — hit the archers on the ridge!",
+        "value_preset": "NORTH"
+      },
+      {
+        "id": "nav_aim_low",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_a",
+        "label": "Aim LOW — the battering ram!",
+        "narrator_line": "Aim low! Target the battering ram below the gatehouse!",
+        "value_preset": "SOUTH"
+      },
+      {
+        "id": "nav_chain_up",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_b",
+        "label": "Raise the drawbridge!",
+        "narrator_line": "Raise the drawbridge — all the way up! Seal us in!",
+        "value_preset": "MAX"
+      },
+      {
+        "id": "nav_chain_half",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_b",
+        "label": "Drawbridge to half!",
+        "narrator_line": "Drawbridge to half — let the scouts back in!",
+        "value_preset": "HALF"
+      },
+      {
+        "id": "nav_chain_down",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_b",
+        "label": "Lower the drawbridge!",
+        "narrator_line": "Lower the drawbridge — sortie party, GO!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "nav_outer_close",
+        "target_arch": "NAVIGATOR",
+        "capability": "toggle_1",
+        "label": "Bar the outer gate!",
+        "narrator_line": "Bar the outer gate! Drop the crossbeam!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "nav_outer_open",
+        "target_arch": "NAVIGATOR",
+        "capability": "toggle_1",
+        "label": "Open the outer gate!",
+        "narrator_line": "Lift the crossbeam — open the outer gate!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "nav_inner_close",
+        "target_arch": "NAVIGATOR",
+        "capability": "toggle_2",
+        "label": "Bar the inner gate!",
+        "narrator_line": "Inner gate — bar it NOW! They're in the courtyard!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "nav_inner_open",
+        "target_arch": "NAVIGATOR",
+        "capability": "toggle_2",
+        "label": "Open the inner gate!",
+        "narrator_line": "Open the inner gate — reinforcements are moving up!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "nav_fire",
+        "target_arch": "NAVIGATOR",
+        "capability": "button_1",
+        "label": "FIRE the ballista!",
+        "narrator_line": "Fire the ballista! LOOSE!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "eng_brace_max",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_a",
+        "label": "Wall brace to MAXIMUM!",
+        "narrator_line": "Mason! Brace that wall to maximum — it's buckling!",
+        "value_preset": "MAX"
+      },
+      {
+        "id": "eng_brace_half",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_a",
+        "label": "Ease the brace to half!",
+        "narrator_line": "Ease the wall brace to half — we need the timber elsewhere!",
+        "value_preset": "HALF"
+      },
+      {
+        "id": "eng_brace_min",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_a",
+        "label": "Wall brace to minimum!",
+        "narrator_line": "Mason! Minimum brace — pull the supports for the gatehouse!",
+        "value_preset": "LOW"
+      },
+      {
+        "id": "eng_brace_off",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_a",
+        "label": "Release the wall brace!",
+        "narrator_line": "Release the brace entirely — redirect everything!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "eng_mortar",
+        "target_arch": "ENGINEER",
+        "capability": "button_1",
+        "label": "Pour mortar — fill the gap!",
+        "narrator_line": "Mason! Pour the mortar — fill that breach!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "eng_scaffold_up",
+        "target_arch": "ENGINEER",
+        "capability": "toggle_1",
+        "label": "Raise the scaffolding!",
+        "narrator_line": "Raise the scaffolding — we need men on the parapet!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "eng_scaffold_down",
+        "target_arch": "ENGINEER",
+        "capability": "toggle_1",
+        "label": "Drop the scaffolding!",
+        "narrator_line": "Drop the scaffolding — they're climbing it!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "eng_buttress_on",
+        "target_arch": "ENGINEER",
+        "capability": "toggle_2",
+        "label": "Shore up the buttress!",
+        "narrator_line": "Shore up that buttress — the tower is leaning!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "eng_buttress_off",
+        "target_arch": "ENGINEER",
+        "capability": "toggle_2",
+        "label": "Release the buttress!",
+        "narrator_line": "Release the buttress — we need that timber!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "eng_hoist_on",
+        "target_arch": "ENGINEER",
+        "capability": "toggle_3",
+        "label": "Hoist stones to the wall!",
+        "narrator_line": "Mason! Hoist more stones — the men need ammunition!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "eng_hoist_off",
+        "target_arch": "ENGINEER",
+        "capability": "toggle_3",
+        "label": "Lower the stone hoist!",
+        "narrator_line": "Lower the hoist — enough stones for now!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "eng_stone_main",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_b",
+        "label": "Stone route: main gate!",
+        "narrator_line": "Mason! Patch the stone route — main gate priority!",
+        "value_preset": "NORMAL"
+      },
+      {
+        "id": "eng_stone_tower",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_b",
+        "label": "Stone route: tower first!",
+        "narrator_line": "Mason! Reroute stones — tower repair takes priority!",
+        "value_preset": "BACKUP"
+      },
+      {
+        "id": "eng_stone_breach",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_b",
+        "label": "Stone route: breach repair!",
+        "narrator_line": "Emergency stone routing — all to the breach!",
+        "value_preset": "BYPASS"
+      },
+      {
+        "id": "op_horn_88",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_a",
+        "label": "Signal horn: code 88!",
+        "narrator_line": "Herald! Sound code eighty-eight — rally the reserves!",
+        "value": 88
+      },
+      {
+        "id": "op_horn_42",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_a",
+        "label": "Signal horn: code 42!",
+        "narrator_line": "Herald! Code forty-two — call for reinforcements!",
+        "value": 42
+      },
+      {
+        "id": "op_horn_150",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_a",
+        "label": "Signal horn: code 150!",
+        "narrator_line": "Sound code one-fifty — all-clear for the sally port!",
+        "value": 150
+      },
+      {
+        "id": "op_horn_200",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_a",
+        "label": "Emergency signal: code 200!",
+        "narrator_line": "Herald! Emergency — code two hundred! Final retreat!",
+        "value": 200
+      },
+      {
+        "id": "op_standard_up",
+        "target_arch": "OPERATOR",
+        "capability": "toggle_1",
+        "label": "Raise the battle standard!",
+        "narrator_line": "Raise the standard! Let them see we still stand!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "op_standard_down",
+        "target_arch": "OPERATOR",
+        "capability": "toggle_1",
+        "label": "Lower the standard!",
+        "narrator_line": "Lower the standard — draw no attention!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "op_drums_on",
+        "target_arch": "OPERATOR",
+        "capability": "toggle_2",
+        "label": "Beat the war drums!",
+        "narrator_line": "Beat the war drums! Steady the men's courage!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "op_drums_off",
+        "target_arch": "OPERATOR",
+        "capability": "toggle_2",
+        "label": "Silence the drums!",
+        "narrator_line": "Silence the drums — listen for their movements!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "op_retreat",
+        "target_arch": "OPERATOR",
+        "capability": "button_1",
+        "label": "Sound the retreat!",
+        "narrator_line": "Sound the retreat — fall back to the inner walls!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "op_rally",
+        "target_arch": "OPERATOR",
+        "capability": "button_2",
+        "label": "Sound the rally cry!",
+        "narrator_line": "Rally! Sound the cry — every man to the breach!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "op_cipher_531",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_b",
+        "label": "Gate cipher: 5-3-1!",
+        "narrator_line": "Herald! Gate cipher five-three-one — open the way!",
+        "value": "531"
+      },
+      {
+        "id": "op_cipher_294",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_b",
+        "label": "Gate cipher: 2-9-4!",
+        "narrator_line": "Herald! Cipher two-nine-four — the night password!",
+        "value": "294"
+      },
+      {
+        "id": "op_cipher_8107",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_b",
+        "label": "Gate cipher: 8-1-0-7!",
+        "narrator_line": "Herald! Emergency cipher eight-one-zero-seven!",
+        "value": "8107",
+        "timeout_ms": 10000
+      },
+      {
+        "id": "sent_bridge_hold",
+        "target_arch": "SENTINEL",
+        "capability": "specialty_a",
+        "label": "Hold the drawbridge — FIRM!",
+        "narrator_line": "Captain! Drawbridge lever to seventy — hold the line!",
+        "value_preset": "FIRM"
+      },
+      {
+        "id": "sent_bridge_max",
+        "target_arch": "SENTINEL",
+        "capability": "specialty_a",
+        "label": "Drawbridge — MAX TENSION!",
+        "narrator_line": "Maximum tension on that drawbridge! They are battering the gate!",
+        "value_preset": "FULL"
+      },
+      {
+        "id": "sent_post_day",
+        "target_arch": "SENTINEL",
+        "capability": "specialty_b",
+        "label": "Guard post — DAY watch!",
+        "narrator_line": "Captain of the Guard! Set the day watch — position one!",
+        "value_preset": "POS_1"
+      },
+      {
+        "id": "sent_post_battle",
+        "target_arch": "SENTINEL",
+        "capability": "specialty_b",
+        "label": "Guard post — BATTLE!",
+        "narrator_line": "Battle stations! Guard post to position two!",
+        "value_preset": "POS_2"
+      },
+      {
+        "id": "sent_post_night",
+        "target_arch": "SENTINEL",
+        "capability": "specialty_b",
+        "label": "Guard post — NIGHT watch!",
+        "narrator_line": "Night watch! Set the guard — position three!",
+        "value_preset": "POS_3"
+      },
+      {
+        "id": "sent_dungeon_lock",
+        "target_arch": "SENTINEL",
+        "capability": "toggle_1",
+        "label": "Lock the dungeon!",
+        "narrator_line": "Lock the dungeon gate — prisoners below!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "sent_dungeon_open",
+        "target_arch": "SENTINEL",
+        "capability": "toggle_1",
+        "label": "Unlock the dungeon!",
+        "narrator_line": "Unlock the dungeon — press the prisoners into service!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "sent_sally_open",
+        "target_arch": "SENTINEL",
+        "capability": "toggle_2",
+        "label": "Open the sally port!",
+        "narrator_line": "Open the sally port — sortie party, move out!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "sent_sally_close",
+        "target_arch": "SENTINEL",
+        "capability": "toggle_2",
+        "label": "Seal the sally port!",
+        "narrator_line": "Seal the sally port! They've found it!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "sent_alarm",
+        "target_arch": "SENTINEL",
+        "capability": "button_1",
+        "label": "Raise the alarm!",
+        "narrator_line": "Raise the alarm! All hands to the walls!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "med_blue",
+        "target_arch": "MEDIC",
+        "capability": "specialty_a",
+        "label": "Mix BLUE fever remedy!",
+        "narrator_line": "Apothecary! Mix the blue fever remedy — the garrison is falling ill!",
+        "value_preset": "BLUE"
+      },
+      {
+        "id": "med_red",
+        "target_arch": "MEDIC",
+        "capability": "specialty_a",
+        "label": "Mix RED wound salve!",
+        "narrator_line": "Apothecary! Red wound salve — the injured are piling up!",
+        "value_preset": "RED"
+      },
+      {
+        "id": "med_green",
+        "target_arch": "MEDIC",
+        "capability": "specialty_a",
+        "label": "Mix GREEN antidote!",
+        "narrator_line": "Mix the green antidote — the well may be poisoned!",
+        "value_preset": "GREEN"
+      },
+      {
+        "id": "med_dose_150",
+        "target_arch": "MEDIC",
+        "capability": "specialty_b",
+        "label": "Tonic dose to 150!",
+        "narrator_line": "Apothecary! Tonic to one-fifty — the Captain needs it!",
+        "value": 150
+      },
+      {
+        "id": "med_dose_80",
+        "target_arch": "MEDIC",
+        "capability": "specialty_b",
+        "label": "Reduce tonic to 80!",
+        "narrator_line": "Ease the tonic to eighty — any more will dull his wits!",
+        "value": 80
+      },
+      {
+        "id": "med_dose_250",
+        "target_arch": "MEDIC",
+        "capability": "specialty_b",
+        "label": "Emergency dose — 250!",
+        "narrator_line": "Emergency dose! Crank it to two-fifty — he's fading!",
+        "value": 250
+      },
+      {
+        "id": "med_water_on",
+        "target_arch": "MEDIC",
+        "capability": "toggle_1",
+        "label": "Issue the water ration!",
+        "narrator_line": "Issue the water ration — the men are parched!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "med_water_off",
+        "target_arch": "MEDIC",
+        "capability": "toggle_1",
+        "label": "Cut the water ration!",
+        "narrator_line": "Cut the ration — we must conserve the well!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "med_wounds",
+        "target_arch": "MEDIC",
+        "capability": "button_1",
+        "label": "Bind the wounded!",
+        "narrator_line": "Apothecary! Bind the wounded — get them back to the wall!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "med_salts",
+        "target_arch": "MEDIC",
+        "capability": "button_2",
+        "label": "Smelling salts — revive him!",
+        "narrator_line": "Smelling salts! Revive that man — we need every sword!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "ana_code_721",
+        "target_arch": "ANALYST",
+        "capability": "specialty_a",
+        "label": "Cipher code: 7-2-1!",
+        "narrator_line": "Scribe! Cipher code seven-two-one — decode the enemy dispatch!",
+        "value": "721",
+        "timeout_ms": 7000
+      },
+      {
+        "id": "ana_code_4519",
+        "target_arch": "ANALYST",
+        "capability": "specialty_a",
+        "label": "Cipher code: 4-5-1-9!",
+        "narrator_line": "Scribe! Code four-five-one-nine — the spy's message!",
+        "value": "4519"
+      },
+      {
+        "id": "ana_code_308",
+        "target_arch": "ANALYST",
+        "capability": "specialty_a",
+        "label": "Cipher code: 3-0-8!",
+        "narrator_line": "Scribe! Three-zero-eight — crack the enemy cipher!",
+        "value": "308",
+        "timeout_ms": 7000
+      },
+      {
+        "id": "ana_bearing_4",
+        "target_arch": "ANALYST",
+        "capability": "specialty_b",
+        "label": "Map bearing — position FOUR!",
+        "narrator_line": "Scribe! Map bearing to position four — mark the enemy camp!",
+        "value_preset": "POS_4"
+      },
+      {
+        "id": "ana_bearing_2",
+        "target_arch": "ANALYST",
+        "capability": "specialty_b",
+        "label": "Map bearing — position TWO!",
+        "narrator_line": "Bearing position two — mark the siege tower approach!",
+        "value_preset": "POS_2"
+      },
+      {
+        "id": "ana_bearing_5",
+        "target_arch": "ANALYST",
+        "capability": "specialty_b",
+        "label": "Map bearing — position FIVE!",
+        "narrator_line": "Bearing position five — that's the relief column's route!",
+        "value_preset": "POS_5"
+      },
+      {
+        "id": "ana_ledger_on",
+        "target_arch": "ANALYST",
+        "capability": "toggle_1",
+        "label": "Open the war ledger!",
+        "narrator_line": "Open the war ledger — what supplies remain?",
+        "value_preset": "ON"
+      },
+      {
+        "id": "ana_ledger_off",
+        "target_arch": "ANALYST",
+        "capability": "toggle_1",
+        "label": "Close the war ledger!",
+        "narrator_line": "Stow the ledger — we've got the count!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "ana_spy_on",
+        "target_arch": "ANALYST",
+        "capability": "toggle_2",
+        "label": "Read the spy report!",
+        "narrator_line": "Read the spy report — where is the enemy weak?",
+        "value_preset": "ON"
+      },
+      {
+        "id": "ana_spy_off",
+        "target_arch": "ANALYST",
+        "capability": "toggle_2",
+        "label": "Stow the spy report!",
+        "narrator_line": "Stow the spy report — we've got the intelligence!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "ana_seal",
+        "target_arch": "ANALYST",
+        "capability": "button_1",
+        "label": "Seal the message!",
+        "narrator_line": "Seal that message — send it by pigeon before dawn!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "sco_sweep_east",
+        "target_arch": "SCOUT",
+        "capability": "specialty_a",
+        "label": "Tower sweep — EAST side!",
+        "narrator_line": "Watchman! Sweep the tower east — check the siege lines!",
+        "value_preset": "EAST"
+      },
+      {
+        "id": "sco_sweep_south",
+        "target_arch": "SCOUT",
+        "capability": "specialty_a",
+        "label": "Tower sweep — SOUTH wall!",
+        "narrator_line": "Watchman! Sweep south — what's moving along the wall?",
+        "value_preset": "SOUTH"
+      },
+      {
+        "id": "sco_sweep_north",
+        "target_arch": "SCOUT",
+        "capability": "specialty_a",
+        "label": "Tower sweep — NORTH ridge!",
+        "narrator_line": "Sweep north — movement in the tree line!",
+        "value_preset": "NORTH"
+      },
+      {
+        "id": "sco_beacon_on",
+        "target_arch": "SCOUT",
+        "capability": "toggle_1",
+        "label": "Light the beacon fire!",
+        "narrator_line": "Light the beacon! Signal for the relief column!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "sco_beacon_off",
+        "target_arch": "SCOUT",
+        "capability": "toggle_1",
+        "label": "Douse the beacon!",
+        "narrator_line": "Douse the beacon — it's drawing their fire!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "sco_east_on",
+        "target_arch": "SCOUT",
+        "capability": "toggle_2",
+        "label": "East watch — eyes open!",
+        "narrator_line": "Watchman! East watch — report what you see!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "sco_east_off",
+        "target_arch": "SCOUT",
+        "capability": "toggle_2",
+        "label": "East watch — stand down!",
+        "narrator_line": "East watch stand down — redeploy to the west!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "sco_west_on",
+        "target_arch": "SCOUT",
+        "capability": "toggle_3",
+        "label": "West watch — scan the ridge!",
+        "narrator_line": "West watch — scan that ridge for siege engines!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "sco_west_off",
+        "target_arch": "SCOUT",
+        "capability": "toggle_3",
+        "label": "West watch — stand down!",
+        "narrator_line": "West watch stand down — pull back to the tower!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "sco_arrow_slit",
+        "target_arch": "SCOUT",
+        "capability": "button_1",
+        "label": "Man the arrow slits!",
+        "narrator_line": "Arrow slits manned! Fire at anything that moves!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "sco_paint_red",
+        "target_arch": "SCOUT",
+        "capability": "specialty_b",
+        "label": "War paint: RED — enemy!",
+        "narrator_line": "Watchman! Red war paint — mark the enemy position!",
+        "value_preset": "RED"
+      },
+      {
+        "id": "sco_paint_blue",
+        "target_arch": "SCOUT",
+        "capability": "specialty_b",
+        "label": "War paint: BLUE — ally!",
+        "narrator_line": "Watchman! Blue paint — mark friendlies on the map!",
+        "value_preset": "DEEP_BLUE"
+      },
+      {
+        "id": "sco_paint_green",
+        "target_arch": "SCOUT",
+        "capability": "specialty_b",
+        "label": "War paint: GREEN — safe path!",
+        "narrator_line": "Green paint — mark the safe route for the sortie!",
+        "value_preset": "GREEN"
+      },
+      {
+        "id": "cmd_defend",
+        "target_arch": "COMMANDER",
+        "capability": "specialty_a",
+        "label": "Patch orders: DEFEND WALLS!",
+        "narrator_line": "Castellan! Wire the commands — defend the walls formation!",
+        "value_preset": "NORMAL"
+      },
+      {
+        "id": "cmd_sortie",
+        "target_arch": "COMMANDER",
+        "capability": "specialty_a",
+        "label": "Patch orders: SORTIE!",
+        "narrator_line": "Castellan! Sortie orders — rewire the command leads!",
+        "value_preset": "BACKUP"
+      },
+      {
+        "id": "cmd_fallback",
+        "target_arch": "COMMANDER",
+        "capability": "specialty_a",
+        "label": "Patch orders: FALL BACK!",
+        "narrator_line": "Fall back formation — patch the command lines NOW!",
+        "value_preset": "BYPASS"
+      },
+      {
+        "id": "cmd_laststand",
+        "target_arch": "COMMANDER",
+        "capability": "specialty_a",
+        "label": "Patch orders: LAST STAND!",
+        "narrator_line": "Last stand — final command patch! No retreat! No surrender!",
+        "value_preset": "EVAC"
+      },
+      {
+        "id": "cmd_confirm",
+        "target_arch": "COMMANDER",
+        "capability": "button_1",
+        "label": "Confirm the order!",
+        "narrator_line": "Castellan! Confirm that order — send the runners!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "cmd_seal_on",
+        "target_arch": "COMMANDER",
+        "capability": "toggle_1",
+        "label": "Apply the Lord's seal!",
+        "narrator_line": "Apply the Lord's seal — authorize the command!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "cmd_seal_off",
+        "target_arch": "COMMANDER",
+        "capability": "toggle_1",
+        "label": "Remove the Lord's seal!",
+        "narrator_line": "Remove the seal — revoke that order!",
+        "value_preset": "OFF"
+      },
+      {
+        "id": "cmd_bell",
+        "target_arch": "COMMANDER",
+        "capability": "button_2",
+        "label": "Toll the warning bell!",
+        "narrator_line": "Toll the bell! All hands to battle stations!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "cmd_council",
+        "target_arch": "COMMANDER",
+        "capability": "button_3",
+        "label": "Call a war council!",
+        "narrator_line": "War council! Officers report — what is our status?",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "cmd_auth_royal",
+        "target_arch": "COMMANDER",
+        "capability": "specialty_b",
+        "label": "Scan the ROYAL DECREE!",
+        "narrator_line": "Castellan! Scan the royal decree — authorize the order!",
+        "value": "ROYAL_SEAL"
+      },
+      {
+        "id": "cmd_auth_writ",
+        "target_arch": "COMMANDER",
+        "capability": "specialty_b",
+        "label": "Scan the WAR WRIT!",
+        "narrator_line": "Castellan! The war writ — scan it to mobilize!",
+        "value": "WAR_WRIT"
+      }
+    ],
+    "cooperative": [
+      {
+        "id": "coop_cmd_tell_nav_left",
+        "display_on": "COMMANDER",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_a",
+        "label": "Tell Gate: ballista LEFT!",
+        "narrator_line": "Castellan! Tell the Gatekeeper — ballista to the left!",
+        "value_preset": "WEST"
+      },
+      {
+        "id": "coop_eng_tell_nav_high",
+        "display_on": "ENGINEER",
+        "target_arch": "NAVIGATOR",
+        "capability": "specialty_a",
+        "label": "Tell Gate: aim HIGH!",
+        "narrator_line": "Mason! Shout to the Gatekeeper — aim high, the ridge!",
+        "value_preset": "NORTH"
+      },
+      {
+        "id": "coop_ana_tell_eng_max",
+        "display_on": "ANALYST",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_a",
+        "label": "Tell Mason: brace to max!",
+        "narrator_line": "Scribe! Tell the Mason — wall brace to maximum!",
+        "value_preset": "MAX"
+      },
+      {
+        "id": "coop_cmd_tell_eng_half",
+        "display_on": "COMMANDER",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_a",
+        "label": "Tell Mason: brace to half!",
+        "narrator_line": "Castellan! Tell the Mason — half brace, save timber!",
+        "value_preset": "HALF"
+      },
+      {
+        "id": "coop_nav_tell_op_88",
+        "display_on": "NAVIGATOR",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_a",
+        "label": "Tell Herald: signal 88!",
+        "narrator_line": "Gatekeeper! Tell the Herald — sound code eighty-eight!",
+        "value": 88
+      },
+      {
+        "id": "coop_sco_tell_op_42",
+        "display_on": "SCOUT",
+        "target_arch": "OPERATOR",
+        "capability": "specialty_a",
+        "label": "Tell Herald: signal 42!",
+        "narrator_line": "Watchman! Shout to the Herald — code forty-two!",
+        "value": 42
+      },
+      {
+        "id": "coop_med_tell_sent_lock",
+        "display_on": "MEDIC",
+        "target_arch": "SENTINEL",
+        "capability": "toggle_1",
+        "label": "Tell Guard: lock dungeon!",
+        "narrator_line": "Apothecary! Shout to the Captain — lock the dungeon!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "coop_op_tell_sent_alarm",
+        "display_on": "OPERATOR",
+        "target_arch": "SENTINEL",
+        "capability": "button_1",
+        "label": "Tell Guard: raise alarm!",
+        "narrator_line": "Herald! Tell the Captain of the Guard — raise the alarm!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "coop_eng_tell_med_water",
+        "display_on": "ENGINEER",
+        "target_arch": "MEDIC",
+        "capability": "toggle_1",
+        "label": "Tell Apoth: issue water!",
+        "narrator_line": "Mason! Tell the Apothecary — issue the water ration!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "coop_sent_tell_med_salts",
+        "display_on": "SENTINEL",
+        "target_arch": "MEDIC",
+        "capability": "button_2",
+        "label": "Tell Apoth: smelling salts!",
+        "narrator_line": "Captain! Tell the Apothecary — salts, NOW!",
+        "value_preset": "PRESS"
+      },
+      {
+        "id": "coop_sent_tell_eng_brace",
+        "display_on": "SENTINEL",
+        "target_arch": "ENGINEER",
+        "capability": "specialty_a",
+        "label": "Tell Mason: brace to max!",
+        "narrator_line": "Captain! Shout to the Mason — brace that wall to maximum!",
+        "value_preset": "MAX"
+      },
+      {
+        "id": "coop_nav_tell_ana_308",
+        "display_on": "NAVIGATOR",
+        "target_arch": "ANALYST",
+        "capability": "specialty_a",
+        "label": "Tell Scribe: cipher 3-0-8!",
+        "narrator_line": "Gatekeeper! Tell the Scribe — cipher three-zero-eight!",
+        "value": "308"
+      },
+      {
+        "id": "coop_cmd_tell_ana_bearing",
+        "display_on": "COMMANDER",
+        "target_arch": "ANALYST",
+        "capability": "specialty_b",
+        "label": "Tell Scribe: bearing THREE!",
+        "narrator_line": "Castellan! Tell the Scribe — bearing position three!",
+        "value_preset": "POS_3"
+      },
+      {
+        "id": "coop_ana_tell_sco_east",
+        "display_on": "ANALYST",
+        "target_arch": "SCOUT",
+        "capability": "specialty_a",
+        "label": "Tell Watch: sweep EAST!",
+        "narrator_line": "Scribe! Tell the Watchman — tower sweep to the east!",
+        "value_preset": "EAST",
+        "timeout_ms": 10000
+      },
+      {
+        "id": "coop_op_tell_sco_beacon",
+        "display_on": "OPERATOR",
+        "target_arch": "SCOUT",
+        "capability": "toggle_1",
+        "label": "Tell Watch: light beacon!",
+        "narrator_line": "Herald! Tell the Watchman — light the beacon fire!",
+        "value_preset": "ON"
+      },
+      {
+        "id": "coop_sco_tell_cmd_defend",
+        "display_on": "SCOUT",
+        "target_arch": "COMMANDER",
+        "capability": "specialty_a",
+        "label": "Tell Castellan: defend patch!",
+        "narrator_line": "Watchman! Tell the Castellan — wire the defend formation!",
+        "value_preset": "NORMAL"
+      },
+      {
+        "id": "coop_med_tell_cmd_seal",
+        "display_on": "MEDIC",
+        "target_arch": "COMMANDER",
+        "capability": "toggle_1",
+        "label": "Tell Castellan: Lord's seal!",
+        "narrator_line": "Apothecary! Shout to the Castellan — apply the seal!",
+        "value_preset": "ON"
+      }
+    ],
+    "open": [
+      {
+        "id": "open_joystick_north",
+        "target": "ANY",
+        "action": "SET_JOYSTICK",
+        "label": "Anyone — scan the NORTH wall!",
+        "narrator_line": "Whoever has a spyglass — check the north wall!",
+        "value_preset": "NORTH"
+      },
+      {
+        "id": "open_slider_max",
+        "target": "ANY",
+        "action": "SET_SLIDER",
+        "label": "Anyone — brace to MAXIMUM!",
+        "narrator_line": "Whoever has a brace — maximum tension NOW!",
+        "value_preset": "MAX"
+      },
+      {
+        "id": "open_encoder_75",
+        "target": "ANY",
+        "action": "SET_ENCODER",
+        "label": "Quick — signal code 75!",
+        "narrator_line": "Any horn bearer — signal code seventy-five!",
+        "value": 75
+      },
+      {
+        "id": "open_color_gold",
+        "target": "ANY",
+        "action": "MATCH_COLOR",
+        "label": "Someone — mix GOLD remedy!",
+        "narrator_line": "Anyone with herbs — mix the gold remedy NOW!",
+        "value": [
+          200,
+          180,
+          30
+        ]
+      },
+      {
+        "id": "open_rotary_pos_2",
+        "target": "ANY",
+        "action": "SET_ROTARY_SW",
+        "label": "Anyone — dial to post TWO!",
+        "narrator_line": "Whoever has a dial — guard post two!",
+        "value_preset": "POS_2"
+      },
+      {
+        "id": "open_code_666",
+        "target": "ANY",
+        "action": "ENTER_CODE",
+        "label": "Someone — cipher 6-6-6!",
+        "narrator_line": "Any scribe — emergency cipher six-six-six!",
+        "value": "666",
+        "timeout_ms": 7000
+      }
+    ]
+  },
+  "crises": [
+    {
+      "id": "crisis_battering_ram",
+      "type": "CRISIS_ALL",
+      "label": "BATTERING RAM!",
+      "narrator_line": "BATTERING RAM AT THE GATE! ALL HANDS — BRACE!",
+      "required_count": "all",
+      "timeout_ms": 5000,
+      "penalty": "health_major"
+    },
+    {
+      "id": "crisis_fire_arrows",
+      "type": "CRISIS_THRESHOLD",
+      "label": "FIRE ARROWS INCOMING!",
+      "narrator_line": "FIRE ARROWS! Take cover — at least four of you! SHIELDS UP!",
+      "required_count": 4,
+      "timeout_ms": 6000,
+      "penalty": "health_minor"
+    },
+    {
+      "id": "crisis_siege_tower",
+      "type": "MULTI_ACTION",
+      "label": "SIEGE TOWER!",
+      "narrator_line": "SIEGE TOWER ON THE WALL! Mason — brace the wall! Watchman — spot the approach! HOLD!",
+      "actions": [
+        {
+          "target_arch": "ENGINEER",
+          "capability": "specialty_a",
+          "value_preset": "MAX"
+        },
+        {
+          "target_arch": "SCOUT",
+          "capability": "specialty_a",
+          "value_preset": "EAST"
+        },
+        {
+          "rest": "CRISIS_BTN"
+        }
+      ],
+      "timeout_ms": 7000,
+      "penalty": "health_major"
+    },
+    {
+      "id": "crisis_sappers",
+      "type": "MULTI_ACTION",
+      "label": "SAPPERS TUNNELLING!",
+      "narrator_line": "SAPPERS BENEATH THE WALLS! Lock the dungeon! Scribe — find the tunnel! Everyone — STAMP!",
+      "actions": [
+        {
+          "target_arch": "SENTINEL",
+          "capability": "toggle_1",
+          "value_preset": "ON"
+        },
+        {
+          "target_arch": "ANALYST",
+          "capability": "specialty_b",
+          "value_preset": "POS_3"
+        },
+        {
+          "rest": "CRISIS_BTN"
+        }
+      ],
+      "timeout_ms": 7000,
+      "penalty": "health_minor"
+    }
+  ],
+  "phases": [
+    {
+      "id": "intro",
+      "type": "NARRATION",
+      "duration_sec": 60,
+      "narrator_lines": [
+        "Hear me, garrison of Castle Aldric. I am the Castellan, and I bring grave news.",
+        "A great host marches from the south. Ten thousand strong, with siege engines and sappers.",
+        "Our Lord rides north with the army. We are alone. Reinforcements are three days' march away.",
+        "We must hold these walls. To your stations. God and Saint George defend us."
+      ]
+    },
+    {
+      "id": "preflight",
+      "type": "PREFLIGHT",
+      "duration_sec": 45,
+      "narrator_intro": "All hands, set your stations to ready positions. Confirm each control when your display lights green.",
+      "init_commands": {
+        "NAVIGATOR": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_2",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "specialty_b",
+            "value_preset": "OFF"
+          }
+        ],
+        "ENGINEER": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_2",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_3",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "specialty_a",
+            "value_preset": "OFF"
+          }
+        ],
+        "OPERATOR": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_2",
+            "value_preset": "OFF"
+          }
+        ],
+        "SENTINEL": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_2",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "specialty_b",
+            "value_preset": "POS_1"
+          }
+        ],
+        "MEDIC": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          }
+        ],
+        "ANALYST": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_2",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "specialty_b",
+            "value_preset": "POS_1"
+          }
+        ],
+        "SCOUT": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_2",
+            "value_preset": "OFF"
+          },
+          {
+            "capability": "toggle_3",
+            "value_preset": "OFF"
+          }
+        ],
+        "COMMANDER": [
+          {
+            "capability": "toggle_1",
+            "value_preset": "OFF"
+          }
+        ]
+      }
+    },
+    {
+      "id": "frantic_1",
+      "type": "FRANTIC",
+      "duration_sec": 240,
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_fire_arrows",
+        "crisis_sappers"
+      ],
+      "narrator_lines_ambient": [
+        "Skirmishers at the tree line. Testing our defenses.",
+        "Steady, lads. Don't waste arrows on scouts.",
+        "They're probing the east wall — reinforce it!",
+        "Keep your heads down and your hands busy."
+      ]
+    },
+    {
+      "id": "branch_1",
+      "type": "BRANCH",
+      "evaluate": "frantic_1",
+      "threshold": 0.55,
+      "win": {
+        "narrator_lines": [
+          "The vanguard is scattered! Well done — they'll think twice before testing us again.",
+          "But scouts report the main host with siege towers. Prepare for the true assault."
+        ],
+        "next_phase": "frantic_2_W"
+      },
+      "lose": {
+        "narrator_lines": [
+          "They've found our weaknesses. The outer palisade is compromised.",
+          "The main army approaches and they know exactly where to strike. Brace yourselves."
+        ],
+        "next_phase": "frantic_2_L"
+      }
+    },
+    {
+      "id": "frantic_2_W",
+      "type": "FRANTIC",
+      "duration_sec": 270,
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_battering_ram",
+        "crisis_fire_arrows",
+        "crisis_siege_tower"
+      ],
+      "narrator_lines_ambient": [
+        "Siege towers rolling! Archers — fire at the operators!",
+        "The battering ram is at the gate — hold fast!",
+        "Boiling water from the murder holes! Pour it!",
+        "They're raising ladders on the south wall!"
+      ]
+    },
+    {
+      "id": "frantic_2_L",
+      "type": "FRANTIC",
+      "duration_sec": 250,
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_battering_ram",
+        "crisis_fire_arrows",
+        "crisis_siege_tower",
+        "crisis_sappers"
+      ],
+      "narrator_lines_ambient": [
+        "They know our weak points! Shore up the east wall!",
+        "The moat is filling with debris — they're building a crossing!",
+        "We're losing men too quickly — Apothecary, keep them standing!",
+        "Hold the walls! Do not yield an inch!"
+      ]
+    },
+    {
+      "id": "branch_2",
+      "type": "BRANCH",
+      "evaluate": "current",
+      "threshold": 0.55,
+      "condition_per_path": {
+        "W": {
+          "win": {
+            "narrator_lines": [
+              "Their siege tower is ablaze! The main assault breaks against our walls!",
+              "They're pulling back to regroup. Now — counterattack! Sortie parties, make ready!"
+            ],
+            "next_phase": "frantic_3_WW"
+          },
+          "lose": {
+            "narrator_lines": [
+              "The outer wall is breached! They're in the bailey!",
+              "Fall back to the inner keep! Bar the gates — defend the tower!"
+            ],
+            "next_phase": "frantic_3_WL"
+          }
+        },
+        "L": {
+          "win": {
+            "narrator_lines": [
+              "A sortie from the sally port cut their supply train! The siege engines are burning!",
+              "The enemy is in disarray — press the advantage! Every man who can hold a blade!"
+            ],
+            "next_phase": "frantic_3_LW"
+          },
+          "lose": {
+            "narrator_lines": [
+              "The keep's outer door is cracking. The courtyard is lost.",
+              "This is the last stand. Every man to the great hall. We hold or we die."
+            ],
+            "next_phase": "frantic_3_LL"
+          }
+        }
+      }
+    },
+    {
+      "id": "frantic_3_WW",
+      "type": "FRANTIC",
+      "duration_sec": 270,
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_battering_ram",
+        "crisis_fire_arrows",
+        "crisis_siege_tower",
+        "crisis_sappers"
+      ],
+      "narrator_lines_ambient": [
+        "The sortie is cutting through their camp!",
+        "Burn the siege engines! All of them!",
+        "Their general's banner is wavering — push harder!",
+        "Rally to me! One final push and they'll break!"
+      ]
+    },
+    {
+      "id": "frantic_3_WL",
+      "type": "FRANTIC",
+      "duration_sec": 250,
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_battering_ram",
+        "crisis_fire_arrows",
+        "crisis_siege_tower",
+        "crisis_sappers"
+      ],
+      "narrator_lines_ambient": [
+        "They're in the courtyard! Archers — fire down from the tower!",
+        "Bar every door! Barricade the stairwells!",
+        "The keep must hold — fight for every corridor!",
+        "Do not let them reach the great hall!"
+      ]
+    },
+    {
+      "id": "frantic_3_LW",
+      "type": "FRANTIC",
+      "duration_sec": 250,
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_battering_ram",
+        "crisis_fire_arrows",
+        "crisis_siege_tower",
+        "crisis_sappers"
+      ],
+      "narrator_lines_ambient": [
+        "The enemy is scattered — don't let them regroup!",
+        "Secure the outer wall before they return!",
+        "Their sappers are retreating — chase them down!",
+        "One more effort, lads! The day is nearly ours!"
+      ]
+    },
+    {
+      "id": "frantic_3_LL",
+      "type": "FRANTIC",
+      "duration_sec": 240,
+      "pools": [
+        "direct",
+        "cooperative",
+        "open"
+      ],
+      "crises": [
+        "crisis_battering_ram",
+        "crisis_fire_arrows",
+        "crisis_siege_tower",
+        "crisis_sappers"
+      ],
+      "narrator_lines_ambient": [
+        "The walls are crumbling! Hold together!",
+        "Every man who can stand — to the barricade!",
+        "This is it! Fight for your lives!",
+        "If the keep falls, all is lost! HOLD!"
+      ]
+    },
+    {
+      "id": "branch_3",
+      "type": "BRANCH",
+      "evaluate": "current",
+      "threshold": 0.55
+    }
+  ],
+  "outcomes": {
+    "WWW": {
+      "tier": "TRIUMPH",
+      "title": "Unbreached",
+      "narrator_lines": [
+        "The enemy host breaks and flees the field! Castle Aldric stands unbreached!",
+        "Not a single enemy set foot within the inner wall. A perfect defence.",
+        "When the Lord returns, he will find his castle whole and his garrison proud.",
+        "God and Saint George have smiled upon us. Well fought, every one of you."
+      ]
+    },
+    "WWL": {
+      "tier": "SUCCESS",
+      "title": "Scarred but Standing",
+      "narrator_lines": [
+        "The enemy withdraws, but the inner keep bears the scars of a brutal final assault.",
+        "Castle Aldric holds. The banner still flies, though the walls are blackened.",
+        "A difficult end to what began as a masterful defence. But you held."
+      ]
+    },
+    "WLW": {
+      "tier": "SUCCESS",
+      "title": "Desperate Rally",
+      "narrator_lines": [
+        "After losing the outer bailey, a desperate counterattack retook the walls.",
+        "The enemy retreats in disarray. Castle Aldric is battered but unbroken.",
+        "A hard-won victory. The garrison earned its rest today."
+      ]
+    },
+    "WLL": {
+      "tier": "SURVIVE",
+      "title": "Pyrrhic Hold",
+      "sub_analysis": true,
+      "narrator_lines": [
+        "The castle is a ruin. Half the garrison lies wounded in the great hall.",
+        "But the banner still flies. When reinforcements arrive, they find you alive.",
+        "A siege that started so well. What went wrong?"
+      ]
+    },
+    "LWW": {
+      "tier": "SUCCESS",
+      "title": "Finding Your Steel",
+      "narrator_lines": [
+        "What a rally! A terrible start nearly cost everything, but the garrison found its steel.",
+        "The enemy is routed. Castle Aldric's flag flies proud over the carnage.",
+        "From the brink of defeat, you forged a victory the bards will sing of."
+      ]
+    },
+    "LWL": {
+      "tier": "SURVIVE",
+      "title": "Stubborn Survivors",
+      "sub_analysis": true,
+      "narrator_lines": [
+        "Castle Aldric stands, but barely. Every wall is breached. The moat runs red.",
+        "The enemy withdrew at nightfall, too bloodied to finish the job.",
+        "You survived through stubbornness alone. The relief column finds a garrison on its knees."
+      ]
+    },
+    "LLW": {
+      "tier": "SURVIVE",
+      "title": "Miracle at Dawn",
+      "narrator_lines": [
+        "A miracle at the darkest hour. One final sally drove them from the great hall stairs.",
+        "The castle is a smoking shell, but it did not fall. Against all odds.",
+        "Do not let the bards embellish this. It was not courage — it was desperation."
+      ]
+    },
+    "LLL": {
+      "tier": "FAILURE",
+      "title": "Castle Fallen",
+      "sub_analysis": true,
+      "narrator_lines": [
+        "The great hall door splinters. The enemy pours through.",
+        "Castle Aldric's garrison lays down its arms. The siege is over.",
+        "When the relief column arrives, they find the enemy's banner on the tower."
+      ]
+    }
+  },
+  "narrator": {
+    "voice": "castle_castellan",
+    "tts_engine": "local",
+    "between_commands_lines": [
+      "Steady, lads! Hold the line!",
+      "Time is our ally — the relief column marches!",
+      "To your stations! No rest for the weary!",
+      "They come again — be ready!",
+      "Move! Move! Move!",
+      "That is an order from the Castellan!",
+      "For Castle Aldric! For the Lord!",
+      "Every stone we hold is a stone they cannot take!"
+    ]
+  }
+}

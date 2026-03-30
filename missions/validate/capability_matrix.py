@@ -6,7 +6,7 @@ Derived from docs/tablet-archetypes.md and docs/scenario-schema.md.
 
 Layout (every tablet):
   Universal base — 3 toggle switches, 4 momentary buttons, 1 crisis button, 1 submit button
-  Specialty elements — 2 per archetype, drawn from a pool of 8 unique elements
+  Specialty elements — 2 per archetype, drawn from a pool of 9 unique elements
 
 Slot naming:
   toggle_1 / toggle_2 / toggle_3          — universal toggles (bat / rocker / paddle)
@@ -21,14 +21,15 @@ ARCHETYPES = [
 ]
 
 # ──────────────────────────────────────────────────────────────────────
-# Specialty Element Pool (8 elements, each on exactly 2 archetypes)
+# Specialty Element Pool (9 elements)
 # ──────────────────────────────────────────────────────────────────────
 #   JOYSTICK         — Navigator, Scout
 #   SLIDER           — Navigator, Engineer
 #   BARREL_JACKS     — Engineer, Commander
 #   ROTARY_ENCODER   — Operator, Medic
 #   NUMBER_PAD       — Operator, Analyst
-#   NFC_SCANNER      — Sentinel, Commander
+#   HALL_TRIGGER     — Sentinel
+#   NFC_SCANNER      — Commander
 #   ROTARY_SWITCH    — Sentinel, Analyst
 #   COLOR_DIAL       — Medic, Scout
 # ──────────────────────────────────────────────────────────────────────
@@ -78,7 +79,7 @@ CAPABILITY_MATRIX = {
         "button_2":    "PRESS_BUTTON",
         "button_3":    "PRESS_BUTTON",
         "button_4":    "PRESS_BUTTON",
-        "specialty_a": "SCAN_NFC",        # NFC/RFID Scanner RC522 (SPI)
+        "specialty_a": "SET_TRIGGER",     # Hall-Effect Analog Trigger (spring-return lever)
         "specialty_b": "SET_ROTARY_SW",   # 6-Position Rotary Switch (ADC ladder)
     },
     "MEDIC": {
@@ -146,7 +147,8 @@ ELEMENT_ARCHETYPES = {
     "PLUG_JACK":     ["ENGINEER", "COMMANDER"],
     "SET_ENCODER":   ["OPERATOR", "MEDIC"],
     "ENTER_CODE":    ["OPERATOR", "ANALYST"],
-    "SCAN_NFC":      ["SENTINEL", "COMMANDER"],
+    "SET_TRIGGER":   ["SENTINEL"],
+    "SCAN_NFC":      ["COMMANDER"],
     "SET_ROTARY_SW": ["SENTINEL", "ANALYST"],
     "MATCH_COLOR":   ["MEDIC", "SCOUT"],
 }
@@ -159,7 +161,7 @@ ELEMENT_ARCHETYPES = {
 # T3 = high complexity (joystick 2-axis, color matching, code entry, NFC scan)
 TIER_ACTIONS = {
     "T1": {"SET_TOGGLE", "PRESS_BUTTON"},
-    "T2": {"SET_SLIDER", "SET_ENCODER", "SET_ROTARY_SW", "PLUG_JACK"},
+    "T2": {"SET_SLIDER", "SET_ENCODER", "SET_ROTARY_SW", "PLUG_JACK", "SET_TRIGGER"},
     "T3": {"SET_JOYSTICK", "MATCH_COLOR", "ENTER_CODE", "SCAN_NFC"},
 }
 
@@ -184,6 +186,7 @@ STATEFUL_ACTIONS = {
     "SET_TOGGLE",       # binary: on / off
     "PLUG_JACK",        # binary per-port: wire-in / wire-out (tracked per port)
     "SET_SLIDER",       # continuous: 0–100
+    "SET_TRIGGER",      # continuous: 0–100 (spring-return to 0)
     "SET_ENCODER",      # continuous: integer position
     "SET_ROTARY_SW",    # discrete: 1–6
     "MATCH_COLOR",      # continuous: [r, g, b]

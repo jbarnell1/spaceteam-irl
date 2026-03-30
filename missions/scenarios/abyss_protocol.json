@@ -73,7 +73,7 @@
       "Decon Alert",
       "Fire Control",
       "Countermeasure",
-      "Torpedo Key",
+      "Pressure Seal",
       "Launch Mode"
     ],
     "MEDIC": [
@@ -600,26 +600,28 @@
         "timeout_ms": 7000
       },
       {
-        "id": "sent_torpedo_auth",
+        "id": "sent_pressure_seal",
         "target_arch": "SENTINEL",
-        "action": "SCAN_NFC",
+        "action": "SET_TRIGGER",
         "slot": "specialty_a",
-        "tier": "T3",
-        "label": "Authenticate TORPEDO KEY!",
-        "narrator_line": "Weapons Officer! Authenticate the torpedo key — now!",
-        "value": "TORPEDO_AUTH",
-        "timeout_ms": 10000
+        "tier": "T2",
+        "label": "Seal pressure to FIRM!",
+        "narrator_line": "Weapons Officer! Torpedo seal pressure to seventy — hold it!",
+        "value": 70,
+        "tolerance": 10,
+        "timeout_ms": 5000
       },
       {
-        "id": "sent_captains_safe",
+        "id": "sent_pressure_max",
         "target_arch": "SENTINEL",
-        "action": "SCAN_NFC",
+        "action": "SET_TRIGGER",
         "slot": "specialty_a",
-        "tier": "T3",
-        "label": "Unlock the CAPTAIN'S SAFE!",
-        "narrator_line": "Open the Captain's safe! We need the sealed orders!",
-        "value": "CAPTAINS_SAFE",
-        "timeout_ms": 10000
+        "tier": "T2",
+        "label": "MAXIMUM seal pressure!",
+        "narrator_line": "Full pressure on the torpedo seal! Do NOT let go!",
+        "value": 100,
+        "tolerance": 10,
+        "timeout_ms": 5000
       },
       {
         "id": "sent_mode_standby",
