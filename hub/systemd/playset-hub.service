@@ -1,0 +1,25 @@
+# Install:
+#   sudo cp systemd/playset-hub.service /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now playset-hub
+# Logs:
+#   journalctl -u playset-hub -f
+#
+# Assumes the repo is at /home/pi/spaceteam_irl and uv is at /home/pi/.local/bin/uv.
+# Adjust User, WorkingDirectory, and the serial port to match the Pi.
+
+[Unit]
+Description=Playset Buttons hub
+After=network-online.target sound.target
+Wants=network-online.target
+
+[Service]
+User=pi
+Group=audio
+SupplementaryGroups=dialout
+WorkingDirectory=/home/pi/spaceteam_irl/hub
+ExecStart=/home/pi/.local/bin/uv run --frozen python -m playset_hub --themes themes --config config.json --data data --serial /dev/ttyACM0
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

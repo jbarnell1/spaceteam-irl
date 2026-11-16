@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f1222">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="/manifest.webmanifest">
+<title>Playset</title>
+<style>
+  :root {
+    --bg: #0f1222; --panel: #1a1f38; --panel-2: #232a4a; --text: #f3f4fb; --muted: #9aa0c3;
+    --accent: #ffb224; --ok: #30a46c; --warn: #e5484d; --radius: 18px;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--bg); color: var(--text);
+    font: 17px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  body { padding: env(safe-area-inset-top) 16px calc(96px + env(safe-area-inset-bottom)); }
+  header { display: flex; align-items: baseline; justify-content: space-between; padding: 18px 0 8px; }
+  h1 { font-size: 24px; margin: 0; }
+  .sub { color: var(--muted); font-size: 14px; }
+  .quiet { background: #3a2f12; color: var(--accent); padding: 10px 14px; border-radius: 12px; margin: 8px 0 0; display: none; }
+  section { display: none; padding-top: 12px; }
+  section.active { display: block; }
+  h2 { font-size: 15px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 18px 0 10px; }
+
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .card { background: var(--panel); border: 3px solid transparent; border-radius: var(--radius);
+    padding: 18px 14px; min-height: 120px; text-align: left; color: inherit; font: inherit;
+    display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;
+    user-select: none; transition: transform .12s ease-out; }
+  .card:active { transform: scale(.97); }
+  .card.on { border-color: var(--accent); background: var(--panel-2); }
+  .card .icon { font-size: 38px; line-height: 1; }
+  .card .name { font-weight: 650; font-size: 19px; margin-top: 10px; }
+  .card .meta { color: var(--muted); font-size: 13px; }
+
+  .btn-row { display: flex; align-items: center; gap: 14px; background: var(--panel); border-radius: var(--radius);
+    padding: 14px; margin-bottom: 10px; width: 100%; color: inherit; font: inherit; border: 0; text-align: left; cursor: pointer; }
+  .btn-row:active { transform: scale(.98); }
+  .dot { width: 54px; height: 54px; border-radius: 50%; flex: none; box-shadow: inset 0 -6px 0 rgba(0,0,0,.25); }
+  .btn-row .grow { flex: 1; min-width: 0; }
+  .btn-row .name { font-weight: 650; }
+  .btn-row .meta { color: var(--muted); font-size: 14px; }
+  .batt { font-size: 14px; font-variant-numeric: tabular-nums; }
+  .batt.low { color: var(--warn); font-weight: 650; }
+
+  .field { background: var(--panel); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
+  .field label { display: block; font-weight: 600; margin-bottom: 10px; }
+  .field .hint { color: var(--muted); font-size: 13px; margin-top: 8px; }
+  input[type=range] { width: 100%; height: 36px; accent-color: var(--accent); }
+  .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .seg button, .big { font: inherit; padding: 14px; border-radius: 12px; border: 0; background: var(--panel-2); color: var(--text); cursor: pointer; }
+  .seg button.on { background: var(--accent); color: #1a1300; font-weight: 650; }
+  .times { display: flex; gap: 10px; align-items: center; margin-top: 10px; }
+  input[type=time] { font: inherit; padding: 10px; border-radius: 10px; border: 0; background: var(--panel-2); color: var(--text); flex: 1; }
+  .switch { display: flex; align-items: center; justify-content: space-between; }
+  .switch input { width: 28px; height: 28px; accent-color: var(--accent); }
+  .big { width: 100%; margin-top: 8px; }
+
+  nav { position: fixed; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(4, 1fr);
+    background: rgba(15,18,34,.96); border-top: 1px solid #262c4d; padding: 6px 6px calc(6px + env(safe-area-inset-bottom)); }
+  nav button { font: inherit; font-size: 13px; color: var(--muted); background: none; border: 0; padding: 8px 0 6px; cursor: pointer; }
+  nav button .i { display: block; font-size: 24px; }
+  nav button.on { color: var(--text); }
+  .toast { position: fixed; left: 50%; bottom: 100px; transform: translateX(-50%); background: #000c; color: #fff;
+    padding: 10px 16px; border-radius: 999px; font-size: 15px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .toast.show { opacity: 1; }
+  .empty { color: var(--muted); padding: 24px 4px; }
+  @media (min-width: 640px) { body { max-width: 620px; margin: 0 auto; } .grid { grid-template-columns: repeat(3, 1fr); } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Playset</h1>
+  <span class="sub" id="status">connecting…</span>
+</header>
+<div class="quiet" id="quiet">Quiet hours: buttons are silent right now.</div>
+
+<section id="tab-themes" class="active">
+  <h2>Pick a theme</h2>
+  <div class="grid" id="themes"></div>
+</section>
+
+<section id="tab-buttons">
+  <h2>Buttons <span class="sub">(tap to hear)</span></h2>
+  <div id="buttons"></div>
+</section>
+
+<section id="tab-record">
+  <h2>Recordings</h2>
+  <div class="field">
+    <label>Coming in phase 3</label>
+    <div class="hint">Record in the browser, upload a voice memo, or type a line for Piper. For now, drop audio files into
+      <code>themes/&lt;theme&gt;/button-N/</code> on the hub and tap “Reload themes” in Settings.</div>
+  </div>
+</section>
+
+<section id="tab-settings">
+  <h2>Settings</h2>
+  <div class="field">
+    <label for="volume">Volume <span class="sub" id="volume-label"></span></label>
+    <input type="range" id="volume" min="0" max="100" step="5">
+    <div class="hint" id="volume-cap"></div>
+  </div>
+  <div class="field">
+    <label>When a button is pressed during a sound</label>
+    <div class="seg" id="play-mode">
+      <button data-mode="interrupt">Cut it off</button>
+      <button data-mode="queue">Wait in line</button>
+    </div>
+  </div>
+  <div class="field">
+    <div class="switch"><label for="qh-on" style="margin:0">Quiet hours</label><input type="checkbox" id="qh-on"></div>
+    <div class="times"><input type="time" id="qh-start"><span>to</span><input type="time" id="qh-end"></div>
+  </div>
+  <div class="field">
+    <button class="big" id="reload">Reload themes</button>
+    <button class="big" id="stop">Stop sound</button>
+  </div>
+</section>
+
+<nav>
+  <button data-tab="themes" class="on"><span class="i">🎭</span>Themes</button>
+  <button data-tab="buttons"><span class="i">🔴</span>Buttons</button>
+  <button data-tab="record"><span class="i">🎙️</span>Record</button>
+  <button data-tab="settings"><span class="i">⚙️</span>Settings</button>
+</nav>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+let state = null;
+
+function toast(msg) {
+  const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove("show"), 1600);
+}
+
+async function api(path, body) {
+  const res = await fetch(path, body === undefined ? {} : {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+function ago(ts) {
+  if (!ts) return "never pressed";
+  const s = Math.max(0, Math.round(Date.now() / 1000 - ts));
+  if (s < 60) return `${s}s ago`;
+  if (s < 3600) return `${Math.round(s / 60)} min ago`;
+  if (s < 86400) return `${Math.round(s / 3600)} h ago`;
+  return `${Math.round(s / 86400)} d ago`;
+}
+
+function battery(b) {
+  if (!b.battery_mv) return `<span class="batt">🔋 —</span>`;
+  // Rough LiPo curve: 3.3 V empty, 4.15 V full.
+  const pct = Math.max(0, Math.min(100, Math.round((b.battery_mv - 3300) / 850 * 100)));
+  return `<span class="batt ${b.battery_low ? "low" : ""}">${b.battery_low ? "⚠️ charge me" : "🔋 " + pct + "%"}</span>`;
+}
+
+function render() {
+  const s = state;
+  $("#status").textContent = s.active_theme
+    ? (s.themes.find(t => t.id === s.active_theme) || {}).name || s.active_theme : "no theme";
+  $("#quiet").style.display = s.quiet_now ? "block" : "none";
+
+  const themes = $("#themes");
+  themes.innerHTML = s.themes.length ? "" : `<div class="empty">No themes yet. Add folders under <code>themes/</code> on the hub.</div>`;
+  for (const t of s.themes) {
+    const clips = Object.values(t.clip_counts).reduce((a, b) => a + b, 0);
+    const el = document.createElement("button");
+    el.className = "card" + (t.id === s.active_theme ? " on" : "");
+    el.innerHTML = `<span class="icon">${t.icon || "✨"}</span><span><div class="name"></div><div class="meta">${clips} sounds</div></span>`;
+    el.querySelector(".name").textContent = t.name;
+    el.onclick = async () => { state = await api("/api/theme", { id: t.id }); render(); toast(`${t.name}!`); };
+    themes.appendChild(el);
+  }
+
+  const buttons = $("#buttons");
+  buttons.innerHTML = "";
+  const active = s.themes.find(t => t.id === s.active_theme);
+  for (const b of s.buttons) {
+    const clips = active ? (active.clip_counts[String(b.id)] || 0) : 0;
+    const el = document.createElement("button");
+    el.className = "btn-row";
+    el.innerHTML = `<span class="dot" style="background:${b.color}"></span>
+      <span class="grow"><div class="name"></div><div class="meta">${clips} sounds · ${ago(b.last_press)}</div></span>${battery(b)}`;
+    el.querySelector(".name").textContent = b.name;
+    el.onclick = async () => {
+      const r = await api(`/api/buttons/${b.id}/preview`, {});
+      toast(r.clip ? `▶ ${r.clip}` : "No sounds for this button");
+    };
+    buttons.appendChild(el);
+  }
+
+  const st = s.settings;
+  const vol = $("#volume");
+  if (document.activeElement !== vol) vol.value = st.volume;
+  $("#volume-label").textContent = `${Math.min(st.volume, st.max_volume)}`;
+  $("#volume-cap").textContent = `Capped at ${st.max_volume} by the hub's config file.`;
+  document.querySelectorAll("#play-mode button").forEach(b => b.classList.toggle("on", b.dataset.mode === st.play_mode));
+  $("#qh-on").checked = st.quiet_hours.enabled;
+  if (document.activeElement !== $("#qh-start")) $("#qh-start").value = st.quiet_hours.start;
+  if (document.activeElement !== $("#qh-end")) $("#qh-end").value = st.quiet_hours.end;
+}
+
+async function refresh() {
+  try { state = await api("/api/state"); render(); }
+  catch { $("#status").textContent = "hub offline"; }
+}
+
+async function saveSettings(patch) {
+  try { state = await api("/api/settings", patch); render(); }
+  catch (e) { toast("Couldn't save"); }
+}
+
+document.querySelectorAll("nav button").forEach(btn => btn.onclick = () => {
+  document.querySelectorAll("nav button").forEach(b => b.classList.toggle("on", b === btn));
+  document.querySelectorAll("section").forEach(s => s.classList.toggle("active", s.id === "tab-" + btn.dataset.tab));
+});
+$("#volume").addEventListener("change", e => saveSettings({ volume: +e.target.value }));
+$("#volume").addEventListener("input", e => $("#volume-label").textContent = Math.min(+e.target.value, state.settings.max_volume));
+document.querySelectorAll("#play-mode button").forEach(b => b.onclick = () => saveSettings({ play_mode: b.dataset.mode }));
+const saveQuiet = () => saveSettings({ quiet_hours: { enabled: $("#qh-on").checked, start: $("#qh-start").value, end: $("#qh-end").value } });
+["#qh-on", "#qh-start", "#qh-end"].forEach(id => $(id).addEventListener("change", saveQuiet));
+$("#reload").onclick = async () => { state = await api("/api/themes/reload", {}); render(); toast("Themes reloaded"); };
+$("#stop").onclick = () => api("/api/stop", {});
+
+refresh();
+setInterval(refresh, 3000);
+</script>
+</body>
+</html>
