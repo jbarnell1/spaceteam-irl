@@ -35,3 +35,8 @@ desktop.ini
 *.bin
 *.hex
 *.map
+
+# Playset hub runtime files
+hub/data/
+hub/themes/
+hub/config.json

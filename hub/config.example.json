@@ -1,0 +1,16 @@
+{
+  "max_volume": 70,
+  "buttons": [
+    {"id": 1, "name": "Red", "color": "#e5484d"},
+    {"id": 2, "name": "Blue", "color": "#3e63dd"},
+    {"id": 3, "name": "Green", "color": "#30a46c"},
+    {"id": 4, "name": "Yellow", "color": "#f5d90a"},
+    {"id": 5, "name": "Purple", "color": "#8e4ec6"}
+  ],
+  "player_cmd": ["mpv", "--no-video", "--really-quiet", "--volume={volume}", "{path}"],
+  "low_battery_mv": 3500,
+  "dedupe_window_s": 2.0,
+  "queue_limit": 3,
+  "host": "0.0.0.0",
+  "port": 8080
+}
